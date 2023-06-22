@@ -1,0 +1,71 @@
+{% load static %}
+<style>
+.the-content {
+  /* Location of the image */
+  background-image: url("{% static 'store/images/section2poster.jpg' %}");
+  
+  /* Image is centered vertically and horizontally at all times */
+  background-position: center center;
+  
+  /* Image doesn't repeat */
+  background-repeat: no-repeat;
+  
+  /* Makes the image fixed in the viewport so that it doesn't move when 
+     the content height is greater than the image height */
+  background-attachment: fixed;
+  
+  /* This is what makes the background image rescale based on its container's size */
+  background-size: cover;
+  
+  /* Pick a solid background color that will be displayed while the background image is loading */
+  background-color:#000000;
+  
+  /* SHORTHAND CSS NOTATION
+   * background: url(background-photo.jpg) center center cover no-repeat fixed;
+   */
+}
+
+/* For mobile devices */
+@media only screen and (max-width: 767px) {
+  .the-content {
+    /* The file size of this background image is 93% smaller
+     * to improve page load speed on mobile internet connections */
+    background-image: url("{% static 'store/images/section2poster.jpg' %}");
+  }
+	}
+.content-section-2-bg
+{
+    background-color: #0000005d;
+}
+</style>
+<!-- 
+<div class="container-fluid p-0 m-0">
+    <img src="{% static 'store/images/section2poster.jpg' %}" alt="Snow" style="width:100%;">
+        <div class="centered">
+            <p>Create More</p>
+            <h3>Design More</h3>
+            <p>With Mac Book Pro</p>
+            <button class="btn btn-outline-light">Explore Now</button>
+        </div>
+</div> -->
+
+<header class="container-fluid the-content">
+    
+    <section class="container  text-white p-5">
+        <div class="content-section-2-bg p-3">
+
+            <p class="p-0 m-0">Create More</p>
+             <h1>Design More</h1>
+             <p>With Mackbook Pro</p>
+             <button class="btn btn-outline-light rounded-0">
+                 Explore More
+     </button>
+        </div>
+    </section>
+
+ 
+</header>
+
+<div>
+    <img src="{% static 'store/images/bannerbottom.png' %}" class="w-100" alt="">
+</div>

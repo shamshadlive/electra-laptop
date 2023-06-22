@@ -1,5 +1,109 @@
 
 
 {% load static %}
+<!-- Header -->
 
-<img src="{% static 'store/images/logo.svg' %}" alt="logo" >
+<nav class="navbar navbar-expand-lg bg-body-tertiary px-xl-5">
+
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'store/images/logo.svg' %}" alt="electra-header-logo" height="36">
+              </a>
+          <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button> -->
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Store</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Support</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Brands</a>
+              </li>
+            </ul>
+
+            <div class="input-group d-none d-lg-flex">
+              <span class="input-group-append bg-black">
+                  <button class="form-control bg-black text-white border-0" type="button">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+                  </button>
+              </span>
+              <input class="form-control bg-black border-0 text-light" type="search" placeholder="Search Something..." id="example-search-input">
+              <div class="col-4">
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>All Category</option>
+                  <option value="1">One</option>
+                  <option value="2">Two</option>
+                  <option value="3">Three</option>
+                </select>
+               </div>
+          </div>
+
+         
+       
+        </div>
+
+        <div class="d-flex justify-content-start">
+         
+          <div class="mx-2 position-relative">
+              <img src="{% static 'store/images/icons/bag.svg' %}" width="24" height="24" alt="electra-logo" >
+
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                0
+                <span class="visually-hidden">unread messages</span>
+              </span>
+          
+          </div>
+
+          <div class="mx-2">
+            {% if request.user.is_authenticated %}
+            <img src="{% static 'store/images/icons/user.svg' %}" width="24" height="24" alt="user-icon" >
+            {% else %}
+            <a href="{% url 'loginpage' %}" class="text-decoration-none text-black">Login</a> 
+            {% endif %}
+           
+            
+          </div>
+
+
+          <div class="d-xl-none d-lg-none d-lg-block d-md-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <img  src="{% static 'store/images/icons/three-dots.svg' %}" width="24" height="24"  alt="electra-logo" >
+          </div>
+        </div>
+           
+            
+          </div>
+        </div>     
+  </nav>
+
+  <div class="input-group d-lg-none">
+    <span class="input-group-append bg-black">
+        <button class="form-control bg-black text-white border-0" type="button">
+         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+      </svg>
+        </button>
+    </span>
+    <input class="form-control bg-black border-0 text-light" type="search" placeholder="Search Something..." id="example-search-input">
+    <div class="col-4">
+      <select class="form-select" aria-label="Default select example">
+        <option selected>All Category</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+     </div>
+</div>
+
+
+    
+  

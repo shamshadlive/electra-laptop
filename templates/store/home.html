@@ -1,8 +1,16 @@
 {% extends "base/store/base.html" %}
 
 {% load static %}
-
+ 
+{% block title %}
+Electra - Home
+{% endblock %}
   
-{% block home %}
-THis is home page content
+{% block content %}
+{% include "store/slider.html" %} 
+{% include "store/shopbycatg.html" %} 
+{% include "store/section-banner-2.html" %} 
+{% include "store/mostmovingitems.html" %} 
+
+
 {% endblock %}

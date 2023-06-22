@@ -1,3 +1,6 @@
-.new-color{
-    color: rgb(0, 72, 255)
+body{
+    font-family: 'Poppins', sans-serif;
+}
+.link-color{
+    color: red;
 }

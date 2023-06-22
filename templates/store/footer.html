@@ -1,1 +1,61 @@
-this is footer
+
+{% load static %}
+
+
+    <!-- FOOTER -->
+    <footer class="w-100 py-4 flex-shrink-0 bg-black ">
+        <div class="container py-4">
+            <div class="row ">
+                <div class="col-lg-4 col-md-6 p-0">
+                    <img src="{% static 'store/images/logo-white.svg' %}" alt="electra-header-logo"  height="36">
+
+                    <p class="small text-light">The Complete Digital Store</p>
+                   
+                   <div>
+                    <img src="{% static 'store/images/icons/facebook.svg' %}" alt="facebook"  height="24">
+                    <img src="{% static 'store/images/icons/instagram.svg' %}" alt="instagram"  height="24">
+                    <img src="{% static 'store/images/icons/twitter.svg' %}" alt="twitter"  height="24">
+                    <img src="{% static 'store/images/icons/youtbe.svg' %}" alt="youtbe"  height="24">
+
+
+                   </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <p class="text-white mb-2">Category</p>
+                    <ul class="list-unstyled text-muted ">
+                        <li ><a  class="text-decoration-none  text-light small" href="#">All Laptop</a></li>
+                        <li ><a  class="text-decoration-none text-light small"href="#">Gaming Laptop</a></li>
+                        <li ><a  class="text-decoration-none text-light small"href="#">Get started</a></li>
+                        <li ><a  class="text-decoration-none text-light small"href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <p class="text-white mb-2">More Links</p>
+                    <ul class="list-unstyled text-muted ">
+                        <li ><a  class="text-decoration-none  text-light small " href="#">Support</a></li>
+                        <li ><a  class="text-decoration-none text-light small "href="#">Guidelines</a></li>
+                        <li ><a  class="text-decoration-none text-light small"href="#">Other Files</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white mb-3">Talk To Us</h5>
+
+                    <p class=" text-white m-0">
+                    <img src="{% static 'store/images/icons/call.svg' %}" alt="call" >
+
+                        +91 833 00 99 043
+                    </p>
+                    <p class=" text-white">
+                        support@electra.com
+                    </p>
+                    <form action="#">
+                        <div class="input-group mb-3">
+                    <img src="{% static 'store/images/footer-payment.webp' %}" alt="footer-payment" >
+
+                           </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </footer>
