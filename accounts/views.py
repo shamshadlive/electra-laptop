@@ -3,8 +3,16 @@ from django.contrib.auth import logout,authenticate,login
 from accounts.models import User
 from django.contrib import messages
 from .forms  import UserForm
+# from verify_email.email_handler import send_verification_email
+from accounts.helper.send_verification_email  import CustomVerifyEmail
 
-# Create your views here.
+#forget password 
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
 
 def loginpage (request):
     
@@ -19,12 +27,12 @@ def loginpage (request):
             messages.error(request, "Invalid Email Adress")
             return redirect('login-page')
         
-        if not User.objects.filter(email=email,is_active=True).exists():
-            messages.error(request, "You are blocked by admin ! Please contact admin")
+        if not User.objects.filter(email=email,is_email_verified=True,is_active=True).exists():
+            messages.error(request, "Email Not Verified Yet !")
             return redirect('login-page')
         
-        if not User.objects.filter(email=email,is_email_verified=True).exists():
-            messages.error(request, "Email Not Verified Yet !")
+        if not User.objects.filter(email=email,is_active=True).exists():
+            messages.error(request, "You are blocked by admin ! Please contact admin")
             return redirect('login-page')
         
         
@@ -46,13 +54,17 @@ def signuppage (request):
     
     if request.method == 'POST':
         form = UserForm(request.POST)
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
         if form.is_valid():
+            if password != confirm_password:
+                messages.error(request, "Password Not Match")
+                return render(request, 'accounts/user-signup.html', {'form': form})
             user = form.save(commit=False)
             user.set_password(
                 form.cleaned_data["password"]
             )
-            user.save()
-            
+            inactive_user = CustomVerifyEmail.send_verification_email(request, form)
             messages.success(request, "Account Created Succesfuly , Please Activate to Continue")
             return redirect('login-page')
         else:
@@ -74,3 +86,69 @@ def logout_page(request):
         return redirect('/')
     
 
+# ==========FORGET PASSWORD =========
+def forget_password(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email__exact=email)
+            
+            
+            #SEND FORGOT PASSWORD MAIL
+            current_site = get_current_site(request)
+            mail_subject = 'Reset Your Password'
+            message = render_to_string ('accounts/reset_password_email.html',{
+                'user' : user,
+                'domain' : current_site,
+                'uid' : urlsafe_base64_encode(force_bytes(user.pk)),
+                'token' : default_token_generator.make_token(user),
+            })
+            to_email = email
+            send_email = EmailMessage(mail_subject,message,to=[to_email])
+            send_email.content_subtype = 'html'
+            send_email.send()
+            messages.success(request, "Email Has Been Successfully shared , please verify to reset")
+            return redirect('login-page')
+        else:
+            messages.error(request, "Account Not Exists , Please Sign Up")
+            
+        
+    return render(request, 'accounts/forgot-password.html')
+    
+    
+def reset_password_verify(request,uidb64,token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User._default_manager.get(pk=uid)
+    except (TypeError,ValueError,OverflowError,User.DoesNotExist):
+        user = None
+    
+    if user is not None and default_token_generator.check_token(user,token):
+        request.session['uid'] = uid
+        messages.success(request, "Please reset your password")
+        return redirect('reset-password')
+    else:
+        messages.error(request, "Invalid Link ! Expired")
+        return redirect('forget-password')
+        
+
+def resetpassword(request):
+    if request.method == 'POST':
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        
+        if password == confirm_password:
+            uid = request.session.get('uid')
+            try:
+                user = User.objects.get(pk=uid)
+                user.set_password(password)
+                user.save()
+                messages.success(request, "Resetting Password Completed")
+            except User.DoesNotExist:
+                messages.error(request, "Error")    
+            return redirect('login-page')
+        else:
+            messages.error(request, "Password Not Match")
+            return redirect('reset-password')
+            
+    return render(request,'accounts/reset-password.html')

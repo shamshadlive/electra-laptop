@@ -1,0 +1,40 @@
+
+{% extends "base/store/base.html" %}
+
+{% load static %}
+ 
+{% block title %}
+Signup - Electra 
+{% endblock %}
+
+{% block content %}
+
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y" style="min-height:84vh">
+
+    <!-- ============================ COMPONENT LOGIN   ================================= -->
+        <div class="card mx-auto mt-2" style="max-width: 380px; ">
+            <img src="{% static 'store/images/verified.png' %}"  alt="user-login" >
+          <div class="card-body">
+
+            <h4 style="text-align: center; " class="text-black">
+                {{msg}}  
+            </h4>
+
+            <a href="{{link}}" class="btn btn-dark w-100">
+                Login
+            </a>
+            
+          </div> <!-- card-body.// -->
+        </div> <!-- card .// -->
+    
+        <br><br>
+    <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
+    
+    
+    </section>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+    
+    
+{% endblock %}

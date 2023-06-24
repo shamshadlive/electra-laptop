@@ -4,7 +4,30 @@ from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from .forms import EditUserForm,CreateUserForm
+from django.urls import reverse
+import functools
 # Create your views here.
+
+#decorator for checking admin or not
+def check_isadmin(view_func, redirect_url="admin-login"):
+    """
+        used to check loged one was admin or not
+    """
+    @functools.wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_superuser and request.user.is_authenticated:
+            return view_func(request,*args, **kwargs)
+        messages.error(request, "You need to be login as admin to access this page")
+        redirect_url_ = reverse(redirect_url)+'?next='+request.path
+        return redirect(redirect_url_)
+    return wrapper
+
+
+
+
+
+
+@check_isadmin
 def admin_home(request):
     return render(request, 'admincontrol/index.html')
 
@@ -37,14 +60,14 @@ def admin_login(request):
     return render(request, 'admincontrol/login.html')
 
 #==========user management===============
-
+@check_isadmin
 def admin_all_users(request):
     users = User.objects.all()
     context = {'users':users}
     return render(request, 'admincontrol/all_users.html',context)
 
 
-
+@check_isadmin
 def admin_user_create(request):
     form = CreateUserForm()
     if request.method == 'POST':

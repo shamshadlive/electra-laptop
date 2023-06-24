@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "verify_email.apps.VerifyEmailConfig",
     'store',
     'accounts',
     'admincontrol'
@@ -144,3 +145,8 @@ EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+LOGIN_URL ='login-page'
+
+HTML_MESSAGE_TEMPLATE ='accounts/send_verification_email_template.html'
+VERIFICATION_SUCCESS_TEMPLATE ='accounts/email_verification_success.html'
