@@ -1,6 +1,16 @@
 # Created by https://www.toptal.com/developers/gitignore/api/django
 # Edit at https://www.toptal.com/developers/gitignore?templates=django
 
+
+# CUSTOM
+
+core/secure_variables.py
+
+
+
+
+
+
 ### Django ###
 *.log
 *.pot
