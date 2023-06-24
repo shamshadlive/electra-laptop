@@ -1,0 +1,150 @@
+{% load static %}
+<div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
+    <div class="sidebar-brand d-none d-md-flex">
+      <img src="{% static 'store/images/logo-white.svg' %}" alt="electra-header-logo" height="36">
+    </div>
+    <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
+      <li class="nav-item"><a class="nav-link" href="{% url 'admin-home' %}">
+       Dashboard<span class="badge badge-sm bg-info ms-auto">NEW</span></a></li>
+      <li class="nav-title">Common Control</li>
+      <li class="nav-item"><a class="nav-link" href="colors.html">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+        </svg>DONT TOUCH</a></li>
+        
+      <li class="nav-title">Common Management</li>
+
+
+      <li class="nav-group"><a class="nav-link nav-group-toggle" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+</svg>User Management</a>
+        <ul class="nav-group-items">
+          <li class="nav-item"><a class="nav-link" href="{% url 'admin-all-users' %}"><span class="nav-icon"></span> All Users</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'admin-user-create' %}"><span class="nav-icon"></span>Create User</a></li>
+        </ul>
+      </li>
+
+      <li class="nav-group"><a class="nav-link nav-group-toggle" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-ui-checks" viewBox="0 0 16 16">
+          <path d="M7 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zM2 1a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2zm0 8a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H2zm.854-3.646a.5.5 0 0 1-.708 0l-1-1a.5.5 0 1 1 .708-.708l.646.647 1.646-1.647a.5.5 0 1 1 .708.708l-2 2zm0 8a.5.5 0 0 1-.708 0l-1-1a.5.5 0 0 1 .708-.708l.646.647 1.646-1.647a.5.5 0 0 1 .708.708l-2 2zM7 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0-5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+        </svg>Category Management</a>
+        <ul class="nav-group-items">
+          <li class="nav-item"><a class="nav-link" href="base/tooltips.html"><span class="nav-icon"></span> Manage Category</a></li>
+         
+        </ul>
+      </li>
+
+      <li class="nav-group"><a class="nav-link nav-group-toggle" href="#">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dropbox" viewBox="0 0 16 16">
+          <path d="M8.01 4.555 4.005 7.11 8.01 9.665 4.005 12.22 0 9.651l4.005-2.555L0 4.555 4.005 2 8.01 4.555Zm-4.026 8.487 4.006-2.555 4.005 2.555-4.005 2.555-4.006-2.555Zm4.026-3.39 4.005-2.556L8.01 4.555 11.995 2 16 4.555 11.995 7.11 16 9.665l-4.005 2.555L8.01 9.651Z"/>
+        </svg>Product Management</a>
+        <ul class="nav-group-items">
+          <li class="nav-item"><a class="nav-link" href="base/tooltips.html"><span class="nav-icon"></span> Add Product</a></li>
+          <li class="nav-item"><a class="nav-link" href="base/tooltips.html"><span class="nav-icon"></span> All Products</a></li>
+         
+        </ul>
+      </li>
+    </ul>
+    <button class="sidebar-toggler" type="button" data-coreui-toggle="unfoldable"></button>
+
+
+  </div>
+  <div class="wrapper d-flex flex-column min-vh-100 bg-light">
+    <header class="header header-sticky mb-4">
+      <div class="container-fluid">
+        <button class="header-toggler px-md-0 me-md-3" type="button" onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).toggle()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+          </svg>
+        </button><a class="header-brand d-md-none" href="#">
+          <img src="{% static 'store/images/logo.svg' %}" alt="electra-header-logo" height="36">
+        <ul class="header-nav d-none d-md-flex">
+          <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
+          
+          {% if request.user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="#">{{request.user}}</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'admin-login' %}">Login</a></li>
+          {% endif %}
+
+
+        </ul>
+        <ul class="header-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
+              <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zM8 1.918l-.797.161A4.002 4.002 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4.002 4.002 0 0 0-3.203-3.92L8 1.917zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5.002 5.002 0 0 1 13 6c0 .88.32 4.2 1.22 6z"/>
+            </svg></a></li>
+          <li class="nav-item"><a class="nav-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-wide" viewBox="0 0 16 16">
+              <path d="M8.932.727c-.243-.97-1.62-.97-1.864 0l-.071.286a.96.96 0 0 1-1.622.434l-.205-.211c-.695-.719-1.888-.03-1.613.931l.08.284a.96.96 0 0 1-1.186 1.187l-.284-.081c-.96-.275-1.65.918-.931 1.613l.211.205a.96.96 0 0 1-.434 1.622l-.286.071c-.97.243-.97 1.62 0 1.864l.286.071a.96.96 0 0 1 .434 1.622l-.211.205c-.719.695-.03 1.888.931 1.613l.284-.08a.96.96 0 0 1 1.187 1.187l-.081.283c-.275.96.918 1.65 1.613.931l.205-.211a.96.96 0 0 1 1.622.434l.071.286c.243.97 1.62.97 1.864 0l.071-.286a.96.96 0 0 1 1.622-.434l.205.211c.695.719 1.888.03 1.613-.931l-.08-.284a.96.96 0 0 1 1.187-1.187l.283.081c.96.275 1.65-.918.931-1.613l-.211-.205a.96.96 0 0 1 .434-1.622l.286-.071c.97-.243.97-1.62 0-1.864l-.286-.071a.96.96 0 0 1-.434-1.622l.211-.205c.719-.695.03-1.888-.931-1.613l-.284.08a.96.96 0 0 1-1.187-1.186l.081-.284c.275-.96-.918-1.65-1.613-.931l-.205.211a.96.96 0 0 1-1.622-.434L8.932.727zM8 12.997a4.998 4.998 0 1 1 0-9.995 4.998 4.998 0 0 1 0 9.996z"/>
+            </svg></a></li>
+          <li class="nav-item"><a class="nav-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope-open" viewBox="0 0 16 16">
+              <path d="M8.47 1.318a1 1 0 0 0-.94 0l-6 3.2A1 1 0 0 0 1 5.4v.817l5.75 3.45L8 8.917l1.25.75L15 6.217V5.4a1 1 0 0 0-.53-.882l-6-3.2ZM15 7.383l-4.778 2.867L15 13.117V7.383Zm-.035 6.88L8 10.082l-6.965 4.18A1 1 0 0 0 2 15h12a1 1 0 0 0 .965-.738ZM1 13.116l4.778-2.867L1 7.383v5.734ZM7.059.435a2 2 0 0 1 1.882 0l6 3.2A2 2 0 0 1 16 5.4V14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5.4a2 2 0 0 1 1.059-1.765l6-3.2Z"/>
+            </svg></a></li>
+        </ul>
+        <ul class="header-nav ms-3">
+          <li class="nav-item dropdown"><a class="nav-link py-0" data-coreui-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              <div class="avatar avatar-md"><img class="avatar-img" src="{% static 'admincontrol/assets/img/avatars/8.jpg' %}" alt="user@email.com"></div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end pt-0">
+              <div class="dropdown-header bg-light py-2">
+                <div class="fw-semibold">Account</div>
+              </div><a class="dropdown-item" href="#">
+                <svg class="icon me-2">
+                  <use xlink:href="{% static 'admincontrol/vendors/@coreui/icons/svg/free.svg#cil-bell' %}"></use>
+                </svg> Updates<span class="badge badge-sm bg-info ms-2">42</span></a><a class="dropdown-item" href="#">
+                <svg class="icon me-2">
+                  <use xlink:href="{% static 'admincontrol/vendors/@coreui/icons/svg/free.svg#cil-envelope-open' %}"></use>
+                </svg> Messages<span class="badge badge-sm bg-success ms-2">42</span></a><a class="dropdown-item" href="#">
+                <svg class="icon me-2">
+                  <use xlink:href="{% static 'admincontrol/vendors/@coreui/icons/svg/free.svg#cil-task' %}"></use>
+                </svg> Tasks<span class="badge badge-sm bg-danger ms-2">42</span></a><a class="dropdown-item" href="#">
+                <svg class="icon me-2">
+                  <use xlink:href="{% static 'admincontrol/vendors/@coreui/icons/svg/free.svg#cil-comment-square' %}"></use>
+                </svg> Comments<span class="badge badge-sm bg-warning ms-2">42</span></a>
+              <div class="dropdown-header bg-light py-2">
+                <div class="fw-semibold">Settings</div>
+              </div><a class="dropdown-item" href="#">
+                <svg class="icon me-2">
+                  <use xlink:href="{% static 'admincontrol/vendors/@coreui/icons/svg/free.svg#cil-user' %}"></use>
+                </svg> Profile</a><a class="dropdown-item" href="#">
+                <svg class="icon me-2">
+                  <use xlink:href="{% static 'admincontrol/vendors/@coreui/icons/svg/free.svg#cil-settings' %}"></use>
+                </svg> Settings</a><a class="dropdown-item" href="#">
+                <svg class="icon me-2">
+                  <use xlink:href="{% static 'admincontrol/vendors/@coreui/icons/svg/free.svg#cil-credit-card' %}"></use>
+                </svg> Payments<span class="badge badge-sm bg-secondary ms-2">42</span></a><a class="dropdown-item" href="#">
+                <svg class="icon me-2">
+                  <use xlink:href="{% static 'admincontrol/vendors/@coreui/icons/svg/free.svg#cil-file' %}"></use>
+                </svg> Projects<span class="badge badge-sm bg-primary ms-2">42</span></a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">
+                <svg class="icon me-2">
+                  <use xlink:href="{% static 'admincontrol/vendors/@coreui/icons/svg/free.svg#cil-lock-locked' %}"></use>
+                </svg> Lock Account</a><a class="dropdown-item" href="{% url 'logout-page' %}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
+                    <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+                  </svg>
+                  Logout</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="header-divider"></div>
+
+
+      <div class="container-fluid">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb my-0 ms-2">
+            <li class="breadcrumb-item">
+              <!-- if breadcrumb is single--><span>Home</span>
+            </li>
+            <li class="breadcrumb-item active"><span>Dashboard</span></li>
+          </ol>
+        </nav>
+      </div>
+    </header>

@@ -1,0 +1,84 @@
+{% extends "base/admincontrol/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container col-xl-4 col-10 pt-4 mb-5">
+    <div class="card mb-3 " >
+      <div class="card-header bg-dark text-center "><h4 class="text-white">Register New User 😃</h4> </div>
+      <div class="card-body">
+       
+        <form method="post">
+          {% csrf_token %}
+  
+          <div class="mb-3">
+            <label class="form-label">First Name</label>
+            <input type="text" name="first_name"  class="form-control" value={% firstof form.first_name.value '' %}>
+            <div id="emailHelp" class=" error-msg">{{form.first_name.errors}}</div>
+           
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="last_name"  class="form-control" value={% firstof form.last_name.value '' %}>
+            <div id="emailHelp" class=" error-msg">{{form.last_name.errors}}</div>
+           
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Phone Number</label>
+            <input type="text" name="phone_number" class="form-control" value={% firstof form.phone_number.value '' %}>
+            <div id="emailHelp" class=" error-msg">{{form.phone_number.errors}}</div>
+          </div>
+  
+          <div class="mb-3">
+            <label class="form-label">Email address</label>
+            <input type="email" name="email" class="form-control" value={% firstof form.email.value '' %}>
+            <div id="emailHelp" class=" error-msg">{{form.email.errors}}</div>
+           
+          </div>
+          <div class="mb-3">
+            <label for="exampleInputPassword1"  class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" id="exampleInputPassword1" >
+          </div>
+  
+          <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="is_superuser" id="is_superuser">
+              <label class="" for="is_superuser">
+                Super User Status
+              </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="is_email_verified" id="is_email_verified" checked>
+            <label class="" for="is_email_verified">
+              Email Verification
+            </label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="is_staff" id="is_staff" checked>
+            <label class="" for="is_staff">
+              Staff Status
+            </label>
+          </div>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="is_active" id="is_active" checked>
+              <label class="" for="is_active">
+                Active
+              </label>
+            </div>
+         
+          <div>
+            <button type="submit" class="btn btn-primary w-100">Create  Now</button>
+        </div>
+        </form>
+        <p class="base-small-font mt-2">
+          <a  href="{{request.META.HTTP_REFERER}}">Go Back</a>
+          </p>
+      </div>
+    </div>
+  </div>
+  
+
+{% endblock %}

@@ -2,7 +2,9 @@
 
 {% load static %}
 <!-- Header -->
+<style>
 
+</style>
 <nav class="navbar navbar-expand-lg bg-body-tertiary px-xl-5">
 
         <div class="container-fluid">
@@ -67,8 +69,9 @@
           <div class="mx-2">
             {% if request.user.is_authenticated %}
             <img src="{% static 'store/images/icons/user.svg' %}" width="24" height="24" alt="user-icon" >
+               <a href="{% url 'logout-page' %}">Logout</a>     
             {% else %}
-            <a href="{% url 'loginpage' %}" class="text-decoration-none text-black">Login</a> 
+            <a href="{% url 'login-page' %}" class="text-decoration-none text-black">Login</a> 
             {% endif %}
            
             

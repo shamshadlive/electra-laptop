@@ -1,0 +1,101 @@
+{% extends "base/admincontrol/base.html" %}
+{% load static %}
+{% block content %}
+
+
+<div class="">
+    <div class="container col-xl-4 col-10 pt-4 mb-5">
+    
+        {% if messages %}
+      {% for message in messages %}
+      <div
+        class="alert alert-dismissible fade show {% if message.tags == 'error' %} alert-danger {% else %} alert-dark {% endif %}"
+        role="alert">
+        <strong>{{message.tags|title}} !</strong> {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    
+      {% endfor %}
+    
+      {% endif %}
+    
+    
+      <div class="card mb-3 " >
+        <div class="card-header bg-dark text-center "><h4 class="text-white">Update {{form.first_name.value}}</h4> </div>
+        <div class="card-body">
+         
+          <form method="post">
+            {% csrf_token %}
+    
+            <div class="mb-3">
+              <label class="form-label">First Name</label>
+              <input type="text" name="first_name"  class="form-control" value={% firstof form.first_name.value '' %}>
+             
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Last Name</label>
+                <input type="text" name="last_name"  class="form-control" value={% firstof form.last_name.value '' %}>
+              <div  class="error-msg">{{form.last_name.errors}}</div>
+               
+              </div>
+
+            
+            
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" value={% firstof form.email.value '' %}>
+              <div  class="form-text error-msg">{{form.email.errors}}</div>
+              
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label">Phone Number</label>
+              <input type="phone_number" name="phone_number" class="form-control" value={% firstof form.phone_number.value '' %}>
+              <div  class="form-text error-msg">{{form.phone_number.errors}}</div>
+             
+            </div>
+    
+            <div class="form-check">
+                {{form.is_superuser  }}
+                <label class="" for="is_superuser">Super User Status</label>
+            </div>
+
+            <div class="form-check">
+                {{form.is_email_verified  }}
+                <label class="" for="is_email_verified">Email Verified Status</label>
+            </div>
+
+            <div class="form-check">
+                {{form.is_staff  }}
+                <label class="" for="is_staff">Staff Status</label>
+            </div>
+
+              <div class="form-check">
+                {{form.is_active  }}
+                <label class="" for="is_active">
+                  Active
+                </label>
+
+              </div>
+           
+            <div>
+              <button type="submit" class="btn btn-primary w-100">Update </button>
+          </div>
+          </form>
+          <p class="base-small-font mt-2">
+            <a  href="{{request.META.HTTP_REFERER}}">Go Back</a>
+        <a class="text-danger" href="{% url 'admin-user-delete' pk %}">Delete</a>
+           
+            </p>
+        </div>
+        
+        
+      </div>
+    </div>
+    
+    
+    
+    </div>
+
+{% endblock %}
