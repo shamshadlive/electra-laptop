@@ -152,3 +152,4 @@ def resetpassword(request):
             return redirect('reset-password')
             
     return render(request,'accounts/reset-password.html')
+

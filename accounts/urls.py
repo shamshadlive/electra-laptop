@@ -18,4 +18,11 @@ urlpatterns = [
     path("resetpassword", views.resetpassword, name="reset-password"),
     
     
+    # #otp Verification
+    
+    # path('login/otp', views.otp_login, name='otp-login'),
+    # path('home', views.home, name='home'),
+    # path('otp/<str:uid>/', views.otpVerify, name='otp')
+
+    
 ]

@@ -22,7 +22,6 @@ urlpatterns = [
     path('', include("store.urls")),
     path('', include("accounts.urls")),
     path('admincontrol/', include("admincontrol.urls")),
-    path('verification/', include('verify_email.urls')),
     
     
     

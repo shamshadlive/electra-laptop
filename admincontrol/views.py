@@ -1,11 +1,12 @@
 from django.shortcuts import render,redirect
-from accounts.models import User
+from accounts.models import User,UserOtp
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from .forms import EditUserForm,CreateUserForm
 from django.urls import reverse
-import functools
+import functools,random
+from accounts.helper.message_handler import MessageHandler
 # Create your views here.
 
 #decorator for checking admin or not
@@ -58,6 +59,47 @@ def admin_login(request):
         return redirect('admin-home')
     
     return render(request, 'admincontrol/login.html')
+
+
+def admin_login_otp(request):
+    if request.method=="POST":
+        if not User.objects.filter(phone_number__iexact=request.POST['phone_number'],is_superuser=True).exists():
+            messages.error(request, "Invalid Admin Phone Number")
+            return render(request, 'admincontrol/login_otp.html')
+        user = User.objects.get(phone_number=request.POST['phone_number'])
+        otp=random.randint(1000,9999)
+        user_otp,created = UserOtp.objects.update_or_create(user=user, defaults={'otp': f'{otp}'})
+        try:
+            messagehandler=MessageHandler(request.POST['phone_number'],otp).send_otp_via_message()
+        except Exception as e:
+            messages.   error(request, "Unable To Send OTP Contact Admin")
+            return render(request, 'admincontrol/login_otp.html')
+            
+        red=redirect(f'otp/{user_otp.uid}')
+        red.set_cookie("can_otp_enter",True,max_age=600)
+        return red
+    
+    return render(request, 'admincontrol/login_otp.html')
+    
+def admin_login_otp_verify(request,uid):
+    if request.method=="POST":
+        userOtp=UserOtp.objects.get(uid=uid)     
+        if request.COOKIES.get('can_otp_enter')!=None:
+            if(userOtp.otp==request.POST['otp']):
+                login(request,userOtp.user)
+                red=redirect("admin-home")
+                red.set_cookie('verified',True)
+                return red
+            else:
+                messages.error(request, "Invalid OTP")
+                return render(request,"admincontrol/login_otp_verify.html",{'id':uid})
+        else:
+            messages.error(request, "10 mins Over ! Time Exceeded")
+            return render(request,"admincontrol/login_otp_verify.html",{'id':uid})
+                
+    return render(request,"admincontrol/login_otp_verify.html",{'id':uid})
+    
+
 
 #==========user management===============
 @check_isadmin

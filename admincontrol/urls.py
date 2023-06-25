@@ -1,10 +1,17 @@
 from django.urls import path
 
 from . import views
-
 urlpatterns = [
     path("", views.admin_home, name="admin-home"),
     path("login", views.admin_login, name="admin-login"),
+    
+    #admin otp 
+    path("login/otp", views.admin_login_otp, name="admin-login-otp"),
+    path("login/otp/<uid>", views.admin_login_otp_verify, name="admin-login-otp-verify"),
+    
+    
+    
+    
     path("all-users", views.admin_all_users, name="admin-all-users"),
     
     #user management
