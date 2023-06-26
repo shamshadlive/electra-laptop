@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     "verify_email.apps.VerifyEmailConfig",
     'store',
     'accounts',
-    'admincontrol'
+    'admincontrol',
+    'categoryManagement'
 ]
 
 

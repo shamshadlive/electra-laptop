@@ -1,5 +1,5 @@
 from django.urls import path
-
+from categoryManagement import views as categoryView
 from . import views
 urlpatterns = [
     path("", views.admin_home, name="admin-home"),
@@ -19,6 +19,13 @@ urlpatterns = [
     path("user/edit/<str:pk>", views.admin_user_edit, name="admin-user-edit"),
     path("user/delete/<str:pk>", views.admin_user_delete, name="admin-user-delete"),
     
+    
+    #category management
+    
+    path("category", categoryView.all_category, name="admin-all-category"),
+    path("category/create", categoryView.create_category, name="admin-category-create"),
+    path("category/edit/<slug:cat_slug>", categoryView.edit_category, name="admin-category-edit"),
+    path("category/delete/<slug:cat_slug>", categoryView.delete_category, name="admin-category-delete"),
     
     
     
