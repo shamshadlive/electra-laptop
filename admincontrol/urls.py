@@ -1,5 +1,6 @@
 from django.urls import path
 from categoryManagement import views as categoryView
+from product_management import views as productView
 from . import views
 urlpatterns = [
     path("", views.admin_home, name="admin-home"),
@@ -26,6 +27,21 @@ urlpatterns = [
     path("category/create", categoryView.create_category, name="admin-category-create"),
     path("category/edit/<slug:cat_slug>", categoryView.edit_category, name="admin-category-edit"),
     path("category/delete/<slug:cat_slug>", categoryView.delete_category, name="admin-category-delete"),
+    
+    #Product management
+    
+    path("product/create", productView.create_product_with_variant, name="admin-product-create"),
+    path("product", productView.all_product, name="admin-all-product"),
+    path("product/edit/<slug:product_slug>", productView.edit_product, name="admin-product-edit"),
+    path("product/delete/<slug:product_slug>", productView.delete_product, name="admin-product-delete"),
+    
+    #product varaint management
+    path("product/edit/variant/addnew/<slug:product_slug>", productView.add_product_variant, name="admin-product-variant-add"),
+    path("product/edit/variant/<slug:product_variant_slug>", productView.edit_product_variant, name="admin-product-variant-edit"),
+    path("product/delete/variant/<slug:product_variant_slug>", productView.delete_product_variant, name="admin-product-variant-delete"),
+    
+    
+    
     
     
     

@@ -18,7 +18,7 @@
 
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Store</a>
+                <a class="nav-link active" aria-current="page" href="{% url 'store' %}">Store</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">About</a>
@@ -41,11 +41,15 @@
               </span>
               <input class="form-control bg-black border-0 text-light" type="search" placeholder="Search Something..." id="example-search-input">
               <div class="col-4">
-                <select class="form-select" aria-label="Default select example">
-                  <option selected>All Category</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                <select class="form-select" aria-label="Default select example" onchange="location = this.value;" >
+                  <option value="{% url 'store' %}" >All Category</option>
+                  {% for category in all_category_list %}
+                      {% if category.parent_cat %}
+                     
+                        <option value="{{category.get_url}}">{{category.cat_name}}</option> 
+                      
+                      {% endif %}
+                  {% endfor %}
                 </select>
                </div>
           </div>

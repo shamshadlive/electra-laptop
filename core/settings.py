@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from .secure_variables import EMAIL_PASSWORD,EMAIL_USER,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_VERIFIED_NUMBER
-# import os
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'store',
     'accounts',
     'admincontrol',
-    'categoryManagement'
+    'categoryManagement',
+    'product_management'
 ]
 
 
@@ -72,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'categoryManagement.context_processors.all_category'
             ],
         },
     },
@@ -130,6 +132,11 @@ STATIC_ROOT = BASE_DIR /'static'
 STATICFILES_DIRS = [
     'core/static',
 ]
+
+#media file directory
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

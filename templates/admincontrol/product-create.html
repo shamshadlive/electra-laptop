@@ -1,0 +1,154 @@
+{% extends "base/admincontrol/base.html" %}
+{% load static %}
+{% block content %}
+
+
+
+
+
+<div class="container col-xl-10 col-10 pt-4 mb-5">
+    {% if messages %}
+    {% for message in messages %}
+    <div
+      class="alert alert-dismissible fade show {% if message.tags == 'error' %} alert-danger {% else %} alert-dark {% endif %}"
+      role="alert">
+      <strong>{{message.tags|title}} !</strong> {{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+    <div class="card mb-3 " >
+      <div class="card-header bg-dark text-center "><h4 class="text-white">Create New Product</h4> </div>
+      <div class="card-body">
+       
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+         
+
+
+        <div class="row">
+          
+          <div class="mb-3 col-12">
+            <label class="form-label">Name Of The Product</label>
+            <input type="text" name="product_name"  class="form-control" value={% firstof product_form.product_name.value '' %}>
+            <small class="form-text text-muted">Avoid Adding Brand Name on Product Name</small>
+            <div class=" error-msg">{{product_form.product_name.errors}}</div>
+           
+          </div>
+
+          <div class="mb-3 col-6">
+            <label class="form-label">Category</label>
+            {{product_form.product_catg}}
+            <div class=" error-msg">{{product_form.product_catg.errors}}</div>
+           
+          </div>
+
+          <div class="mb-3 col-6">
+            <label class="form-label">Brand</label>
+            {{product_form.product_brand}}
+            <div class=" error-msg">{{product_form.product_brand.errors}}</div>
+           
+          </div>
+
+          <div class="mb-3 col-6">
+            <label class="form-label">SKU ID / Model:No</label>
+            {{variant_form.sku_id}}
+            <div class=" error-msg">{{variant_form.sku_id.errors}}</div>
+          </div>
+
+          <div class="mb-3 col-6">
+            <label class="form-label">Stock</label>
+            {{variant_form.stock}}
+            <div class=" error-msg">{{variant_form.stock.errors}}</div>
+          </div>
+
+          <div class="mb-3 col-6">
+            <label class="form-label">Maximum Price</label>
+            {{variant_form.max_price}}
+            <div class=" error-msg">{{variant_form.max_price.errors}}</div>
+          </div>
+
+          <div class="mb-3 col-6">
+            <label class="form-label">Sale Price</label>
+            {{variant_form.sale_price}}
+            <div class=" error-msg">{{variant_form.sale_price.errors}}</div>
+          </div>
+
+          <div class="mb-3 col-12">
+            <label class="form-label">Variant of Product</label>
+            <h6>Choose Attributes</h6>
+            <div class="row">
+              
+              {% for attribute_name, attribute_values in attribute_dict.items %}
+              <div class="col-3">
+                <label class="form-label">{{attribute_name}}</label>
+                <select name="atributes_{{ forloop.counter }}" class="form-control ">
+                    <option value="None">----------</option>
+                    {% for value in attribute_values %}
+                    <option value="{{ value.id }}">{{ value.atribute_value }}</option>
+                        
+                    {% endfor %}
+                </select>
+              </div>
+              {% endfor %}
+            </div>
+            <!-- {{variant_form.atributes}} -->
+            <div class=" error-msg">{{variant_form.atributes.errors}}</div>
+          </div>
+
+          <div class="mb-3 col-12">
+            <label class="form-label">Description</label>
+            {{product_form.product_description}}
+            <div class=" error-msg">{{product_form.product_description.errors}}</div>
+          </div>
+
+          <div class="mb-3 col-6">
+            <label class="form-label">Thumnail Image    </label>
+            {{variant_form.thumbnail_image}}
+            <div class=" error-msg">{{variant_form.thumbnail_image.errors}}</div>
+          </div>
+
+
+
+
+          <div>
+            <hr>
+            <label class="form-label">Additional Images    </label>
+            <input type="file" name="additional_images" class="form-control" multiple>
+            <hr>
+          </div>
+
+
+
+          <div class="mb-3 col-12">
+            <label class="form-label">Available</label>
+            {{variant_form.is_active}}
+          </div>
+
+    
+          
+        </div>
+        <button type="submit" class="btn btn-primary w-25">Create Product</button>
+        <a  href="{% url 'admin-all-product' %}" class="btn btn-dark">Go Back</a>
+
+        </div>
+
+         
+          <div>
+          
+        </div>
+        </form>
+        
+       
+      </div>
+    </div>
+  </div>
+  
+
+
+{% endblock %}

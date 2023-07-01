@@ -12,6 +12,7 @@
             <div>
                <h2 class="catg-heading-text py-4">
                 Shop by category
+                
                </h2> 
             </div>
         </div>
@@ -20,10 +21,17 @@
     <div class="row p-0 m-0">
         <div class="d-flex justify-content-center bd-highlight text-white flex-wrap">
             <div class="p-3 rounded-top bg-secondary">Recommended</div>
-            <div class="p-3 ">All Laptop</div>
-            <div class="p-3 ">Gaming Laptop</div>
-            <div class="p-3 ">Office Laptop</div>
-            <div class="p-3 ">MacBook Pro</div>
+
+            {% for category in all_category_list|slice:":4" %}
+                {% if category.parent_cat %}
+                  <div class="p-3 ">{{category.cat_name}}</div>
+                {% endif %}
+            {% endfor %}
+            <div class="p-3 "><a href="{% url 'store' %}" class="text-decoration-none text-white"> All Categories</a>
+             
+            </div>
+           <!--  <div class="p-3 ">Office Laptop</div>
+            <div class="p-3 ">MacBook Pro</div> -->
 
           </div> 
 

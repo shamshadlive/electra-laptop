@@ -1,0 +1,79 @@
+{% extends "base/admincontrol/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container col-xl-4 col-10 pt-4 mb-5">
+    {% if messages %}
+    {% for message in messages %}
+    <div
+      class="alert alert-dismissible fade show {% if message.tags == 'error' %} alert-danger {% else %} alert-dark {% endif %}"
+      role="alert">
+      <strong>{{message.tags|title}} !</strong> {{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+    <div class="card mb-3 " >
+      <div class="card-header bg-dark text-center "><h4 class="text-white">Edit </h4> </div>
+      <div class="card-body">
+       
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+  
+          <!-- <div class="mb-3">
+            <label class="form-label">Category Name</label>
+            <input type="text" name="cat_name"  class="form-control" value="{{form.cat_name.value}}">
+            <div class=" error-msg">{{form.cat_name.errors}}</div>
+           
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Category Slug</label>
+            <input type="text" name="cat_slug"  class="form-control" value={% firstof form.cat_slug.value '' %}>
+            <div class=" error-msg">{{form.cat_slug.errors}}</div>
+           
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Parent Category</label>
+            {{form.parent_cat}}
+            <div class=" error-msg">{{form.parent_cat.errors}}</div>
+           
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Active Status</label>
+            {{form.is_active}}          
+          </div>
+          
+          
+         
+
+          -->
+          {{product_variant_form.as_p}}
+          <div>
+            
+            <button type="submit" class="btn btn-primary w-100">Update  Now</button>
+        </div>
+        </form>
+        <hr>
+        
+       
+
+
+        
+        <p class="base-small-font mt-2">
+          <a  href="{% url 'admin-all-product' %}">Go Back</a>
+          <a class="text-danger" href="{% url 'admin-product-variant-delete' product_variant_slug %}">Delete</a>
+
+          </p>
+      </div>
+    </div>
+  </div>
+  
+
+{% endblock %}
