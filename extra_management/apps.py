@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class BrandManagementConfig(AppConfig):
+class ExtraManagementConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'brand_management'
+    name = 'extra_management'

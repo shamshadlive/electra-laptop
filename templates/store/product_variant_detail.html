@@ -31,7 +31,7 @@ Electra - Product Detail
                             <div id='slideshow-items-container'>
                             
                             <img class='slideshow-items active' src="{{single_product_variant.thumbnail_image.url}}" alt="thumbnail">
-                                {% for additional_image in single_product_variant.additional_images.all %}
+                                {% for additional_image in  single_product_variant.additional_product_images.all %}
                                 <img class='slideshow-items' src="{{ additional_image.image.url }}" alt="Additional Image">
                                 {% endfor %}
                             </div>
@@ -41,7 +41,7 @@ Electra - Product Detail
 
                             <div class='row'>
                                 <img class='slideshow-thumbnails active' src="{{single_product_variant.thumbnail_image.url}}" alt="thumbnail">
-                                {% for additional_image in single_product_variant.additional_images.all %}
+                                {% for additional_image in  single_product_variant.additional_product_images.all %}
                                 <img class='slideshow-thumbnails' src="{{ additional_image.image.url }}" alt="Additional Image">
                                 {% endfor %}
                             </div>

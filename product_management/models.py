@@ -32,14 +32,6 @@ class Brand(models.Model):
         return self.brand_name
      
    
-# Atribute Value - RED,BLUE, 4GB, 8GB, 128GB , SSD , HDD
-class Additional_Product_Image(models.Model):
-    image = models.ImageField(upload_to='product_variant/additional/images/')
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.image.url
-    
          
 # Product - MACBOOK PRO LIMITED EDITION
 class Product(models.Model):
@@ -97,7 +89,6 @@ class Product_Variant(models.Model):
     stock = models.IntegerField()
     product_variant_slug = models.SlugField(unique=True, blank=True)
     thumbnail_image = models.ImageField(upload_to='product_variant/images/')
-    additional_images = models.ManyToManyField(Additional_Product_Image,related_name='additional_product_image')
     is_active = models.BooleanField(default=True)
     created_at =models.DateTimeField(auto_now_add=True)
     updated_at =models.DateTimeField(auto_now=True)
@@ -135,3 +126,13 @@ class Product_Variant(models.Model):
     def __str__(self):
         return f'{self.sku_id} - {self.atributes.values("atribute_value")}'
          
+
+# FOR ADDITIONAL IMAGES
+class Additional_Product_Image(models.Model):
+    product_variant = models.ForeignKey(Product_Variant,on_delete=models.CASCADE,related_name='additional_product_images')
+    image = models.ImageField(upload_to='product_variant/additional/images/')
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.image.url
+    

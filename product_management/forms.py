@@ -42,7 +42,7 @@ class EditProductForm(ModelForm):
     class Meta:
         model = Product
         fields = '__all__'
-        exclude = ['product_slug']
+        exclude = ['product_slug',]
         
         
 class EditProductVariantForm(ModelForm):

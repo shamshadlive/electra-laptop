@@ -5,7 +5,9 @@ from .models import Product,Product_Variant,Atribute,Atribute_Value,Additional_P
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib import messages
 from .forms import EditProductForm,EditProductVariantForm,CreateProductForm,CreateProductVariantForm,AddProductVariantForm
-
+import os
+from urllib.parse import urljoin
+from django.conf import settings
 
 
 
@@ -98,16 +100,8 @@ def create_product_with_variant(request):
         variant.save()
         variant.atributes.set(attribute_ids) # Save ManyToManyField relationships
         additional_images = request.FILES.getlist('additional_images')
-        additional_images_id =[]
         for image in additional_images:
-            created = Additional_Product_Image.objects.create(image=image)
-            additional_images_id.append(created.id)
-        
-        variant.additional_images.set(additional_images_id)
-        print("==========================")
-        print(additional_images)
-        print(additional_images_id)
-        
+            Additional_Product_Image.objects.create(product_variant=variant,image=image)
         return redirect('admin-all-product')
         
     else:
@@ -155,13 +149,11 @@ def add_product_variant(request,product_slug):
             variant.atributes.set(attribute_ids)    # Save ManyToManyField relationships
             variant.save()
             additional_images = request.FILES.getlist('additional_images')
-            additional_images_id =[]
+            
             for image in additional_images:
-                created = Additional_Product_Image.objects.create(image=image)
-                additional_images_id.append(created.id)
-        
-            variant.additional_images.set(additional_images_id)
+                Additional_Product_Image.objects.create(product_variant=variant,image=image)
             messages.success(request, "Variant Created")
+            
             return redirect('admin-product-edit',product_slug)
     context = {'add_product_variant_form': add_product_variant_form,
                'product_slug':product_slug,
@@ -185,21 +177,39 @@ def edit_product_variant(request,product_variant_slug):
         return redirect('admin-all-product')
 
     product_variant_form = EditProductVariantForm(instance=product_variant)
-    
+    current_additional_images=product_variant.additional_product_images.all()
     if request.method == 'POST':
         product_variant_form = EditProductVariantForm(request.POST, request.FILES,instance=product_variant)
         if product_variant_form.is_valid():
-            product_variant_form.save()
+            variant = product_variant_form.save()
+            
+            
+            additional_images = request.FILES.getlist('additional_images')
+            if additional_images:
+                current_image = variant.additional_product_images.all()
+                          
+                # # Delete the files from the media folder
+                # for image in current_image:
+                #     image_path = image.image.path
+                #     if os.path.exists(image_path):
+                #         os.remove(image_path)
+                # # Delete the files from the table
+                
+                current_image.delete() 
+                for image in additional_images:
+                    Additional_Product_Image.objects.create(product_variant=variant,image=image)
+                
             messages.success(request, "Variant Updated")
             return redirect('admin-product-variant-edit',product_variant_slug)
         else:
             messages.error(request, product_variant_form.errors)
             return render(request, 'admincontrol/product-variant-edit.html', {'product_variant_form': product_variant_form,
-                                                                      
-                                                                    #   'product_variant_form':product_variant_form,
-                                                                      'product_variant_slug':product_variant_slug})
+                                                                    
+                                                                      'product_variant_slug':product_variant_slug,
+                                                                      'current_additional_images':current_additional_images})
     context = {'product_variant_form': product_variant_form,
-                'product_variant_slug':product_variant_slug}
+                'product_variant_slug':product_variant_slug,
+                'current_additional_images':current_additional_images}
     return render(request, 'admincontrol/product-variant-edit.html',context)
 
 

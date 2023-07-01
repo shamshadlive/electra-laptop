@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-<div class="container col-xl-4 col-10 pt-4 mb-5">
+<div class="container col-xl-10 col-10 pt-4 mb-5">
     {% if messages %}
     {% for message in messages %}
     <div
@@ -24,37 +24,29 @@
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
   
-          <!-- <div class="mb-3">
-            <label class="form-label">Category Name</label>
-            <input type="text" name="cat_name"  class="form-control" value="{{form.cat_name.value}}">
-            <div class=" error-msg">{{form.cat_name.errors}}</div>
-           
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Category Slug</label>
-            <input type="text" name="cat_slug"  class="form-control" value={% firstof form.cat_slug.value '' %}>
-            <div class=" error-msg">{{form.cat_slug.errors}}</div>
-           
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Parent Category</label>
-            {{form.parent_cat}}
-            <div class=" error-msg">{{form.parent_cat.errors}}</div>
-           
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Active Status</label>
-            {{form.is_active}}          
-          </div>
           
-          
-         
-
-          -->
           {{product_variant_form.as_p}}
+          <hr>
+          <h6>Additional Image Currently</h6>
+          <div class="row">
+            
+            {% for current_additional_image in current_additional_images %}
+                <!-- <div>
+
+                  <a href="{{current_additional_image}}">-->
+                    <img src="{{current_additional_image}}" style="max-width: 100px;" alt=""> 
+                  <!-- </a>
+                </div> -->
+               
+  
+              {% endfor %}
+          </div>
+          <div>
+            
+            <label class="form-label">Change:    </label>
+            <input type="file" name="additional_images" class="form-control" multiple>
+            <hr>
+          </div>
           <div>
             
             <button type="submit" class="btn btn-primary w-100">Update  Now</button>

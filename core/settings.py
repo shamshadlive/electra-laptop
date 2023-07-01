@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'accounts',
     'admincontrol',
     'categoryManagement',
-    'product_management'
+    'product_management',
+    'extra_management',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 

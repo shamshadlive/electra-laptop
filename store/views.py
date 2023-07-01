@@ -25,7 +25,7 @@ def store (request,category_slug=None):
 def product_variant_detail(request,category_slug,product_variant_slug):
     single_product_variant=None
     try:
-        single_product_variant = Product_Variant.objects.select_related('product').prefetch_related('atributes','additional_images').get(
+        single_product_variant = Product_Variant.objects.select_related('product').prefetch_related('atributes','additional_product_images').get(
                             product__product_catg__cat_slug=category_slug,
                             product_variant_slug=product_variant_slug,
                             is_active=True)
@@ -36,9 +36,7 @@ def product_variant_detail(request,category_slug,product_variant_slug):
     product_variants = Product_Variant.objects.filter(product=single_product_variant.product)
     product_variants_count=product_variants.count()
    
-    # for item in product_variants:
-    #     for attribute in item.atributes.all():
-    #         print(attribute.atribute_value)
+    
     context = { 'single_product_variant' :single_product_variant,
                'product_variants':product_variants,
                'product_variants_count':product_variants_count}

@@ -18,7 +18,7 @@
 
 
     <div class="card mb-3 " >
-      <div class="card-header bg-dark text-center "><h4 class="text-white">Edit : {{product_form.product_name.value}}</h4> </div>
+      <div class="card-header bg-dark text-center "><h4 class="text-white">Edit : {{product_form.instance}}</h4> </div>
       <div class="card-body">
        
         <form method="post">
@@ -27,7 +27,7 @@
           
           <div class="mb-3 col-12">
             <label class="form-label">Name Of The Product</label>
-            <input type="text" name="cat_name"  class="form-control" value="{{product_form.product_name.value}}">
+            <input type="text" name="product_name"  class="form-control" value="{{product_form.product_name.value}}">
             <small class="form-text text-muted">Avoid Adding Brand Name on Product Name</small>
             <div class=" error-msg">{{product_form.product_name.errors}}</div>
            

@@ -1,6 +1,7 @@
 from django.urls import path
 from categoryManagement import views as categoryView
 from product_management import views as productView
+from extra_management import views as extraView
 from . import views
 urlpatterns = [
     path("", views.admin_home, name="admin-home"),
@@ -22,7 +23,6 @@ urlpatterns = [
     
     
     #category management
-    
     path("category", categoryView.all_category, name="admin-all-category"),
     path("category/create", categoryView.create_category, name="admin-category-create"),
     path("category/edit/<slug:cat_slug>", categoryView.edit_category, name="admin-category-edit"),
@@ -39,6 +39,12 @@ urlpatterns = [
     path("product/edit/variant/addnew/<slug:product_slug>", productView.add_product_variant, name="admin-product-variant-add"),
     path("product/edit/variant/<slug:product_variant_slug>", productView.edit_product_variant, name="admin-product-variant-edit"),
     path("product/delete/variant/<slug:product_variant_slug>", productView.delete_product_variant, name="admin-product-variant-delete"),
+    
+    #brand management
+    path("brand", extraView.all_brand, name="admin-all-brand"),
+    path("brand/create", extraView.create_brand, name="admin-brand-create"),
+    # path("category/edit/<slug:cat_slug>", categoryView.edit_category, name="admin-category-edit"),
+    # path("category/delete/<slug:cat_slug>", categoryView.delete_category, name="admin-category-delete"),
     
     
     

@@ -1,0 +1,42 @@
+{% extends "base/admincontrol/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container col-xl-4 col-10 pt-4 mb-5">
+    <div class="card mb-3 " >
+      <div class="card-header bg-dark text-center "><h4 class="text-white">Create Brand</h4> </div>
+      <div class="card-body">
+       
+        <form method="post">
+          {% csrf_token %}
+  
+          <div class="mb-3">
+            <label class="form-label">Brand Name</label>
+            <input type="text" name="brand_name"  class="form-control" value={% firstof form.brand_name.value '' %}>
+            <div class=" error-msg">{{form.brand_name.errors}}</div>
+           
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Active Status</label>
+            {{form.is_active}}          
+          </div>
+          
+          
+         
+
+         
+          <div>
+            
+            <button type="submit" class="btn btn-primary w-100">Create  Now</button>
+        </div>
+        </form>
+        <p class="base-small-font mt-2">
+          <a  href="{{request.META.HTTP_REFERER}}">Go Back</a>
+          </p>
+      </div>
+    </div>
+  </div>
+  
+
+{% endblock %}
