@@ -47,9 +47,15 @@ urlpatterns = [
     # path("category/delete/<slug:cat_slug>", categoryView.delete_category, name="admin-category-delete"),
     
     
+    #atribute management
+    path("atribute", extraView.all_atribute, name="admin-all-atribute"),
+    path("atribute/create", extraView.create_atribute, name="admin-atribute-create"),
+  
     
-    
-    
+    #atribute value management
+    path("atribute_value", extraView.all_atribute_value, name="admin-all-atribute_value"),
+    path("atribute_value/create", extraView.create_atribute_value, name="admin-atribute_value-create"),
+  
     
 
 ]
