@@ -1,6 +1,8 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from product_management.models import Product_Variant
 from categoryManagement.models import Category
+from cart.models import CartItem,Cart
+from cart.views import _cart_id
 # Create your views here.
 
 
@@ -29,6 +31,7 @@ def product_variant_detail(request,category_slug,product_variant_slug):
                             product__product_catg__cat_slug=category_slug,
                             product_variant_slug=product_variant_slug,
                             is_active=True)
+        in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request),product=single_product_variant).exists()
     except Exception as e:
         print(e)
         return redirect('store')
@@ -39,7 +42,8 @@ def product_variant_detail(request,category_slug,product_variant_slug):
     
     context = { 'single_product_variant' :single_product_variant,
                'product_variants':product_variants,
-               'product_variants_count':product_variants_count}
+               'product_variants_count':product_variants_count,
+               'in_cart':in_cart}
     
     return render(request, 'store/product_variant_detail.html',context)
 

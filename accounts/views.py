@@ -13,7 +13,10 @@ from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-
+from cart.models import Cart,CartItem
+from cart.views import _cart_id
+from django.core.exceptions import ObjectDoesNotExist
+import requests
 def loginpage (request):
     
     if request.user.is_authenticated:
@@ -41,8 +44,48 @@ def loginpage (request):
             messages.error(request, "Invalid Password")
             return redirect('login-page')
         else:
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if is_cart_item_exists:
+                    cart_items = CartItem.objects.filter(cart=cart)
+                    try:
+                        user_cart = CartItem.objects.filter(user=user)
+                        if user_cart.exists():
+                            current_user_cart = user_cart[0].cart  # user's current cart
+                            
+                            for item in cart_items:
+                                matching_user_item = user_cart.filter(product=item.product).first()
+                                if matching_user_item:
+                                    matching_user_item.quantity += item.quantity
+                                    matching_user_item.save()
+                                    item.delete()
+                                    print("Deleted item")
+                                else:
+                                    item.user = user
+                                    item.cart = current_user_cart
+                                    item.save()
+                                    print("Moved item to current user's cart")
+                        else:
+                            raise ObjectDoesNotExist
+                    except ObjectDoesNotExist:
+                        print("User cart doesn't exist")
+                        for item in cart_items:
+                            item.user = user
+                            item.cart = cart
+                            item.save()
+            except:
+                pass
+                
+            
+            
+            
             login(request,user)
-            return redirect('home')
+            if request.GET.get('next'):
+                return redirect(request.GET.get('next'))
+            else:
+                return redirect('home')
+            
     
     return render(request, 'accounts/userlogin.html')
 

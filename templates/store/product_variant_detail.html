@@ -105,12 +105,31 @@ Electra - Product Detail
                         </div>
 
                     </div>
-       
-
-         
-    
                         <hr>
-                    <a href="./product-detail.html" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
+                        {% if single_product_variant.stock <= 0 %}
+                        <h5 class='text-danger'>Out Of Stock</h5>
+                        {% else %}
+                            {% if in_cart %}
+                            <button class="btn  btn-success"> <span class="text">
+                                Added To Cart
+                            </span>      
+                            </button>
+                            <a href="{% url 'cart' %}" class="btn  btn-primary"> <span class="text">
+                               View Cart
+                            </span>      
+                            </a>
+                            {% else %}
+
+                            <a href="{% url 'add-cart' single_product_variant.id %}" class="btn  btn-dark"> <span class="text">
+                                <svg width="29" height="20" viewBox="0 0 29 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>    
+                                Add to cart
+                            </span>      
+                            </a>
+                            {% endif%}
+                        {% endif%}
+                        
                     </article> <!-- product-info-aside .// -->
             </main> <!-- col.// -->
         </div> <!-- row.// -->

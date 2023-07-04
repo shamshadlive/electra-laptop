@@ -61,11 +61,13 @@
         <div class="d-flex justify-content-start">
          
           <div class="mx-2 position-relative">
-              <img src="{% static 'store/images/icons/bag.svg' %}" width="24" height="24" alt="electra-logo" >
+            <a href="{% url 'cart' %}">
+
+              <img src="{% static 'store/images/icons/bag.svg' %}" width="24" height="24" alt="cart" >
+            </a>
 
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                0
-                <span class="visually-hidden">unread messages</span>
+                {{cart_count}}
               </span>
           
           </div>

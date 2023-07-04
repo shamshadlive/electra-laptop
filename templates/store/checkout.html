@@ -1,0 +1,186 @@
+{% extends "base/store/base.html" %}
+
+{% load static %}
+ 
+{% block title %}
+Electra - Cart
+{% endblock %}
+  
+{% block content %}
+
+<style>
+    .line-clamp {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1; /* Change this line if you want. In this case it trimmed the text to 3 lines. */
+        overflow: hidden;
+      }
+      
+</style>
+<section class="section-content padding-y bg">
+    <div class="container">
+    
+    <!-- ============================ COMPONENT 1 CART PAGE ================================= -->
+    
+    
+    <div class="row">
+        <aside class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5>User Details</h5>
+                    <div class="form-row row">
+                        <div class="col-6 form-group">
+                            <label for="">Name</label>
+                            <input type="text" name="name" readonly value="{{user}}" class="form-control">
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="">Email</label>
+                            <input type="email" name="email" readonly  class="form-control">
+                        </div>
+                    </div>
+                    </div>
+            </div>
+
+            <div class="card mt-1">
+                <div class="card-body">
+                    <h5>Shipping Address</h5>
+                    <div class="form-row row">
+                        <div class="col-6 form-group">
+                            <label for="">First Name</label>
+                            <input type="text" name="name"  value="" class="form-control">
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="">Phone Number</label>
+                            <input type="text" name="name"  value="" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row row mt-2">
+                        
+                        <div class="col-6 form-group">
+                            <label for="">Address line 1</label>
+                            <input type="text" name="text"   class="form-control">
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="">Address line 2</label>
+                            <input type="text" name="text"   class="form-control">
+                        </div>
+                        <div class="col-3 form-group">
+                            <label for="">City</label>
+                            <input type="text" name="text"   class="form-control">
+                        </div>
+                        <div class="col-3 form-group">
+                            <label for="">State</label>
+                            <input type="text" name="text"   class="form-control">
+                        </div>
+                        <div class="col-3 form-group">
+                            <label for="">Country</label>
+                            <input type="text" name="text"   class="form-control">
+                        </div>
+                        <div class="col-3 form-group">
+                            <label for="">Pincode</label>
+                            <input type="text" name="text"   class="form-control">
+                        </div>
+                        <div class="col form-group">
+                            <label for="">Order Note</label>
+                            <input type="text" name="text"   class="form-control">
+                        </div>
+                    </div>
+
+                    </div>
+            </div>
+    <div class="card">
+        
+    
+    </div> <!-- card.// -->
+    
+        </aside> <!-- col.// -->
+        <aside class="col-lg-6">
+    
+            <div class="card">
+            <div class="card-body">
+                <table class="table table-borderless table-shopping-cart">
+                    <thead class="text-muted">
+                    <tr class="small text-uppercase">
+                      <th scope="col">Product</th>
+                      <th scope="col" width="120">Quantity</th>
+                      <th scope="col" width="120">Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                         
+                    {% for cart_item in cart_items %}
+                        <tr>
+                            <td>
+                                <figure class="itemside align-items-center">
+                                    <div class="aside"><img src="{{cart_item.product.thumbnail_image.url}}" class="img-sm"></div>
+                                    <figcaption class="info">
+                                        <a href="{{cart_item.product.get_url}}" class="title text-dark line-clamp">
+                                            {{ cart_item.product.product.product_brand }}
+                                            {{ cart_item.product.product.product_name }}
+                                            -{{ cart_item.product.sku_id }}
+                                           
+                                        </a>
+                                        <p class="text-muted small">
+                                            Variant:{% for attribute in cart_item.product.atributes.all %}
+                                            {{attribute.atribute_value}},
+                                        {% endfor %}
+                                            <br> Brand: {{cart_item.product.product.product_brand}}</p>
+                                    </figcaption>
+                                </figure>
+                            </td>
+                            <td> 
+                                <!-- col.// -->
+                                            <div class="col"> 
+                                                <div class="input-group input-spinner">
+                                                    
+                                                    <input type="text" class="form-control" readonly  value="{{cart_item.quantity}}">
+                                                    
+                                                </div> <!-- input-group.// -->
+                                            </div> <!-- col.// -->
+                            </td>
+                            <td> 
+                                <div class="price-wrap">  
+                                    <var class="price">Rs{{cart_item.sub_total}}</var> 
+                                    <small class="text-muted">Each Price Rs{{cart_item.product.sale_price}}</small> 
+                                </div> <!-- price-wrap .// -->
+                            </td>
+                           
+                        </tr>
+                    {% endfor %}
+                   
+                    </tbody>
+                    </table>
+                <dl class="dlist-align">
+                  <dt>Total price:</dt>
+                  <dd class="text-right">Rs{{total}}</dd>
+                </dl>
+                <dl class="dlist-align">
+                  <dt>Discount:</dt>
+                  <dd class="text-right"> Rs{{discount}}</dd>
+                </dl>
+                <dl class="dlist-align">
+                  <dt>Grand Total:</dt>
+                  <dd class="text-right text-dark b"><strong>Rs{{grand_total}}</strong></dd>
+                </dl>
+                <hr>
+                <p class="text-center mb-3">
+                    <img src="{% static 'store/images/footer-payment.webp' %}" alt="footer-payment" height="26">
+                </p>
+                <div class="text-center">
+
+                    <a href="{% url 'checkout' %}" class="btn btn-primary w-100"> Place Order </a>
+                    <a href="{% url 'store' %}" class="btn btn-light w-100 mt-1">Continue Shopping</a>
+                </div> <!-- card-body.// -->
+                </div>
+            </div> <!-- card.// -->
+    
+    </aside> <!-- col.// -->
+    
+    
+    </div> <!-- row.// -->
+    <!-- ============================ COMPONENT 1 END .// ================================= -->
+    </div> <!-- container .//  -->
+    </section>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+{% endblock %}

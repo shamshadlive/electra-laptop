@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'categoryManagement',
     'product_management',
     'extra_management',
+    'cart',
     'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -75,7 +76,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'categoryManagement.context_processors.all_category'
+                'categoryManagement.context_processors.all_category',
+                'cart.context_processors.counter',
             ],
         },
     },

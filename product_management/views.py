@@ -94,16 +94,19 @@ def create_product_with_variant(request):
             if req_atri != 'None':
                 attribute_ids.append(int(req_atri))
     
-        product = product_form.save()
-        variant = variant_form.save(commit=False)
-        variant.product = product
-        variant.save()
-        variant.atributes.set(attribute_ids) # Save ManyToManyField relationships
-        additional_images = request.FILES.getlist('additional_images')
-        for image in additional_images:
-            Additional_Product_Image.objects.create(product_variant=variant,image=image)
-        return redirect('admin-all-product')
-        
+        if product_form.is_valid() and variant_form.is_valid():
+            product = product_form.save()
+            variant = variant_form.save(commit=False)
+            variant.product = product
+            variant.save()
+            variant.atributes.set(attribute_ids) # Save ManyToManyField relationships
+            additional_images = request.FILES.getlist('additional_images')
+            for image in additional_images:
+                Additional_Product_Image.objects.create(product_variant=variant,image=image)
+            return redirect('admin-all-product')
+        else:
+            print(product_form)
+            print(variant_form)
     else:
         product_form = CreateProductForm()
         variant_form = CreateProductVariantForm()
