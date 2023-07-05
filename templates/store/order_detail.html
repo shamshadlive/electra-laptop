@@ -1,0 +1,123 @@
+{% extends "base/store/base.html" %}
+
+{% load static %}
+ 
+{% block title %}
+Electra - Order
+{% endblock %}
+  
+{% block content %}
+
+
+
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+
+    <div class="container">
+        <div class="row">
+        <aside class="col-md-3">
+            <!--   SIDEBAR   -->
+            <ul class="list-group">
+                <a class="list-group-item " href="{% url 'user-dashboard' %}"> My Dashboard </a>
+                <a class="list-group-item bg-dark text-white" href="{% url 'order-history' %}"> My order history </a>
+                <a class="list-group-item" href="#"> Transactions </a>
+                <a class="list-group-item" href="#"> Return and refunds </a>
+                <a class="list-group-item" href="#">Settings </a>
+                <a class="list-group-item" href="#"> My Selling Items </a>
+                <a class="list-group-item" href="#"> Received orders </a>
+            </ul>
+            <br>
+            <a class="btn btn-light btn-block" href="#"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a> 
+            <!--   SIDEBAR .//END   -->
+        </aside>
+        <main class="col-md-9">
+            <article class="card">
+            <header class="card-header">
+                <strong class="d-inline-block mr-3">Order ID: {{order.order_number}}</strong>
+                <span>,{{order.created_at}}</span>
+                <br>
+                <span>Order Status : 
+                    {% if 'Cancelled' in order.order_status %}
+                    <span class="text-danger">Cancelled</span> 
+                     {% else %}
+                     <span class="text-success">{{order.order_status}}
+                     </span>
+                     {% endif %}</span>
+            </header>
+            <div class="card-body">
+                <div class="row"> 
+                    <div class="col-md-8">
+                        <h6 class="text-muted">Delivery to</h6>
+                        <p>{{order.name}} <br>  
+                        Phone {{order.phone}}, Email: {{order.email}} <br>
+                        Location: {{order.address_line_1}}, {{order.address_line_2}}, {{order.city}},  {{order.state}}, {{order.country}} <br> 
+                        Pincode : {{order.pincode}}
+                         </p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-muted">Payment</h6>
+                        <span class="text-success">
+                            <i class="fab fa-lg fa-cc-visa"></i>
+                            {{payment.payment_method}} 
+                        </span>
+                        <p> 
+                         Shipping fee:  0 <br> 
+                         <span class="b">Total: Rs {{payment.amount_paid}} </span>
+                        </p>
+                    </div>
+                </div> <!-- row.// -->
+            </div> <!-- card-body .// -->
+            <div class="table-responsive">
+            <table class="table table-hover">
+                {% for order_product in order_products%}
+                <tr>
+                    <td width="65">
+    
+                        <img src="{{order_product.product.thumbnail_image.url}}" class="img-xs border">
+                    </td>
+
+                    <td> 
+                        <p class="title mb-0">
+                           
+                            {{order_product.product.product.product_brand}}
+                            {{order_product.product.product.product_name}}
+                            {{order_product.product.sku_id}}
+
+                             </p>
+                        <var class=" text-muted">
+                            {% for atribute_value in order_product.product.atributes.all %}
+                            {{ atribute_value.atribute_value }}
+                            {% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                        </var>
+                    </td>
+                    <td> Quantity <br> {{order_product.quantity}} </td>
+                    <td> Each Price <br> {{order_product.product_price}} </td>
+
+                    </tr>
+                {% endfor %}
+            </table>
+            {% if order.order_status == 'New' or order.order_status == 'Accepted' %}
+            <a href="{% url 'order_cancel_user' order.order_number %}" class="btn btn-outline-danger">
+                Cancel Order
+            </a>
+            {% elif  order.order_status == 'Delivered' %}
+            <a href="#" class="btn btn-outline-danger">
+                Return Order
+            </a>
+            {% endif %}
+            </div> <!-- table-responsive .end// -->
+            </article> <!-- order-group.// --> 
+        </main>
+    </div> <!-- row.// -->
+    </div>
+    
+    
+    </section>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+    
+
+
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base/admincontrol/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    {% if messages %}
+    {% for message in messages %}
+    <div
+      class="alert alert-dismissible fade show {% if message.tags == 'error' %} alert-danger {% else %} alert-dark {% endif %}"
+      role="alert">
+      <strong>{{message.tags|title}} !</strong> {{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    {% endfor %}
+
+    {% endif %}
+</div>
+
+<script>
+
+</script>
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+
+  <div class="container">
+      <div class="row">
+      
+      <main class="col-md-12">
+          <article class="card">
+          <header class="card-header">
+              <strong class="d-inline-block mr-3">Order ID: {{order.order_number}}</strong>
+              <span>,{{order.created_at}}</span>
+              <br>
+              <span>Order Status :
+                <div class="col-md-4">
+                  <div class="form-group">
+                  <select name="order_status" class="form-select" onchange="showSelectedOption(this,'{{order.order_number}}')">
+                    {% for value, label in form.fields.order_status.choices %}
+                        <option value="{{ value }}" {% if form.instance.order_status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                </div>  
+              </div>
+              </span>
+          </header>
+          <div class="card-body">
+              <div class="row"> 
+                  <div class="col-md-8">
+                      <h6 class="text-muted">Delivery to</h6>
+                      <p>{{order.name}} <br>  
+                      Phone {{order.phone}}, Email: {{order.email}} <br>
+                      Location: {{order.address_line_1}}, {{order.address_line_2}}, {{order.city}},  {{order.state}}, {{order.country}} <br> 
+                      Pincode : {{order.pincode}}
+                       </p>
+                  </div>
+                  <div class="col-md-4">
+                      <h6 class="text-muted">Payment</h6>
+                      <span class="text-success">
+                          <i class="fab fa-lg fa-cc-visa"></i>
+                         ID: {{payment.payment_id}} <br>
+                         Method : {{payment.payment_method}}<br> 
+                         Status :{{payment.payment_status}} ({{payment.created_at}})
+                      </span>
+                      <p> 
+                       Shipping fee:  0 <br> 
+                       <span class="b">Total: Rs {{payment.amount_paid}} </span>
+                      </p>
+                  </div>
+              </div> <!-- row.// -->
+          </div> <!-- card-body .// -->
+          <div class="table-responsive">
+          <table class="table table-hover">
+              {% for order_product in order_products%}
+              <tr>
+                  <td width="65">
+  
+                      <img src="{{order_product.product.thumbnail_image.url}}" style="max-width: 100px;" class="img-xs border">
+                  </td>
+
+                  <td> 
+                      <p class="title mb-0">
+                         
+                          {{order_product.product.product.product_brand}}
+                          {{order_product.product.product.product_name}}
+                          {{order_product.product.sku_id}}
+
+                           </p>
+                      <var class=" text-muted">
+                          {% for atribute_value in order_product.product.atributes.all %}
+                          {{ atribute_value.atribute_value }}
+                          {% if not forloop.last %}, {% endif %}
+                      {% endfor %}
+                      </var>
+                  </td>
+                  <td> Quantity <br> {{order_product.quantity}} </td>
+                  <td> Each Price <br> {{order_product.product_price}} </td>
+
+                  </tr>
+              {% endfor %}
+          </table>
+          
+          </div> <!-- table-responsive .end// -->
+          </article> <!-- order-group.// --> 
+      </main>
+  </div> <!-- row.// -->
+  </div>
+  
+  
+  </section>
+  <!-- ========================= SECTION CONTENT END// ========================= -->
+  
+
+
+ 
+{% endblock %}

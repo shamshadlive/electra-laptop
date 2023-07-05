@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'product_management',
     'extra_management',
     'cart',
+    'order',
     'django_cleanup.apps.CleanupConfig',
 ]
 

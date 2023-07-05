@@ -26,6 +26,9 @@ urlpatterns = [
     path('admincontrol/', include("admincontrol.urls")),
     path('cart/', include("cart.urls")),
     
+    # ORDER
+    path('orders/', include("order.urls")),
+    
     
 ]
 

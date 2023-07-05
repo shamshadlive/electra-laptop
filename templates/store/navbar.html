@@ -57,6 +57,28 @@
          
        
         </div>
+        <div class="mx-2">
+          <!-- Split dropleft button -->
+          {% if request.user.is_authenticated %}
+          <div class="btn-group">
+            <div class="btn-group dropleft" role="group">
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{% url 'user-dashboard' %}">Dashboard</a>     
+                <a  class="dropdown-item" href="{% url 'logout-page' %}">Logout</a>     
+              </div>
+            </div>
+              <img src="{% static 'store/images/icons/user.svg' %}" width="24" height="24" alt="user-icon" >
+            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            </button>
+          </div>
+          
+            
+          {% else %}
+          <a href="{% url 'login-page' %}" class="text-decoration-none text-black">Login</a> 
+          {% endif %}
+         
+          
+        </div>
 
         <div class="d-flex justify-content-start">
          
@@ -69,19 +91,13 @@
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {{cart_count}}
               </span>
+              
           
           </div>
+          <!-- Default dropleft button -->
 
-          <div class="mx-2">
-            {% if request.user.is_authenticated %}
-            <img src="{% static 'store/images/icons/user.svg' %}" width="24" height="24" alt="user-icon" >
-               <a href="{% url 'logout-page' %}">Logout</a>     
-            {% else %}
-            <a href="{% url 'login-page' %}" class="text-decoration-none text-black">Login</a> 
-            {% endif %}
-           
-            
-          </div>
+
+          
 
 
           <div class="d-xl-none d-lg-none d-lg-block d-md-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

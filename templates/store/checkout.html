@@ -31,15 +31,17 @@ Electra - Cart
                     <div class="form-row row">
                         <div class="col-6 form-group">
                             <label for="">Name</label>
-                            <input type="text" name="name" readonly value="{{user}}" class="form-control">
+                            <input type="text"  readonly value="{{user}}" class="form-control">
                         </div>
                         <div class="col-6 form-group">
                             <label for="">Email</label>
-                            <input type="email" name="email" readonly  class="form-control">
+                            <input type="email" name="email" readonly value="{{user.email}}" class="form-control">
                         </div>
                     </div>
                     </div>
             </div>
+            <form action="{% url 'place-order' %}" method="POST">
+                {% csrf_token %}
 
             <div class="card mt-1">
                 <div class="card-body">
@@ -51,7 +53,11 @@ Electra - Cart
                         </div>
                         <div class="col-6 form-group">
                             <label for="">Phone Number</label>
-                            <input type="text" name="name"  value="" class="form-control">
+                            <input type="text" name="phone"  value="" class="form-control">
+                        </div>
+                        <div class="col-6 form-group">
+                            <label for="">Email</label>
+                            <input type="email" name="email"  value="" class="form-control">
                         </div>
                     </div>
 
@@ -59,31 +65,31 @@ Electra - Cart
                         
                         <div class="col-6 form-group">
                             <label for="">Address line 1</label>
-                            <input type="text" name="text"   class="form-control">
+                            <input type="text" name="address_line_1"   class="form-control">
                         </div>
                         <div class="col-6 form-group">
                             <label for="">Address line 2</label>
-                            <input type="text" name="text"   class="form-control">
+                            <input type="text" name="address_line_2"   class="form-control">
                         </div>
                         <div class="col-3 form-group">
                             <label for="">City</label>
-                            <input type="text" name="text"   class="form-control">
+                            <input type="text" name="city"   class="form-control">
                         </div>
                         <div class="col-3 form-group">
                             <label for="">State</label>
-                            <input type="text" name="text"   class="form-control">
+                            <input type="text" name="state"   class="form-control">
                         </div>
                         <div class="col-3 form-group">
                             <label for="">Country</label>
-                            <input type="text" name="text"   class="form-control">
+                            <input type="text" name="country"   class="form-control">
                         </div>
                         <div class="col-3 form-group">
                             <label for="">Pincode</label>
-                            <input type="text" name="text"   class="form-control">
+                            <input type="text" name="pincode"   class="form-control">
                         </div>
                         <div class="col form-group">
                             <label for="">Order Note</label>
-                            <input type="text" name="text"   class="form-control">
+                            <input type="text" name="order_note"   class="form-control">
                         </div>
                     </div>
 
@@ -169,12 +175,12 @@ Electra - Cart
                 </p>
                 <div class="text-center">
 
-                    <a href="{% url 'checkout' %}" class="btn btn-primary w-100"> Place Order </a>
+                    <button type="submit" class="btn btn-primary w-100"> Place Order </button>
                     <a href="{% url 'store' %}" class="btn btn-light w-100 mt-1">Continue Shopping</a>
                 </div> <!-- card-body.// -->
                 </div>
             </div> <!-- card.// -->
-    
+        </form>
     </aside> <!-- col.// -->
     
     

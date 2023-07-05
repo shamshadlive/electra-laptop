@@ -3,6 +3,8 @@ from product_management.models import Product_Variant
 from categoryManagement.models import Category
 from cart.models import CartItem,Cart
 from cart.views import _cart_id
+from django.contrib.auth.decorators import login_required
+from order.models import Order,OrderProduct,Payment
 # Create your views here.
 
 
@@ -47,3 +49,33 @@ def product_variant_detail(request,category_slug,product_variant_slug):
     
     return render(request, 'store/product_variant_detail.html',context)
 
+#USER DASHBOARD
+@login_required(login_url='login-page')
+def user_dashboard(request):
+    
+    return render(request, 'store/dashboard.html')
+    
+@login_required(login_url='login-page')
+def order_history(request):
+    orders = Order.objects.filter(user=request.user,is_ordered=True).order_by('-created_at')
+    context = {
+        'orders':orders,
+    }
+    return render(request, 'store/order_history.html',context)
+    
+    
+@login_required(login_url='login-page')
+def order_history_detail(request,order_id):
+    order = Order.objects.get(user=request.user,order_number=order_id)
+    order_products = OrderProduct.objects.filter(user=request.user,order=order)
+    payment = Payment.objects.get(user=request.user,payment_id=order.payment)
+    
+    context ={
+        'order':order,
+        'order_products':order_products,
+        'payment':payment
+    }
+    return render(request, 'store/order_detail.html',context)
+    
+    
+    

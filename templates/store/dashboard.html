@@ -1,0 +1,59 @@
+{% extends "base/store/base.html" %}
+
+{% load static %}
+ 
+{% block title %}
+Electra - Cart
+{% endblock %}
+  
+{% block content %}
+
+
+
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+
+    <div class="container">
+        <div class="row">
+        <aside class="col-md-3">
+            <!--   SIDEBAR   -->
+            <ul class="list-group">
+                <a class="list-group-item bg-dark text-white" href="{% url 'user-dashboard' %}"> My Dashboard </a>
+                <a class="list-group-item " href="{% url 'order-history' %}"> My order history </a>
+                <a class="list-group-item" href="#"> Transactions </a>
+                <a class="list-group-item" href="#"> Return and refunds </a>
+                <a class="list-group-item" href="#">Settings </a>
+                <a class="list-group-item" href="#"> My Selling Items </a>
+                <a class="list-group-item" href="#"> Received orders </a>
+            </ul>
+            <br>
+            <a class="btn btn-light btn-block" href="#"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a> 
+            <!--   SIDEBAR .//END   -->
+        </aside>
+        <main class="col-md-9">
+            <article class="card">
+            <header class="card-header">
+                <strong class="d-inline-block mr-3">Welcome Back ! {{user}}</strong>
+            </header>
+            <div class="card-body">
+                <div class="row"> 
+                   
+              <img src="{% static 'store/images/dashboard.png' %}" style="max-width: 250px;" alt="dashboard" >
+                    
+                </div> <!-- row.// -->
+            </div> <!-- card-body .// -->
+           
+            </article> <!-- order-group.// --> 
+        </main>
+    </div> <!-- row.// -->
+    </div>
+    
+    
+    </section>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+    
+
+
+
+{% endblock %}

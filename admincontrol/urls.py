@@ -2,6 +2,7 @@ from django.urls import path
 from categoryManagement import views as categoryView
 from product_management import views as productView
 from extra_management import views as extraView
+from order import views as orderView
 from . import views
 urlpatterns = [
     path("", views.admin_home, name="admin-home"),
@@ -56,6 +57,10 @@ urlpatterns = [
     path("atribute_value", extraView.all_atribute_value, name="admin-all-atribute_value"),
     path("atribute_value/create", extraView.create_atribute_value, name="admin-atribute_value-create"),
   
+    #order management 
+    path("all-orders", orderView.all_orders_admin, name="admin-all-orders"),
+    path("orders/detail/<str:order_id>", orderView.admin_order_history_detail, name="admin-order-history-detail"),
+    path("orders/detail/change/status", orderView.change_order_status_admin, name="change_order_status_admin"),
     
 
 ]
