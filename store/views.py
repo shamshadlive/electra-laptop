@@ -8,6 +8,7 @@ from order.models import Order,OrderProduct,Payment
 # Create your views here.
 
 
+
 def home (request):
     return render(request, 'store/home.html')
 
@@ -66,10 +67,12 @@ def order_history(request):
     
 @login_required(login_url='login-page')
 def order_history_detail(request,order_id):
-    order = Order.objects.get(user=request.user,order_number=order_id)
-    order_products = OrderProduct.objects.filter(user=request.user,order=order)
-    payment = Payment.objects.get(user=request.user,payment_id=order.payment)
-    
+    try:
+        order = Order.objects.get(user=request.user,order_number=order_id)
+        order_products = OrderProduct.objects.filter(user=request.user,order=order)
+        payment = Payment.objects.get(user=request.user,payment_id=order.payment)
+    except Order.DoesNotExist:
+        return redirect('store')  
     context ={
         'order':order,
         'order_products':order_products,

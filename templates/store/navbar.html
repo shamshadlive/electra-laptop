@@ -1,134 +1,95 @@
-
-
 {% load static %}
-<!-- Header -->
-<style>
-
-</style>
-<nav class="navbar navbar-expand-lg bg-body-tertiary px-xl-5">
-
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="{% static 'store/images/logo.svg' %}" alt="electra-header-logo" height="36">
-              </a>
-          <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button> -->
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'store' %}">Store</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Support</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Brands</a>
-              </li>
-            </ul>
-
-            <div class="input-group d-none d-lg-flex">
-              <span class="input-group-append bg-black">
-                  <button class="form-control bg-black text-white border-0" type="button">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                </svg>
-                  </button>
-              </span>
-              <input class="form-control bg-black border-0 text-light" type="search" placeholder="Search Something..." id="example-search-input">
-              <div class="col-4">
-                <select class="form-select" aria-label="Default select example" onchange="location = this.value;" >
-                  <option value="{% url 'store' %}" >All Category</option>
-                  {% for category in all_category_list %}
-                      {% if category.parent_cat %}
-                     
-                        <option value="{{category.get_url}}">{{category.cat_name}}</option> 
-                      
-                      {% endif %}
-                  {% endfor %}
-                </select>
-               </div>
-          </div>
-
-         
-       
-        </div>
-        <div class="mx-2">
-          <!-- Split dropleft button -->
-          {% if request.user.is_authenticated %}
-          <div class="btn-group">
-            <div class="btn-group dropleft" role="group">
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="{% url 'user-dashboard' %}">Dashboard</a>     
-                <a  class="dropdown-item" href="{% url 'logout-page' %}">Logout</a>     
-              </div>
-            </div>
-              <img src="{% static 'store/images/icons/user.svg' %}" width="24" height="24" alt="user-icon" >
-            <button type="button" class="btn dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            </button>
-          </div>
-          
-            
-          {% else %}
-          <a href="{% url 'login-page' %}" class="text-decoration-none text-black">Login</a> 
-          {% endif %}
-         
-          
-        </div>
-
-        <div class="d-flex justify-content-start">
-         
-          <div class="mx-2 position-relative">
-            <a href="{% url 'cart' %}">
-
-              <img src="{% static 'store/images/icons/bag.svg' %}" width="24" height="24" alt="cart" >
-            </a>
-
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                {{cart_count}}
-              </span>
-              
-          
-          </div>
-          <!-- Default dropleft button -->
 
 
-          
+<nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
+    <a class="navbar-brand" href="{% url 'home' %}">
+        <img src="{% static 'store/images/logo.svg' %}" alt="electra-header-logo" height="36">
+      </a>
+<div class="d-flex align-items-center">
+    <div class="mx-2 position-relative d-xl-none d-lg-none d-block">
+      <a href="{% url 'cart' %}">
 
+        <img src="{% static 'store/images/icons/bag.svg' %}" width="24" height="24" alt="cart" >
+      </a>
 
-          <div class="d-xl-none d-lg-none d-lg-block d-md-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <img  src="{% static 'store/images/icons/three-dots.svg' %}" width="24" height="24"  alt="electra-logo" >
-          </div>
-        </div>
-           
-            
-          </div>
-        </div>     
-  </nav>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          {{cart_count}}
+        </span>
+    </div>
 
-  <div class="input-group d-lg-none">
-    <span class="input-group-append bg-black">
-        <button class="form-control bg-black text-white border-0" type="button">
-         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-      </svg>
-        </button>
-    </span>
-    <input class="form-control bg-black border-0 text-light" type="search" placeholder="Search Something..." id="example-search-input">
-    <div class="col-4">
-      <select class="form-select" aria-label="Default select example">
-        <option selected>All Category</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
-      </select>
-     </div>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+    
 </div>
 
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'store' %}">Store</a>
+          </li>
+        <li class="nav-item">
+            <a class="nav-link " aria-current="page" href="{% url 'store' %}">About </a>
+          </li>
+        
+        </ul>
+        <div class="input-group d-none d-lg-flex">
+            <span class="input-group-append bg-black">
+                <button class="form-control bg-black text-white border-0" type="button">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+              </svg>
+                </button>
+            </span>
+            <input class="form-control bg-black border-0 text-light" type="search" placeholder="Search Something..." id="example-search-input">
+            <div class="col-4">
+              <select class="form-select" aria-label="Default select example" onchange="location = this.value;" >
+                <option value="{% url 'store' %}" >All Category</option>
+                {% for category in all_category_list %}
+                    {% if category.parent_cat %}
+                   
+                      <option value="{{category.get_url}}">{{category.cat_name}}</option> 
+                    
+                    {% endif %}
+                {% endfor %}
+              </select>
+             </div>
+        </div>
 
+        <ul class="navbar-nav align-items-xl-center">
+            <li class="nav-item dropdown">
+              {% if request.user.is_authenticated %}
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="{% static 'store/images/icons/user.svg' %}" width="24" height="24" alt="user-icon" >
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="{% url 'user-dashboard' %}">Dashboard</a>     
+                    <a  class="dropdown-item" href="{% url 'logout-page' %}">Logout</a>  
+                  
+                </div>
+                {% else %}
+                <li class="nav-item">
+                  <a class="nav-link active" href="{% url 'login-page' %}">Login</a>
+              </li> 
+                {% endif %}
+            </li>
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+            </li> -->
+            <div class="mx-2 position-relative d-xl-block d-lg-block d-none">
+                <a href="{% url 'cart' %}">
     
-  
+                  <img src="{% static 'store/images/icons/bag.svg' %}" width="24" height="24" alt="cart" >
+                </a>
+    
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{cart_count}}
+                  </span>
+                  
+              
+              </div>
+            
+        </ul>
+      </ul>
+    </div>
+  </nav>

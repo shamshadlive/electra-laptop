@@ -76,3 +76,4 @@ class UserOtp(models.Model):
     def __str__(self):
         phone_number = UserOtp.objects.filter(user=self.user).values('user__first_name','user__phone_number')[0]
         return str(phone_number['user__first_name'])+"--"+str(phone_number['user__phone_number'])+"--"+str(self.otp)
+    

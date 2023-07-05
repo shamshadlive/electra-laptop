@@ -21,7 +21,20 @@ Electra - Cart
     <div class="container">
     
     <!-- ============================ COMPONENT 1 CART PAGE ================================= -->
-    
+    {% if messages %}
+            {% for message in messages %}
+            <div
+              class="alert alert-dismissible fade show {% if message.tags == 'error' %} alert-danger {% else %} alert-dark {% endif %}"
+              role="alert">
+              <strong>{{message.tags|title}} !</strong> {{message}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        
+            {% endfor %}
+        
+        {% endif %}
+
+
     {% if not cart_items %}
     <h2 class="">Your Shopping Cart Is Empty</h2>
     <div class="text-center">
@@ -64,6 +77,14 @@ Electra - Cart
                     </figcaption>
                 </figure>
             </td>
+            {% if cart_item.product.stock <= 0 %}
+            <td>
+                <p class="text-danger">
+                    OUT OF STOCK
+                </p>
+                
+            </td>
+            {% else %}
             <td> 
                 <!-- col.// -->
                             <div class="col"> 
@@ -76,6 +97,7 @@ Electra - Cart
                                                 </a>
                                     </div>
                                     <input type="text" class="form-control"  value="{{cart_item.quantity}}">
+                                    
                                     <div class="input-group-append">
                                     <a type="button" href="{% url 'add-cart' cart_item.product.id %}" class="btn btn-outline-secondary">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
@@ -86,6 +108,8 @@ Electra - Cart
                                 </div> <!-- input-group.// -->
                             </div> <!-- col.// -->
             </td>
+            {% endif %}
+
             <td> 
                 <div class="price-wrap">  
                     <var class="price">Rs{{cart_item.sub_total}}</var> 

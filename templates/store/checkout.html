@@ -25,6 +25,19 @@ Electra - Cart
     
     <div class="row">
         <aside class="col-lg-6">
+            {% if messages %}
+            {% for message in messages %}
+            <div
+              class="alert alert-dismissible fade show {% if message.tags == 'error' %} alert-danger {% else %} alert-dark {% endif %}"
+              role="alert">
+              <strong>{{message.tags|title}} !</strong> {{message}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        
+            {% endfor %}
+        
+        {% endif %}
+        
             <div class="card">
                 <div class="card-body">
                     <h5>User Details</h5>

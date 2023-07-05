@@ -13,7 +13,11 @@ class CreateBrandForm(ModelForm):
 class CreateAtributeForm(ModelForm):
     
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)    
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            
+        self.fields['is_active'].widget.attrs['class'] = ''    
     class Meta:
         model = Atribute
         fields = '__all__'

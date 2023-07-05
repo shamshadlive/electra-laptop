@@ -6,6 +6,7 @@ from product_management.models import Product_Variant
 import datetime
 from django.http import JsonResponse
 import json
+from django.contrib import messages
 
 
 
@@ -71,6 +72,7 @@ def place_order(request,total=0,quantity=0,cart_items=None):
             }
             return render(request, 'store/payment.html',context)
         else:
+            messages.error(request, form.errors)
             return redirect('checkout')
     else:
         return redirect('checkout')

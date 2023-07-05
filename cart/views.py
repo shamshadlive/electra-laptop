@@ -3,6 +3,8 @@ from product_management.models import Product_Variant
 from .models import Cart,CartItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 # Create your views here.
 
 #to get the cart id if present
@@ -24,6 +26,7 @@ def cart(request,total=0,quantity=0,cart_items=None):
         for cart_item in cart_items:
             total += ( cart_item.product.sale_price * cart_item.quantity)
             quantity += cart_item.quantity
+            
     except ObjectDoesNotExist:
         pass
     
@@ -137,10 +140,16 @@ def checkout(request,total=0,quantity=0,cart_items=None):
         else:
             cart = Cart.objects.get(cart_id=_cart_id(request))
             cart_items = CartItem.objects.filter(cart=cart,is_active=True)
-        
         for cart_item in cart_items:
             total += ( cart_item.product.sale_price * cart_item.quantity)
             quantity += cart_item.quantity
+            product = Product_Variant.objects.get(id=cart_item.product.id)
+            if (product.stock - cart_item.quantity) < 0:
+                error_message = f'{product.get_product_name()} [{cart_item.quantity}] Stock , Not Available , Please Remove and continue'
+                messages.error(request, error_message)
+                return redirect('cart')
+            
+        
     except ObjectDoesNotExist:
         pass
     

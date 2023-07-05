@@ -123,6 +123,9 @@ class Product_Variant(models.Model):
     def get_url(self):
         return reverse('product-variant-detail',args=[self.product.product_catg.cat_slug,self.product_variant_slug])
     
+    def get_product_name(self):
+        return f'{self.product.product_brand} {self.product.product_name}-{self.sku_id}'
+    
     def __str__(self):
         return f'{self.sku_id} - {self.atributes.values("atribute_value")}'
          

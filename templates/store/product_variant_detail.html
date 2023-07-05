@@ -48,16 +48,7 @@ Electra - Product Detail
                     </div> 
                 </article>  
             </aside>
-        <!-- <article class="gallery-wrap"> 
-            <div class="img-big-wrap">
-            <a href="#"><img src="{{single_product_variant.thumbnail_image.url}}"></a>
-            </div> 
-            <div>
-                {% for additional_image in single_product_variant.additional_images.all %}
-                    <img src="{{ additional_image.image.url }}" alt="Additional Image">
-                {% endfor %}
-            </div>
-        </article>  -->
+      
         
 
         <!-- gallery-wrap .end// -->
@@ -88,8 +79,8 @@ Electra - Product Detail
                                 {% for product_variant in product_variants %}
                                 
                                     {% if product_variants_count > 1 %}
-                                    <span class="mx-1">
-                                        <a type="button" href="{{ product_variant.get_url }}" class="btn btn-outline-dark">
+                                    <span class="mx-1 ">
+                                        <a type="button"  href="{{ product_variant.get_url }}" class="btn btn-outline-dark mt-2">
                                             {% for attribute in product_variant.atributes.all %}
                                                 {{ attribute.atribute_value }}
                                             {% endfor %}
