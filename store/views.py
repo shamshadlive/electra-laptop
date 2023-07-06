@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from order.models import Order,OrderProduct,Payment
 from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
+
+from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 # Create your views here.
 
 
@@ -25,7 +27,12 @@ def store (request,category_slug=None):
     else:
         product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True)
         product_variants_count = product_variants.count()
-    context = {'product_variants':product_variants,
+    # paginator start
+    paginator = Paginator(product_variants,6)
+    page = request.GET.get('page')
+    paged_products = paginator.get_page(page)
+    
+    context = {'product_variants':paged_products,
                'product_variants_count':product_variants_count}
     return render(request, 'store/store.html',context)
 

@@ -41,8 +41,12 @@ def place_order(request,total=0,quantity=0,cart_items=None):
             data.user = current_user
             
             #shipping address
-            #handle try
-            shipping_address = AdressBook.objects.get(id=selected_address_id)
+            try:
+                shipping_address = AdressBook.objects.get(id=selected_address_id)
+            except AdressBook.DoesNotExist:
+                messages.error(request, "Please Choose A Address")
+                return redirect('checkout')
+            
             data.shipping_address = shipping_address
             data.order_note = form.cleaned_data['order_note']
             data.order_total = grand_total
