@@ -36,12 +36,11 @@
   </head>
 
 <body>
-    {% if request.user.is_authenticated %}
+    {% if request.user.is_authenticated and request.user.is_staff %}
         {% include "admincontrol/header.html" %} 
 
     {% endif %}
 
-    
     
     {% block content %}
 

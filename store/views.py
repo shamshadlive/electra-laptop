@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from order.models import Order,OrderProduct,Payment
 from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
+from django.views.decorators.cache import cache_control
 
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 # Create your views here.
@@ -16,6 +17,7 @@ from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 def home (request):
     return render(request, 'store/home.html')
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def store (request,category_slug=None):
     categories = None
     product_variants = None
@@ -36,6 +38,7 @@ def store (request,category_slug=None):
                'product_variants_count':product_variants_count}
     return render(request, 'store/store.html',context)
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def product_variant_detail(request,category_slug,product_variant_slug):
     single_product_variant=None
     try:
