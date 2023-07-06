@@ -77,3 +77,32 @@ class UserOtp(models.Model):
         phone_number = UserOtp.objects.filter(user=self.user).values('user__first_name','user__phone_number')[0]
         return str(phone_number['user__first_name'])+"--"+str(phone_number['user__phone_number'])+"--"+str(self.otp)
     
+class AdressBook(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    name = models.CharField(max_length=30)
+    phone = models.CharField(max_length=20)
+    address_line_1 = models.CharField(max_length=50)
+    address_line_2 = models.CharField(max_length=50,blank=True,null=True)
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
+    pincode = models.CharField(max_length=20)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_default = models.BooleanField(default=False)
+    
+    def save(self, *args, **kwargs):
+        if self.is_default:
+            # Set is_default=False for other addresses of the same user
+            AdressBook.objects.filter(user=self.user).exclude(pk=self.pk).update(is_default=False)
+        super(AdressBook, self).save(*args, **kwargs)
+        
+    def get_user_full_address(self):
+        address = {
+            'name':self.name,
+            'phone':self.phone
+        }
+        return self.name
+    def __str__(self):
+        return self.name
+    

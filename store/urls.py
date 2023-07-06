@@ -14,5 +14,11 @@ urlpatterns = [
     path("user/order_history", views.order_history, name="order-history"),
     path("user/order_history/<str:order_id>", views.order_history_detail, name="order-history-detail"),
     
+    #ADRESS USER
+    path("user/address", views.user_address, name="user-address"),
+    path("user/address/create", views.user_address_create, name="user-address-create"),
+    path("user/address/make_default/<str:adress_id>", views.user_address_make_default, name="user-address-make-default"),
+    path("user/address/delete/<str:adress_id>", views.user_address_delete, name="user-address-delete"),
+    
     
 ]

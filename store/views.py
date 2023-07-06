@@ -5,6 +5,8 @@ from cart.models import CartItem,Cart
 from cart.views import _cart_id
 from django.contrib.auth.decorators import login_required
 from order.models import Order,OrderProduct,Payment
+from accounts.models import AdressBook
+from accounts.forms import AdressBookForm
 # Create your views here.
 
 
@@ -81,4 +83,54 @@ def order_history_detail(request,order_id):
     return render(request, 'store/order_detail.html',context)
     
     
+    
+    
+@login_required(login_url='login-page')
+def user_address(request):
+    adress_form = AdressBookForm()
+    addreses = AdressBook.objects.filter(user=request.user).order_by('-is_default')
+    context ={
+        'addreses':addreses,
+        'adress_form':adress_form
+    }
+    return render(request, 'store/address.html',context)
+    
+    
+    
+    
+    
+@login_required(login_url='login-page')
+def user_address_create(request):  
+    if request.method == 'POST':
+        adress_form = AdressBookForm(request.POST)
+        if adress_form.is_valid():
+            address = adress_form.save(commit=False)
+            address.user = request.user
+            address.save()
+            return redirect('user-address')
+        else:
+            context ={
+                    'adress_form':adress_form
+                }
+            return render(request, 'store/address.html',context)
+
+@login_required(login_url='login-page')
+def user_address_make_default(request,adress_id):
+    try:  
+        addreses = AdressBook.objects.get(user=request.user,id=adress_id)
+        addreses.is_default = True
+        addreses.save()
+        return redirect('user-address')
+    except AdressBook.DoesNotExist:
+        return redirect('user-address')
+
+@login_required(login_url='login-page')
+def user_address_delete(request,adress_id):
+    try:  
+        addreses = AdressBook.objects.get(user=request.user,id=adress_id)
+        addreses.delete()
+        return redirect('user-address')
+    except AdressBook.DoesNotExist:
+        return redirect('user-address')
+
     

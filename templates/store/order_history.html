@@ -19,13 +19,12 @@ Electra - Cart
         <aside class="col-md-3">
             <!--   SIDEBAR   -->
             <ul class="list-group">
-                <a class="list-group-item " href="{% url 'user-dashboard' %}"> My Dashboard </a>
                 <a class="list-group-item bg-dark text-white" href="{% url 'order-history' %}"> My order history </a>
+                <a class="list-group-item " href="{% url 'user-address' %}"> My Address </a>
+                <a class="list-group-item " href="{% url 'user-dashboard' %}"> My Dashboard </a>
                 <a class="list-group-item" href="#"> Transactions </a>
                 <a class="list-group-item" href="#"> Return and refunds </a>
-                <a class="list-group-item" href="#">Settings </a>
-                <a class="list-group-item" href="#"> My Selling Items </a>
-                <a class="list-group-item" href="#"> Received orders </a>
+                
             </ul>
             <br>
             <a class="btn btn-light btn-block" href="#"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a> 
@@ -68,6 +67,14 @@ Electra - Cart
                          <!-- <a href="#" class="btn btn-light"> Details </a>  -->
                     </td>
                 </tr>
+                {% empty %}
+                    <!-- Alternative code when the loop is empty -->
+                   <tr>
+                    <td>
+                        No items found.
+
+                    </td>
+                   </tr> 
                 {% endfor %}
                 
             </table>
