@@ -4,6 +4,8 @@ from .models import Cart,CartItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from accounts.models import AdressBook
+from accounts.forms import AdressBookForm
 
 # Create your views here.
 
@@ -152,15 +154,17 @@ def checkout(request,total=0,quantity=0,cart_items=None):
         
     except ObjectDoesNotExist:
         pass
-    
+    adress_form = AdressBookForm()
     discount = 0
     grand_total = total+discount
-    
+    addreses = AdressBook.objects.filter(user=request.user,is_active=True).order_by('-is_default')
     context = {
         'total':total,
         'quantity':quantity,
         'cart_items':cart_items,
         'grand_total':grand_total,
-        'discount':discount
+        'discount':discount,
+        'addreses':addreses,
+        'adress_form':adress_form
     }
     return render(request, 'store/checkout.html',context)

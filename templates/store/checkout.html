@@ -53,13 +53,70 @@ Electra - Cart
                     </div>
                     </div>
             </div>
-            <form action="{% url 'place-order' %}" method="POST">
-                {% csrf_token %}
 
-            <div class="card mt-1">
+         
+            
+            
+
+            <div class="card my-2">
                 <div class="card-body">
                     <h5>Shipping Address</h5>
-                    <div class="form-row row">
+                   
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-outline-dark mx-2" data-toggle="modal" data-target="#adressModal">
+                        Add New Adress
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="adressModal" tabindex="-1" role="dialog" aria-labelledby="adressModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="adressModalLabel">Create New Adress</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{% url 'user-address-create' checkout='checkout' %}" method="POST">
+                                    {% csrf_token %}
+                                    {{adress_form.as_p}}
+                                
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-dark">Add Now</button>
+                        </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                    <form action="{% url 'place-order' %}" method="POST">
+                        {% csrf_token %}
+                    {% for address in addreses %}
+                    <div class="form-check border border-dark my-2">
+                        <div class="p-2">
+                            
+                            <input value="{{ address.id }}" class="form-check-input" type="radio" name="address" id="address{{ forloop.counter }}" {% if address.is_default %}checked{% endif %}>
+                            <label class="form-check-label" for="address{{ forloop.counter }}">
+                                {{ address.get_user_full_address|slice:":80"|safe }}...
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+            
+                    </div>
+            </div>
+            <div class="card mt-1">
+                <div class="card-body">
+                    <!-- <div class="form-row row">
                         <div class="col-6 form-group">
                             <label for="">First Name</label>
                             <input type="text" name="name"  value="" class="form-control">
@@ -72,11 +129,11 @@ Electra - Cart
                             <label for="">Email</label>
                             <input type="email" name="email"  value="" class="form-control">
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-row row mt-2">
                         
-                        <div class="col-6 form-group">
+                        <!-- <div class="col-6 form-group">
                             <label for="">Address line 1</label>
                             <input type="text" name="address_line_1"   class="form-control">
                         </div>
@@ -99,7 +156,7 @@ Electra - Cart
                         <div class="col-3 form-group">
                             <label for="">Pincode</label>
                             <input type="text" name="pincode"   class="form-control">
-                        </div>
+                        </div> -->
                         <div class="col form-group">
                             <label for="">Order Note</label>
                             <input type="text" name="order_note"   class="form-control">
@@ -188,7 +245,7 @@ Electra - Cart
                 </p>
                 <div class="text-center">
 
-                    <button type="submit" class="btn btn-primary w-100"> Place Order </button>
+                    <button type="submit" class="btn btn-dark w-100"> Place Order </button>
                     <a href="{% url 'store' %}" class="btn btn-light w-100 mt-1">Continue Shopping</a>
                 </div> <!-- card-body.// -->
                 </div>

@@ -38,13 +38,12 @@ Electra - Order Complete
                             <div class="invoice-from">
                                 <ul class="list-unstyled text-right small" >
                                     <li><strong>Invoiced To</strong></li>
-                                    <li>{{order.name}}</li>
-                                    <li>{{order.address_line_1}}</li>
-                                    <li>{{order.address_line_2}}</li>
-                                    <li>{{order.city}},{{order.state}}</li>
-                                    <li>{{order.country}},{{order.pincode}}</li>
-                                 
-                                    <li>{{order.phone}}</li>                             
+                                    <li>{{order.shipping_address.name}}</li>
+                                    <li>{{order.shipping_address.address_line_1}}</li>
+                                    <li>{{order.shipping_address.address_line_2}}</li>
+                                    <li>{{order.shipping_address.city}},{{order.shipping_address.state}}</li>
+                                    <li>{{order.shipping_address.country}},{{order.shipping_address.pincode}}</li>
+                                    <li>{{order.shipping_address.phone}}</li>                             
                                 </ul>
                             </div>
                         </div>

@@ -49,10 +49,10 @@ Electra - Order
                 <div class="row"> 
                     <div class="col-md-8">
                         <h6 class="text-muted">Delivery to</h6>
-                        <p>{{order.name}} <br>  
-                        Phone {{order.phone}}, Email: {{order.email}} <br>
-                        Location: {{order.address_line_1}}, {{order.address_line_2}}, {{order.city}},  {{order.state}}, {{order.country}} <br> 
-                        Pincode : {{order.pincode}}
+                        <p>{{order.shipping_address.name}} <br>  
+                        Phone {{order.shipping_address.phone}},  <br>
+                        Location: {{order.shipping_address.address_line_1}}, {{order.shipping_address.address_line_2}}, {{order.shipping_address.city}},  {{order.shipping_address.state}}, {{order.shipping_address.country}} <br> 
+                        Pincode : {{order.shipping_address.pincode}}
                          </p>
                     </div>
                     <div class="col-md-4">

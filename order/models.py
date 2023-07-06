@@ -1,6 +1,7 @@
 from django.db import models
-from accounts.models import User
+from accounts.models import User,AdressBook
 from product_management.models import Product_Variant
+
 # Create your models here.
 class Payment(models.Model):
     PAYMENT_STATUS_CHOICES =(
@@ -29,16 +30,18 @@ class Order(models.Model):
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     payment = models.ForeignKey(Payment,on_delete=models.SET_NULL,null=True,blank=True)
     order_number = models.CharField(max_length=100)
+    shipping_address = models.ForeignKey(AdressBook,on_delete=models.SET_NULL,null=True)
     #address later updated to adress table
-    name = models.CharField(max_length=30)
-    phone = models.CharField(max_length=20)
-    email = models.EmailField(max_length=50)
-    address_line_1 = models.CharField(max_length=50)
-    address_line_2 = models.CharField(max_length=50,blank=True,null=True)
-    country = models.CharField(max_length=50)
-    state = models.CharField(max_length=50)
-    city = models.CharField(max_length=50)
-    pincode = models.CharField(max_length=20)
+    # name = models.CharField(max_length=30)
+    # phone = models.CharField(max_length=20)
+    # email = models.EmailField(max_length=50)
+    # address_line_1 = models.CharField(max_length=50)
+    # address_line_2 = models.CharField(max_length=50,blank=True,null=True)
+    # country = models.CharField(max_length=50)
+    # state = models.CharField(max_length=50)
+    # city = models.CharField(max_length=50)
+    # pincode = models.CharField(max_length=20)
+    
     order_note = models.CharField(max_length=100,blank=True,null=True)
     order_total = models.DecimalField(max_digits=12, decimal_places=2)
     order_status= models.CharField(choices = ORDER_STATUS_CHOICES,max_length=20,default='New')

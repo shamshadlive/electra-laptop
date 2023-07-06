@@ -7,7 +7,7 @@ import datetime
 from django.http import JsonResponse
 import json
 from django.contrib import messages
-
+from accounts.models import AdressBook
 
 
 # Create your views here.
@@ -23,27 +23,28 @@ def place_order(request,total=0,quantity=0,cart_items=None):
     
     for cart_item in cart_items:
             total += ( cart_item.product.sale_price * cart_item.quantity)
+            
     
     grand_total=0
     discount=0
     grand_total = discount+total
     
     if request.method == 'POST':
+        selected_address_id = request.POST.get('address')
+        if selected_address_id is None:
+            messages.error(request, "Please Choose A Address")
+            return redirect('checkout')
         form = OrderForm(request.POST)
         if form.is_valid():
             #store in order table
             data = Order()
             data.user = current_user
-            data.name = form.cleaned_data['name']
-            data.phone = form.cleaned_data['phone']
-            data.email = form.cleaned_data['email']
-            data.address_line_1 = form.cleaned_data['address_line_1']
-            data.address_line_2 = form.cleaned_data['address_line_2']
-            data.country = form.cleaned_data['country']
-            data.state = form.cleaned_data['state']
-            data.city = form.cleaned_data['city']
+            
+            #shipping address
+            #handle try
+            shipping_address = AdressBook.objects.get(id=selected_address_id)
+            data.shipping_address = shipping_address
             data.order_note = form.cleaned_data['order_note']
-            data.pincode = form.cleaned_data['pincode']
             data.order_total = grand_total
             data.ip = request.META.get('REMOTE_ADDR')
             data.save()
@@ -68,7 +69,8 @@ def place_order(request,total=0,quantity=0,cart_items=None):
                 'cart_items':cart_items,
                 'total':total,
                 'grand_total':grand_total,
-                'discount':discount
+                'discount':discount,
+                'shipping_address':shipping_address
             }
             return render(request, 'store/payment.html',context)
         else:

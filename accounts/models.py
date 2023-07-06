@@ -90,6 +90,7 @@ class AdressBook(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_default = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     
     def save(self, *args, **kwargs):
         if self.is_default:
@@ -98,11 +99,17 @@ class AdressBook(models.Model):
         super(AdressBook, self).save(*args, **kwargs)
         
     def get_user_full_address(self):
-        address = {
-            'name':self.name,
-            'phone':self.phone
-        }
-        return self.name
+        address_parts = [self.name, self.phone,self.address_line_1]
+
+        if self.address_line_2:
+            address_parts.append(self.address_line_2)
+        
+        address_parts.append(f'<b>Pin: {self.pincode}</b>')
+        address_parts.extend([self.city, self.state, self.country])
+        
+        
+        return ', '.join(address_parts)
+        # return f'{self.name},{self.phone},Pin:{self.pincode},Address:{self.address_line_1},{self.address_line_2},{self.city},{self.state},{self.country}'
     def __str__(self):
         return self.name
     

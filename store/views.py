@@ -88,7 +88,7 @@ def order_history_detail(request,order_id):
 @login_required(login_url='login-page')
 def user_address(request):
     adress_form = AdressBookForm()
-    addreses = AdressBook.objects.filter(user=request.user).order_by('-is_default')
+    addreses = AdressBook.objects.filter(user=request.user,is_active=True).order_by('-is_default')
     context ={
         'addreses':addreses,
         'adress_form':adress_form
@@ -100,14 +100,20 @@ def user_address(request):
     
     
 @login_required(login_url='login-page')
-def user_address_create(request):  
+def user_address_create(request,checkout):  
     if request.method == 'POST':
         adress_form = AdressBookForm(request.POST)
         if adress_form.is_valid():
             address = adress_form.save(commit=False)
             address.user = request.user
             address.save()
-            return redirect('user-address')
+            print("===========================")
+            print(checkout)
+            if checkout == 'checkout':
+                print("okeeee")
+                return redirect('checkout')
+            else:
+                return redirect('user-address')
         else:
             context ={
                     'adress_form':adress_form
@@ -128,7 +134,8 @@ def user_address_make_default(request,adress_id):
 def user_address_delete(request,adress_id):
     try:  
         addreses = AdressBook.objects.get(user=request.user,id=adress_id)
-        addreses.delete()
+        addreses.is_active=False
+        addreses.save()
         return redirect('user-address')
     except AdressBook.DoesNotExist:
         return redirect('user-address')

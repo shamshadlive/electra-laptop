@@ -58,7 +58,7 @@ Electra - Adress
                         </button>
                         </div>
                         <div class="modal-body">
-                            <form action="{% url 'user-address-create' %}" method="POST">
+                            <form action="{% url 'user-address-create' checkout='None' %}" method="POST">
                                 {% csrf_token %}
                                 {{adress_form.as_p}}
                             
