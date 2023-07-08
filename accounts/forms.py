@@ -15,6 +15,6 @@ class AdressBookForm(ModelForm):
         
     class Meta:
         model = AdressBook
-        exclude = ('user','is_default')
+        exclude = ('user','is_default','is_active')
 
     

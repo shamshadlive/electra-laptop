@@ -1,6 +1,6 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,reverse
 from django.contrib.auth import logout,authenticate,login
-from accounts.models import User
+from accounts.models import User,UserOtp
 from django.contrib import messages
 from .forms  import UserForm
 # from verify_email.email_handler import send_verification_email
@@ -16,7 +16,13 @@ from django.core.mail import EmailMessage
 from cart.models import Cart,CartItem
 from cart.views import _cart_id
 from django.core.exceptions import ObjectDoesNotExist
-import requests
+from django.http import HttpResponse
+
+import json
+from django.http import JsonResponse
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth import update_session_auth_hash
+import random
 def loginpage (request):
     
     if request.user.is_authenticated:
@@ -196,3 +202,128 @@ def resetpassword(request):
             
     return render(request,'accounts/reset-password.html')
 
+
+
+
+
+# UPDATE USER FIELDS USING AJAX
+#lastname and firstname
+def update_fields_user(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if request.method == "POST" and is_ajax:
+        data = json.load(request)
+        field = data['field']
+        value = data['value']
+        
+        try:
+            user = User.objects.get(id=request.user.id)
+            field_mapping = {
+                'first_name': 'first_name',
+                'last_name': 'last_name',
+            }
+            if field in field_mapping:
+                setattr(user, field_mapping[field], value)
+                user.save()
+            return JsonResponse({"status": "success"})
+        
+        except:
+            return JsonResponse({"status": "error", "message": "Contact Admin"})
+
+    else:
+        # Return a JSON response indicating an invalid request
+        return JsonResponse({"status": "error", "message": "Invalid request"})
+    
+    
+#change password with old password
+def change_user_password_with_oldpass(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if request.method == "POST" and is_ajax:
+        data = json.load(request)
+                
+        try:
+            current_password= request.user.password #user's current password
+            current_password_entered= data['old_password']
+            password2= data['password2']
+
+            matchcheck= check_password(current_password_entered, current_password)
+            
+            if matchcheck:
+                user = User.objects.get(id=request.user.id)
+                user.set_password(password2)
+                user.save()  
+                update_session_auth_hash(request, user)
+
+                messages.success(request, "Password Change Successfully")
+                return JsonResponse({"status": "success"})
+            else:
+                return JsonResponse({"status": "error","message": "Invalid Old Password"})
+        
+        except:
+            return JsonResponse({"status": "error", "message": "Contact Admin"})
+
+    else:
+        # Return a JSON response indicating an invalid request
+        return JsonResponse({"status": "error", "message": "Invalid request"})
+    
+    
+    
+#change password email adress
+def change_user_password_with_email(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if request.method == "POST" and is_ajax:
+        email = request.user.email
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email__exact=email)
+            
+            #SEND OTP TO MAIL
+            otp=random.randint(1000,9999)
+            user_otp,created = UserOtp.objects.update_or_create(user=user, defaults={'otp': f'{otp}'})
+            
+            current_site = get_current_site(request)
+            mail_subject = 'Verify Password Reset'
+            message = render_to_string ('accounts/change_password_email_template.html',{
+                'user' : user,
+                'domain' : current_site,
+                'otp':user_otp.otp,
+                
+            })
+            to_email = email
+            send_email = EmailMessage(mail_subject,message,to=[to_email])
+            send_email.content_subtype = 'html'
+            send_email.send()
+            messages.success(request, "Email Has Been Successfully shared , please verify to reset")
+            
+            red=redirect('change_user_password_with_email_verify', uid=user_otp.uid)
+            red.set_cookie("can_otp_enter",True,max_age=600)
+            redirect_url = reverse('change_user_password_with_email_verify', kwargs={'uid':user_otp.uid})
+            print(redirect_url)
+            return JsonResponse({"status": "success", "redirect_url": redirect_url})
+    else:
+        # Return a JSON response indicating an invalid request
+        return JsonResponse({"status": "error", "message": "Invalid request"})
+    
+        
+def change_user_password_with_email_verify(request,uid):  
+    if request.method == "POST":
+        userOtp=UserOtp.objects.get(uid=uid)     
+        if request.COOKIES.get('can_otp_enter')!=None:
+            if(userOtp.otp==request.POST['otp']):
+               
+                user = User.objects.get(id=request.user.id)
+                user.set_password(request.POST['password1'])
+                user.save()  
+                messages.success(request, "Password Changed Successfully")
+                return redirect('user-dashboard')      
+            else:
+                messages.error(request, "Invalid Otp")
+                return render(request,'accounts/change_password_with_mail.html')
+        else:
+            messages.error(request, "2 mins Over ! Time Exceeded")
+            return render(request,'accounts/change_password_with_mail.html')
+    else:
+        return render(request, 'accounts/change_password_with_mail.html')
+        
+
+
+    
+    

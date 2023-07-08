@@ -9,7 +9,10 @@ Electra - Cart
 {% block content %}
 
 
+<script>
+    
 
+</script>
 
 <!-- ========================= SECTION CONTENT ========================= -->
 <section class="section-conten padding-y bg">
@@ -19,9 +22,9 @@ Electra - Cart
         <aside class="col-md-3">
             <!--   SIDEBAR   -->
             <ul class="list-group">
+                <a class="list-group-item bg-dark text-white" href="{% url 'user-dashboard' %}"> My Dashboard </a>
                 <a class="list-group-item " href="{% url 'order-history' %}"> My order history </a>
                 <a class="list-group-item " href="{% url 'user-address' %}"> My Address </a>
-                <a class="list-group-item bg-dark text-white" href="{% url 'user-dashboard' %}"> My Dashboard </a>
                 <a class="list-group-item" href="#"> Transactions </a>
                 <a class="list-group-item" href="#"> Return and refunds </a>
 
@@ -35,12 +38,181 @@ Electra - Cart
             <article class="card">
             <header class="card-header">
                 <strong class="d-inline-block mr-3">Welcome Back ! {{user}}</strong>
+                {% if messages %}
+                    {% for message in messages %}
+                    <div
+                    class="alert alert-dismissible fade show {% if message.tags == 'error' %} alert-danger {% else %} alert-dark {% endif %}"
+                    role="alert">
+                    <strong>{{message.tags|title}} !</strong> {{message}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                
+                    {% endfor %}
+                
+                {% endif %}
             </header>
             <div class="card-body">
                 <div class="row"> 
                    
-              <img src="{% static 'store/images/dashboard.png' %}" style="max-width: 250px;" alt="dashboard" >
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            
+                            <img src="{% static 'store/images/icons/userprofile.svg' %}" class="rounded-circle" style="max-width: 120px;"
+                            alt="Avatar" />
+                            <a class="text-center small  text-decoration-none " href="#">Change</a>
+                        </div>
+                        
+    
+
+                    </div>
+
+              <div class=" container col-12">
+                <div class="row">
+
+                    <div class="col-xl-4 col-md-6 col-12"> 
+                        <label for=""> <small> First Name</small></label>
+                        <div class="input-group mb-3">
+                            <input type="text" id="userProfileField1" name="first_name" onchange="UpdateFieldUserProfile(this)" class="form-control" placeholder="First Name" value="{{user.first_name}}" readonly  aria-describedby="button-addon2">
+                            <button class="btn btn-outline-dark" type="button" id="button-addon2" onclick="editFieldUserProfile('1')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                  </svg>
+                            </button>
+                        </div>
+                    </div>
                     
+                    <div class="col-xl-4 col-md-6 col-12"> 
+                        <label for=""> <small> Last Name</small></label>
+                        <div class="input-group mb-3">
+                            <input type="text" id="userProfileField2" name="last_name" onchange="UpdateFieldUserProfile(this)" class="form-control" placeholder="Last Name" value="{{user.last_name}}"  readonly aria-describedby="button-addon2">
+                            <button class="btn btn-outline-dark" type="button" id="button-addon2" onclick="editFieldUserProfile('2')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                  </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-4 col-md-6 col-12"> 
+                        <label for=""> <small>Mobile Number</small></label>
+                        <div class="input-group mb-3">
+                            <input type="text" id="userProfileField3" class="form-control" placeholder="First Name" value="{{user.phone_number}}"  readonly aria-describedby="button-addon2">
+                            <button class="btn btn-outline-dark" type="button" id="button-addon2" onclick="editFieldUserProfile('3')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                  </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-6 col-md-6 col-12"> 
+                        <label for=""> <small>Email Adress</small></label>
+                        <div class="input-group mb-3">
+                            <input type="email" id="userProfileField4" class="form-control" placeholder="Last Name" value="{{user.email}}"  readonly aria-describedby="button-addon2">
+                            <button class="btn btn-outline-dark" type="button" id="button-addon2" onclick="editFieldUserProfile('4')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                                  </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-6 col-md-6 col-12">
+                        <label for=""> <small>Password</small></label> 
+                        <div class="input-group ">
+                            <input type="password" id="userProfileField5" class="form-control" placeholder="password" value="********"  readonly aria-describedby="button-addon2">
+                            <button class="btn btn-outline-dark" type="button" id="button-addon2" data-toggle="modal" data-target="#changePasswordModal">
+                               Change Password
+                            </button>
+                        </div>
+                        <a class="m-0 p-0 small text-decoration-none " href="#" data-toggle="modal" data-target="#resetPasswordModal">Reset Password Here</a> 
+
+                    </div>
+
+                 
+                
+                <!-- Modal Change password-->
+                <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <label for="" class="mt-2"> <small>Old Password</small></label> 
+                            <input type="password" id="userProfileFieldOldPassword" class="form-control " placeholder="Old Password" value="" >
+                            <p class="text-danger small m-0 p-0" id="userProfileFieldOldPasswordError"></p>
+                            
+                            <label for="" class="mt-2"> <small>New Password</small></label> 
+                            <input type="password" id="userProfileFieldNewPassword1" class="form-control " placeholder="New Password" value="" >
+                            <p class="text-danger small m-0 p-0" id="userProfileFieldNewPassword1Error"></p>
+                            
+                            <label for="" class="mt-2"> <small>Confirm Password</small></label> 
+                            <input type="password" id="userProfileFieldNewPassword2" class="form-control " placeholder="Confrim Password" value="" >
+                            <p class="text-danger small m-0 p-0" id="userProfileFieldNewPassword2Error"></p>
+                            
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Close</button>
+                        <button type="button" class="btn btn-dark" onclick="UpdateFieldUserProfilePassword('userProfileFieldOldPassword','userProfileFieldNewPassword1','userProfileFieldNewPassword2')">Update Password</button>
+                    
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+
+                <!-- Modal Reset password-->
+                <div class="modal fade" id="resetPasswordModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <p>You are going to reset password , for that you will get a otp in your
+                                registered email id <b>({{request.user.email}})</b> Please Verify and Continue
+                            </p>
+                            <a class="btn btn-dark" id="sendPasswordResetOtpMailBtn" onclick="sendPasswordResetOtpMail()" >
+                                <span id="sendPasswordResetOtpMailSpinnner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                Send Email
+                            </a>
+
+                            <!-- <div>
+
+                                <label for="" class="mt-2"> <small>Enter Otp</small></label> 
+                                    <input type="number" max={4} class="form-control " placeholder="OTP" value="" >
+                                    <p class="text-danger small m-0 p-0" ></p>
+                                <button class="btn btn-dark mt-2">
+                                    Confirm
+                                </button>
+
+                            </div> -->
+
+                            
+                            
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="location.reload();">Close</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+
+
+
+                </div>
+            </div>
+           
                 </div> <!-- row.// -->
             </div> <!-- card-body .// -->
            

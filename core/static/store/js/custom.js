@@ -15,37 +15,166 @@ function getCookie(name) {
 }
 
 
+//password match check
+
+function matchPassword(field1,field2) {  
+    var pw1 = document.getElementById(field1);  
+    var pw2 = document.getElementById(field2); 
+    if(pw1.value != pw2.value)  
+    {   
+      return false
+    } else {  
+      return true
+    }  
+  }  
 
 
 
 
+//UPDATE USER BASIC FIELDS 
+
+function editFieldUserProfile(number) {
+    element = document.getElementById('userProfileField' + number)
+    element.readOnly=false;
+    element.focus()
+    element.setSelectionRange(element.value.length, element.value.length);
+};
+
+//first name and last name
+function UpdateFieldUserProfile(field) {
+
+        url = '/users/basic/update'
+        var data = {
+            field: field.name,
+            value: field.value,
+
+        };
+        
+        $.ajax({
+            type: "POST",
+            url: url,  // Replace with the actual URL for your view
+            dataType: "json",
+            data: JSON.stringify(data),
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken"), 
+              },
+            success: (data) => {
+                console.log(data.status);
+              },
+            error: (error) => {
+                alert(error)
+              }
+        });
+
+};
+
+//password change user
+function UpdateFieldUserProfilePassword(get_old_password,get_password1,get_password2) {
+
+        document.getElementById(get_old_password+'Error').innerText = ''
+        document.getElementById(get_password1+'Error').innerText = ''
+        document.getElementById(get_password2+'Error').innerText = ''
+
+        var old_password = document.getElementById(get_old_password)
+        var password1 = document.getElementById(get_password1)
+        var password2 = document.getElementById(get_password2)
+
+        if (!old_password.value){
+          document.getElementById(get_old_password+'Error').innerText = 'Please Enter Password'
+          return
+        }
+
+        if (!password1.value){
+          document.getElementById(get_password1+'Error').innerText = 'Please Enter Password'
+          return
+        }
+
+        if (!password2.value){
+          document.getElementById(get_password2+'Error').innerText = 'Please Enter Password'
+          return
+        }
+
+        if(matchPassword(get_password1,get_password2))
+        {
+          url = '/users/basic/changepassword'
+          var data = {
+            old_password: old_password.value,
+            password2: password2.value,
+          };
+          
+          $.ajax({
+              type: "POST",
+              url: url,  // Replace with the actual URL for your view
+              dataType: "json",
+              data: JSON.stringify(data),
+              headers: {
+                  "X-Requested-With": "XMLHttpRequest",
+                  "X-CSRFToken": getCookie("csrftoken"), 
+                },
+                success: (data) => {
+                  if (data.status === "success") {
+                    // Password change success
+                    console.log(data);
+                    location.reload();
+                } else {
+                    // Password change error
+                    console.log(data);
+                    // Display the error message on the page
+                    document.getElementById(get_old_password + 'Error').innerText =data.message;
+                }
+              },
+              error: (xhr, status, error) => {
+                  // Display the error message on the page
+                  document.getElementById(get_old_password + 'Error').innerText = 'Error: ' + xhr.responseText;
+                  console.log("error");
+                  console.log(error);
+              }
+          });
+          
+        }
+        else{
+          document.getElementById(get_password2+'Error').innerText = 'Password Not Match'
+        }
+
+};
 
 
+//password change user send mail 
+function sendPasswordResetOtpMail() {
+        document.getElementById('sendPasswordResetOtpMailSpinnner').classList.remove('d-none')
+        document.getElementById('sendPasswordResetOtpMailBtn').classList.add('disabled')
+        console.log("call");
+        url ='/users/resetpassword/verify/otp/'
 
+        $.ajax({
+            type: "POST",
+            url: url,  // Replace with the actual URL for your view
+            dataType: "json",
+            // data: JSON.stringify(data),
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken"), 
+              },
+              success: (data) => {
+                if (data.status === "success") {
+                  // Password change success
+                  var inTwoMinutes = new Date(new Date().getTime() + 2 * 60 * 1000);
+                  Cookies.set('can_otp_enter', 'True', { expires: inTwoMinutes, path: '/' });
+                  window.location = data.redirect_url;
+              } else {
+                  // Password change error
+                  console.log(data);
+                  // Display the error message on the page
+              }
+                
+            },
+            error: (xhr, status, error) => {
+                // Display the error message on the page
+                console.log("error");
+                console.log(error);
+            }
+        });
+          
 
-// #Cancel User Order
-function cancelUserOrder(order_number,user) {
-    // var selectedOption = selectElement.options[selectElement.selectedIndex].text;
-    // var data = {
-    //     order_number: order_number,
-    //     selected_option: selectedOption
-    // };
-    alert(order_number+user)
-    // $.ajax({
-    //     type: "POST",
-    //     url: "change/status",  // Replace with the actual URL for your view
-    //     dataType: "json",
-    //     data: JSON.stringify(data),
-    //     headers: {
-    //         "X-Requested-With": "XMLHttpRequest",
-    //         "X-CSRFToken": getCookie("csrftoken"), 
-    //       },
-    //     success: (data) => {
-    //         console.log(data);
-    //       },
-    //     error: (error) => {
-    //         console.log(error);
-    //         alert(error)
-    //       }
-    // });
-}
+};

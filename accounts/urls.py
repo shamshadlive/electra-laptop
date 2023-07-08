@@ -18,11 +18,11 @@ urlpatterns = [
     path("resetpassword", views.resetpassword, name="reset-password"),
     
     
-    # #otp Verification
-    
-    # path('login/otp', views.otp_login, name='otp-login'),
-    # path('home', views.home, name='home'),
-    # path('otp/<str:uid>/', views.otpVerify, name='otp')
+    #user field update ajax
+    path("users/basic/update", views.update_fields_user, name="update_fields_user"),
+    path("users/basic/changepassword", views.change_user_password_with_oldpass, name="change_user_password_with_oldpass"),
 
+    path("users/resetpassword/verify/otp/", views.change_user_password_with_email, name="change_user_password_with_email"),
+    path("users/resetpassword/otp/<uid>", views.change_user_password_with_email_verify, name="change_user_password_with_email_verify"),
     
 ]

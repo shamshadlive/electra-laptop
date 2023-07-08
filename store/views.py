@@ -51,7 +51,7 @@ def product_variant_detail(request,category_slug,product_variant_slug):
         print(e)
         return redirect('store')
     
-    product_variants = Product_Variant.objects.filter(product=single_product_variant.product)
+    product_variants = Product_Variant.objects.filter(product=single_product_variant.product,is_active=True)
     product_variants_count=product_variants.count()
    
     
