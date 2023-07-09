@@ -145,7 +145,7 @@ function sendPasswordResetOtpMail() {
         document.getElementById('sendPasswordResetOtpMailSpinnner').classList.remove('d-none')
         document.getElementById('sendPasswordResetOtpMailBtn').classList.add('disabled')
         console.log("call");
-        url ='/users/resetpassword/verify/otp/'
+        var url ='/users/resetpassword/verify/otp/'
 
         $.ajax({
             type: "POST",
@@ -178,3 +178,104 @@ function sendPasswordResetOtpMail() {
           
 
 };
+
+
+function sendEmailChangeOtpMail(){
+  var new_email_id = document.getElementById('sendEmailChangeOtpMailNewMail')
+  document.getElementById('sendEmailChangeOtpMailNewMailError').innerText = ''
+  if (!new_email_id.value){
+    document.getElementById('sendEmailChangeOtpMailNewMailError').innerText = 'Please enter a value'
+    return
+  }
+
+  var url = '/users/update/email'
+
+  var data = {
+    new_email: new_email_id.value,
+  };
+
+  $.ajax({
+    type: "POST",
+    url: url,  // Replace with the actual URL for your view
+    dataType: "json",
+    data: JSON.stringify(data),
+    headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"), 
+      },
+      success: (data) => {
+        if (data.status === "success") {
+          // email success
+          console.log(data);
+          document.getElementById('sendEmailChangeOtpMailNewMailOtpDiv').classList.remove('d-none')
+          document.getElementById('sendEmailChangeOtpMailNewMailCnfBTn').classList.add('d-none')
+          document.getElementById('sendEmailChangeOtpMailNewMail').setAttribute('readonly', true);
+
+      } else {
+          // Password change error
+          console.log(data);
+          document.getElementById('sendEmailChangeOtpMailNewMailError').innerText = data.message
+
+          // Display the error message on the page
+      }
+        
+    },
+    error: (xhr, status, error) => {
+        // Display the error message on the page
+        console.log("error");
+        console.log(error);
+    }
+});
+  
+}
+
+function sendEmailChangeOtpMailVerify(){
+  console.log("ok");
+  var new_email_id = document.getElementById('sendEmailChangeOtpMailNewMail')
+  var otp = document.getElementById('sendEmailChangeOtpMailNewMailOtp')
+
+  document.getElementById('sendEmailChangeOtpMailNewMailOtpError').innerText = ''
+  if (!otp.value){
+    document.getElementById('sendEmailChangeOtpMailNewMailOtpError').innerText = 'Please enter a value'
+    return
+  }
+
+  var url = '/users/update/email/verify'
+
+  var data = {
+    new_email: new_email_id.value,
+    otp : otp.value
+  };
+
+  $.ajax({
+    type: "POST",
+    url: url,  // Replace with the actual URL for your view
+    dataType: "json",
+    data: JSON.stringify(data),
+    headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"), 
+      },
+      success: (data) => {
+        if (data.status === "success") {
+          // email success
+          console.log(data);
+          location.reload();
+
+      } else {
+          // Password change error
+          console.log(data);
+          document.getElementById('sendEmailChangeOtpMailNewMailOtpError').innerText = data.message
+
+          // Display the error message on the page
+      }
+        
+    },
+    error: (xhr, status, error) => {
+        // Display the error message on the page
+        console.log("error");
+        console.log(error);
+    }
+});
+  
+}

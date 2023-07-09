@@ -25,4 +25,7 @@ urlpatterns = [
     path("users/resetpassword/verify/otp/", views.change_user_password_with_email, name="change_user_password_with_email"),
     path("users/resetpassword/otp/<uid>", views.change_user_password_with_email_verify, name="change_user_password_with_email_verify"),
     
+    path("users/update/email", views.change_email_with_email, name="change_email_with_email"),
+    path("users/update/email/verify", views.change_email_with_email_verify, name="change_email_with_email_verify"),
+    
 ]

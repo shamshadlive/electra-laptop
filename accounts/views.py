@@ -327,3 +327,66 @@ def change_user_password_with_email_verify(request,uid):
 
     
     
+   
+#change email adress
+def change_email_with_email(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if request.method == "POST" and is_ajax:
+        data = json.load(request)
+        get_new_email = data['new_email']
+        
+        if (request.user.email == get_new_email):
+            return JsonResponse({"status": "error", "message": 'Entered Email is Same as Current email'})
+        
+        try:
+            user = User.objects.get(email=request.user.email)
+            #SEND OTP TO MAIL
+            otp=random.randint(1000,9999)
+            user_otp,created = UserOtp.objects.update_or_create(user=user, defaults={'otp': f'{otp}'})
+            
+            current_site = get_current_site(request)
+            mail_subject = 'Update Your Email Adress'
+            message = render_to_string ('accounts/change_email_with_email_template.html',{
+                'user' : user,
+                'domain' : current_site,
+                'otp':user_otp.otp,
+                
+            })
+            to_email = get_new_email
+            send_email = EmailMessage(mail_subject,message,to=[to_email])
+            send_email.content_subtype = 'html'
+            send_email.send() 
+
+            return JsonResponse({"status": "success", "message": 'Enter Otp To Change'})
+        except:
+            return JsonResponse({"status": "error", "message": 'Unable to send mail , Please check mail again'})
+            
+    else:
+        # Return a JSON response indicating an invalid request
+        return JsonResponse({"status": "error", "message": "Invalid request"})
+
+        
+def change_email_with_email_verify(request):  
+    
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if request.method == "POST" and is_ajax:
+        data = json.load(request)
+        get_new_email = data['new_email']
+        get_otp = data['otp']
+        
+        user = User.objects.get(id=request.user.id)
+     
+        userOtp = UserOtp.objects.filter(user=user,otp=get_otp).exists()
+        
+        if userOtp:
+            user.email = get_new_email
+            user.save()
+            messages.success(request, "Email Changed Successfully")
+            return JsonResponse({"status": "success", "message": 'OTP OK'})
+        else:
+            return JsonResponse({"status": "error", "message": 'Invalid Otp'})
+            
+            
+        
+       
+        
