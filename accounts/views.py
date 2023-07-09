@@ -17,6 +17,7 @@ from cart.models import Cart,CartItem
 from cart.views import _cart_id
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
+from accounts.helper.message_handler import MessageHandler
 
 import json
 from django.http import JsonResponse
@@ -388,5 +389,58 @@ def change_email_with_email_verify(request):
             
             
         
-       
+ 
+#change mobile number
+def change_mobile_with_otp(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if request.method == "POST" and is_ajax:
+        data = json.load(request)
+        get_new_mobile = data['new_mobile']
+        
+        if (request.user.phone_number == get_new_mobile):
+            return JsonResponse({"status": "error", "message": 'Entered Mobile is Same as Current Mobile'})
+        
+        try:
+            user = User.objects.get(phone_number=request.user.phone_number)
+            #SEND OTP TO Mobile
+            otp=random.randint(1000,9999)
+            user_otp,created = UserOtp.objects.update_or_create(user=user, defaults={'otp': f'{otp}'})
+            
+            try:
+                messagehandler=MessageHandler(8330099043,otp).send_otp_via_message()
+            except Exception as e:
+                print(e)
+                messages.error(request, "Unable To Send OTP Contact Admin")
+                return JsonResponse({"status": "error", "message": 'Unable to send otp , Please check mobile again'})
+            return JsonResponse({"status": "success", "message": get_new_mobile})
+        except:
+            return JsonResponse({"status": "error", "message": 'Unable to send mail , Please check mail again'})
+            
+    else:
+        # Return a JSON response indicating an invalid request
+        return JsonResponse({"status": "error", "message": "Invalid request"})
+
+        
+def change_mobile_with_otp_verify(request):  
+    
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if request.method == "POST" and is_ajax:
+        data = json.load(request)
+        get_new_mobile = data['new_mobile']
+        get_otp = data['otp']
+        
+        user = User.objects.get(id=request.user.id)
+     
+        userOtp = UserOtp.objects.filter(user=user,otp=get_otp).exists()
+        
+        if userOtp:
+            print(get_new_mobile)
+            user.phone_number = get_new_mobile
+            user.save()
+            messages.success(request, "Phone Changed Successfully")
+            return JsonResponse({"status": "success", "message": 'OTP OK'})
+        else:
+            return JsonResponse({"status": "error", "message": 'Invalid Otp'})
+            
+            
         

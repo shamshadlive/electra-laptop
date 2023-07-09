@@ -72,7 +72,7 @@ def admin_login_otp(request):
         try:
             messagehandler=MessageHandler(request.POST['phone_number'],otp).send_otp_via_message()
         except Exception as e:
-            messages.   error(request, "Unable To Send OTP Contact Admin")
+            messages.error(request, "Unable To Send OTP Contact Admin")
             return render(request, 'admincontrol/login_otp.html')
             
         red=redirect(f'otp/{user_otp.uid}')

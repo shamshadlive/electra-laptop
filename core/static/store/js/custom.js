@@ -279,3 +279,111 @@ function sendEmailChangeOtpMailVerify(){
 });
   
 }
+
+
+
+
+
+function sendMobChangeOtp(){
+  var new_mobile = document.getElementById('sendMobileChangeOtpMobNewMob')
+  document.getElementById('sendMobileChangeOtpMobNewMobError').innerText = ''
+  if (!new_mobile.value){
+    document.getElementById('sendMobileChangeOtpMobNewMobError').innerText = 'Please enter a value'
+    return
+  }
+
+  var url = '/users/update/mobile'
+
+  var data = {
+    new_mobile: new_mobile.value,
+  };
+
+  $.ajax({
+    type: "POST",
+    url: url,  // Replace with the actual URL for your view
+    dataType: "json",
+    data: JSON.stringify(data),
+    headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"), 
+      },
+      success: (data) => {
+        if (data.status === "success") {
+          // email success
+          console.log(data);
+          document.getElementById('sendMobileChangeOtpMobNewMobOtpDiv').classList.remove('d-none')
+          document.getElementById('sendMobileChangeOtpMobNewMobCnfBTn').classList.add('d-none')
+          document.getElementById('sendMobileChangeOtpMobNewMob').setAttribute('readonly', true);
+         
+
+      } else {
+          // Password change error
+          console.log(data);
+          document.getElementById('sendMobileChangeOtpMobNewMobOtpError').innerText = data.message
+
+          // Display the error message on the page
+      }
+        
+    },
+    error: (xhr, status, error) => {
+        // Display the error message on the page
+        console.log("error");
+        console.log(error);
+    }
+});
+  
+}
+
+
+
+function sendMobChangeOtpVerify(){
+  var new_mobile = document.getElementById('sendMobileChangeOtpMobNewMob')
+  var otp = document.getElementById('sendMobileChangeOtpMobNewMobOtp')
+
+  document.getElementById('sendMobileChangeOtpMobNewMobOtpError').innerText = ''
+  if (!otp.value){
+    document.getElementById('sendMobileChangeOtpMobNewMobOtpError').innerText = 'Please enter a value'
+    return
+  }
+
+  var url = '/users/update/mobile/verify'
+
+  var data = {
+    new_mobile: new_mobile.value,
+    otp : otp.value
+  };
+
+  $.ajax({
+    type: "POST",
+    url: url,  // Replace with the actual URL for your view
+    dataType: "json",
+    data: JSON.stringify(data),
+    headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"), 
+      },
+      success: (data) => {
+        if (data.status === "success") {
+          // email success
+          console.log(data);
+          location.reload();
+
+      } else {
+          // Password change error
+          console.log(data);
+          document.getElementById('sendEmailChangeOtpMailNewMailOtpError').innerText = data.message
+
+          // Display the error message on the page
+      }
+        
+    },
+    error: (xhr, status, error) => {
+        // Display the error message on the page
+        console.log("error");
+        console.log(error);
+    }
+});
+  
+}
+
+
