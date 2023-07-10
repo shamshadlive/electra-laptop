@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from .secure_variables import EMAIL_PASSWORD,EMAIL_USER,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_VERIFIED_NUMBER
+from .secure_variables import EMAIL_PASSWORD,EMAIL_USER,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_VERIFIED_NUMBER,_RAZOR_PAY_KEY_ID,_RAZOR_PAY_KEY_SECRET
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -172,3 +172,8 @@ ACCOUNT_SID= TWILIO_ACCOUNT_SID
 AUTH_TOKEN=TWILIO_AUTH_TOKEN
 COUNTRY_CODE='+91'
 TWILIO_PHONE_NUMBER=TWILIO_VERIFIED_NUMBER
+
+
+#settings for RazorPay
+RAZORPAY_KEY_ID = _RAZOR_PAY_KEY_ID
+RAZORPAY_KEY_SECRET = _RAZOR_PAY_KEY_SECRET

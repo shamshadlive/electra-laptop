@@ -3,6 +3,16 @@ from accounts.models import User,AdressBook
 from product_management.models import Product_Variant
 
 # Create your models here.
+class PaymentMethod(models.Model):
+    method_name = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.method_name
+
+
+
+
 class Payment(models.Model):
     PAYMENT_STATUS_CHOICES =(
         ("PENDING", "Pending"),
@@ -10,10 +20,13 @@ class Payment(models.Model):
         ("SUCCESS", "Success"),
         )
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    payment_id = models.CharField(max_length=100)
-    payment_method = models.CharField(max_length=100)
+    payment_id = models.CharField(max_length=100,null=True,blank=True)
+    payment_order_id = models.CharField(max_length=100,null=True,blank=True)
+    payment_signature = models.CharField(max_length=100,null=True,blank=True)
+    payment_method = models.CharField(max_length=100,null=True,blank=True)
     amount_paid = models.CharField(max_length=30)
     payment_status= models.CharField(choices = PAYMENT_STATUS_CHOICES,max_length=20)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
@@ -31,16 +44,7 @@ class Order(models.Model):
     payment = models.ForeignKey(Payment,on_delete=models.SET_NULL,null=True,blank=True)
     order_number = models.CharField(max_length=100)
     shipping_address = models.ForeignKey(AdressBook,on_delete=models.SET_NULL,null=True)
-    #address later updated to adress table
-    # name = models.CharField(max_length=30)
-    # phone = models.CharField(max_length=20)
-    # email = models.EmailField(max_length=50)
-    # address_line_1 = models.CharField(max_length=50)
-    # address_line_2 = models.CharField(max_length=50,blank=True,null=True)
-    # country = models.CharField(max_length=50)
-    # state = models.CharField(max_length=50)
-    # city = models.CharField(max_length=50)
-    # pincode = models.CharField(max_length=20)
+    
     
     order_note = models.CharField(max_length=100,blank=True,null=True)
     order_total = models.DecimalField(max_digits=12, decimal_places=2)
@@ -57,7 +61,6 @@ class Order(models.Model):
 class OrderProduct(models.Model):
 
     order = models.ForeignKey(Order,on_delete=models.CASCADE)
-    payment = models.ForeignKey(Payment,on_delete=models.SET_NULL,null=True,blank=True)
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     product = models.ForeignKey(Product_Variant,on_delete=models.CASCADE)
     quantity = models.IntegerField()

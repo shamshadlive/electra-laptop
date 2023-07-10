@@ -6,7 +6,7 @@ from django.urls import reverse
 
 class Category(models.Model):
     cat_name = models.CharField(max_length=50,unique=True)
-    cat_slug = models.SlugField(unique=True, blank=True)
+    cat_slug = models.SlugField(unique=True, blank=True,max_length=200)
     is_active = models.BooleanField(default=True)
     parent_cat = models.ForeignKey('self',null=True,blank=True,on_delete=models.CASCADE)
 

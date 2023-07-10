@@ -1,14 +1,15 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,reverse
 from cart.models import CartItem
 from .forms import OrderForm,ChangeOrderStatusForm
-from .models import Order,Payment,OrderProduct
+from .models import Order,Payment,OrderProduct,PaymentMethod
 from product_management.models import Product_Variant
 import datetime
 from django.http import JsonResponse
 import json
 from django.contrib import messages
 from accounts.models import AdressBook
-
+import razorpay
+from django.conf import settings
 
 # Create your views here.
 
@@ -68,13 +69,20 @@ def place_order(request,total=0,quantity=0,cart_items=None):
             data.save()
             
             order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
-            context = {
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            payment = client.order.create({'amount':float(grand_total) * 1,"currency": "INR"})
+            # window.location.href = `{{success_url}}/?order_id={{order.order_number}}&method=RAZORPAY&payment_id=${response.razorpay_payment_id}&payment_order_id=${response.razorpay_order_id}&payment_sign=${response.razorpay_signature}`
+            
+            success_url = request.build_absolute_uri(reverse('payment-success'))
+            context = { 
                 'order':order,
                 'cart_items':cart_items,
                 'total':total,
                 'grand_total':grand_total,
                 'discount':discount,
-                'shipping_address':shipping_address
+                'shipping_address':shipping_address,
+                'payment':payment,
+                'success_url':success_url
             }
             return render(request, 'store/payment.html',context)
         else:
@@ -86,49 +94,115 @@ def place_order(request,total=0,quantity=0,cart_items=None):
             
 
             
-            
-def payment(request,method,order_number):
-    
+      
+def payment_success(request):
+    method = request.GET.get('method')
+    payment_id = request.GET.get('payment_id')
+    payment_order_id = request.GET.get('payment_order_id')
+    order_id = request.GET.get('order_id')
+    payment_sign = request.GET.get('payment_sign')
+
     if method == 'COD':
-        order = Order.objects.get(user=request.user,is_ordered=False,order_number=order_number)
-        payment = Payment(
-            user=request.user,
-            payment_id='PID-COD'+order_number,
-            payment_method=method,
-            amount_paid=order.order_total,
-            payment_status='SUCCESS',
-        )
-        payment.save()
-        order.payment = payment
-        order.is_ordered = True
-        order.save()
-        
-        #move cart items to order product table
-        cart_items = CartItem.objects.filter(user=request.user)
-        
-        for item in cart_items:
-            orderproduct = OrderProduct()
-            orderproduct.order_id = order.id
-            orderproduct.payment = payment
-            orderproduct.user_id = request.user.id
-            orderproduct.product_id = item.product.id
-            orderproduct.quantity = item.quantity
-            orderproduct.product_price = item.product.sale_price
-            orderproduct.ordered = True
-            orderproduct.save()
+        order = Order.objects.get(user=request.user,is_ordered=False,order_number=order_id)
+        payment_method_is_active = PaymentMethod.objects.filter(method_name=method,is_active=True).exists()
+        if payment_method_is_active:
+            payment = Payment(
+                user=request.user,
+                payment_id='PID-COD'+order_id,
+                payment_order_id = order_id,
+                payment_signature='Signed',   
+                payment_method=method,
+                amount_paid=order.order_total,
+                payment_status='SUCCESS',
+            )
+            payment.save()
+            order.payment = payment
+            order.is_ordered = True
+            order.save()
             
-            #reduce the quantity of soled produce
+            #move cart items to order product table
+            cart_items = CartItem.objects.filter(user=request.user)
             
-            product = Product_Variant.objects.get(id=item.product_id)
-            product.stock -= item.quantity
-            product.save()
-        
-        #clear the cart
-        CartItem.objects.filter(user=request.user).delete()
-        
-        request.session["order_number"] = order_number
-        request.session["payment_id"] = 'PID-COD'+order_number
-        return redirect('order_complete')
+            for item in cart_items:
+                orderproduct = OrderProduct()
+                orderproduct.order_id = order.id
+                orderproduct.user_id = request.user.id
+                orderproduct.product_id = item.product.id
+                orderproduct.quantity = item.quantity
+                orderproduct.product_price = item.product.sale_price
+                orderproduct.ordered = True
+                orderproduct.save()
+                
+                #reduce the quantity of soled produce
+                
+                product = Product_Variant.objects.get(id=item.product_id)
+                product.stock -= item.quantity
+                product.save()
+            
+            #clear the cart
+            CartItem.objects.filter(user=request.user).delete()
+            
+            request.session["order_number"] = order_id
+            request.session["payment_id"] = 'PID-COD'+order_id
+            return redirect('order_complete')
+        else:
+            print("payment faield")
+
+    elif method == 'RAZORPAY':
+        order = Order.objects.get(user=request.user,is_ordered=False,order_number=order_id)
+        payment_method_is_active = PaymentMethod.objects.filter(method_name=method,is_active=True).exists()
+        if payment_method_is_active:
+            payment = Payment(
+                user=request.user,
+                payment_id=payment_id,
+                payment_order_id = payment_order_id,
+                payment_signature=payment_sign,   
+                payment_method=method,
+                amount_paid=order.order_total,
+                payment_status='SUCCESS',
+            )
+            payment.save()
+            order.payment = payment
+            order.is_ordered = True
+            order.save()
+            
+            #move cart items to order product table
+            cart_items = CartItem.objects.filter(user=request.user)
+            
+            for item in cart_items:
+                orderproduct = OrderProduct()
+                orderproduct.order_id = order.id
+                orderproduct.user_id = request.user.id
+                orderproduct.product_id = item.product.id
+                orderproduct.quantity = item.quantity
+                orderproduct.product_price = item.product.sale_price
+                orderproduct.ordered = True
+                orderproduct.save()
+                
+                #reduce the quantity of soled produce
+                
+                product = Product_Variant.objects.get(id=item.product_id)
+                product.stock -= item.quantity
+                product.save()
+            
+            #clear the cart
+            CartItem.objects.filter(user=request.user).delete()
+            
+            request.session["order_number"] = order_id
+            request.session["payment_id"] = payment_id
+            return redirect('order_complete')
+        else:
+            print("Failed")
+    else:
+        return redirect('user-dashboard')
+    
+    
+    
+    
+    
+    
+    
+    
     
 def order_complete(request):
     try: 

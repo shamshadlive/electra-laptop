@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order,OrderProduct,Payment
+from .models import Order,OrderProduct,Payment,PaymentMethod
 # Register your models here.
 
 
@@ -7,7 +7,7 @@ from .models import Order,OrderProduct,Payment
 class OrderProductInline(admin.TabularInline):
     model = OrderProduct
     extra = 0
-    readonly_fields =['payment','user','product','product_price']
+    readonly_fields =['user','product','product_price']
 
 
 class OrderAdmin(admin.ModelAdmin):
@@ -20,3 +20,4 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(Order,OrderAdmin)
 admin.site.register(OrderProduct)
 admin.site.register(Payment)
+admin.site.register(PaymentMethod)
