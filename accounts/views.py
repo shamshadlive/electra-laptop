@@ -24,6 +24,7 @@ from django.http import JsonResponse
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
 import random
+from .forms import UserProfilePicForm
 def loginpage (request):
     
     if request.user.is_authenticated:
@@ -443,4 +444,12 @@ def change_mobile_with_otp_verify(request):
             return JsonResponse({"status": "error", "message": 'Invalid Otp'})
             
             
-        
+def update_profile_picture(request):
+    if request.method == 'POST':
+        form = UserProfilePicForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('user-dashboard')  
+    else:
+        return redirect('user-dashboard')
+    

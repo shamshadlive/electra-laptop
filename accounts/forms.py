@@ -5,7 +5,12 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         fields = ["first_name", "email", "password", "phone_number"]
-    
+   
+class UserProfilePicForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['profile_pic']
+         
 class AdressBookForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -16,5 +21,3 @@ class AdressBookForm(ModelForm):
     class Meta:
         model = AdressBook
         exclude = ('user','is_default','is_active')
-
-    

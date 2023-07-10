@@ -56,10 +56,29 @@ Electra - Cart
                    
                     <div class="container">
                         <div class="row justify-content-center">
-                            
+                            <div class="col-2">
+
+                            {% if request.user.profile_pic %}
+                                <img src="{{request.user.profile_pic.url}}" class="rounded-circle" style="max-width: 120px;"
+                                                        alt="Avatar" />
+                            {% else %}
                             <img src="{% static 'store/images/icons/userprofile.svg' %}" class="rounded-circle" style="max-width: 120px;"
                             alt="Avatar" />
-                            <a class="text-center small  text-decoration-none " href="#">Change</a>
+                            {% endif %}
+                                <form method="POST" enctype="multipart/form-data" action="{% url 'update_profile_picture' %}" >
+                                    {% csrf_token %}
+                                    
+                                            <input required type="file" class="form-control my-2" id="id_profile_pic" name="profile_pic">
+                                            <button type="submit" class="btn btn-outline-dark w-100">
+                                                Update
+                                            </button>
+                                       
+                                </form>
+
+                            </div>
+
+                                    
+
                         </div>
                         
     

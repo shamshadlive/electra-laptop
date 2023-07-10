@@ -60,7 +60,11 @@
             <li class="nav-item dropdown">
               {% if request.user.is_authenticated %}
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {% if request.user.profile_pic %}
+                    <img src="{{request.user.profile_pic.url}}" class="rounded-circle"  width="24" height="24" alt="user-icon" >
+                  {% else %}
                     <img src="{% static 'store/images/icons/user.svg' %}" width="24" height="24" alt="user-icon" >
+                  {% endif %}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="{% url 'user-dashboard' %}">Dashboard</a>     

@@ -31,5 +31,8 @@ urlpatterns = [
     path("users/update/mobile", views.change_mobile_with_otp, name="change_mobile_with_otp"),
     path("users/update/mobile/verify", views.change_mobile_with_otp_verify, name="change_mobile_with_otp_verify"),
     
+    # profile pic update 
+    
+    path("users/update/profilepic", views.update_profile_picture, name="update_profile_picture"),
     
 ]

@@ -42,7 +42,8 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=50,blank=True)
     phone_number = models.CharField(max_length=12,unique=True)
     email = models.EmailField(max_length=100,unique=True)
-   
+    
+    profile_pic = models.ImageField(upload_to='user/profile_pic/',null=True,blank=True)
     
     #required field
     date_joined = models.DateTimeField(auto_now_add=True)
