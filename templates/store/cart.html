@@ -1,5 +1,5 @@
 {% extends "base/store/base.html" %}
-
+{% load humanize %}
 {% load static %}
  
 {% block title %}
@@ -112,8 +112,10 @@ Electra - Cart
 
             <td> 
                 <div class="price-wrap">  
-                    <var class="price">Rs{{cart_item.sub_total}}</var> 
-                    <small class="text-muted">Each Price Rs{{cart_item.product.sale_price}}</small> 
+                    <var class="price">Rs{{cart_item.sub_total|intcomma }}</var> 
+                    <small class="text-muted">Each Price Rs{{cart_item.product.sale_price|intcomma }}
+                        <del>Rs{{cart_item.product.max_price|intcomma }}</del>
+                    </small> 
                 </div> <!-- price-wrap .// -->
             </td>
             <td class="text-right"> 
@@ -133,15 +135,15 @@ Electra - Cart
             <div class="card-body">
                 <dl class="dlist-align">
                   <dt>Total price:</dt>
-                  <dd class="text-right">Rs{{total}}</dd>
+                  <dd class="text-right">Rs {{total_with_orginal_price|intcomma }}</dd>
                 </dl>
                 <dl class="dlist-align">
                   <dt>Discount:</dt>
-                  <dd class="text-right"> Rs{{discount}}</dd>
+                  <dd class="text-right text-success"> -Rs {{discount|intcomma }}</dd>
                 </dl>
                 <dl class="dlist-align">
                   <dt>Grand Total:</dt>
-                  <dd class="text-right text-dark b"><strong>Rs{{grand_total}}</strong></dd>
+                  <dd class="text-right text-dark b"><strong>Rs{{grand_total|intcomma }}</strong></dd>
                 </dl>
                 <hr>
                 <p class="text-center mb-3">

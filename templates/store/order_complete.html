@@ -1,7 +1,7 @@
 {% extends "base/store/base.html" %}
 
 {% load static %}
- 
+{% load humanize %}
 {% block title %}
 Electra - Order Complete
 {% endblock %}
@@ -87,23 +87,35 @@ Electra - Order Complete
                                 
                                                 </td>
                                                 <td class="text-center">{{item.quantity}}</td>
-                                                <td class="text-center">{{item.product_price}}</td>
+                                                <td class="text-center">Rs {{item.product_price|intcomma}}
+                                                    <br>
+                                                    <del><small>Rs {{item.product.max_price |intcomma}}</small> </del>
+                                                </td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th colspan="2" class="text-right">Sub Total:</th>
-                                                <th class="text-center">Rs{{sub_total}}</th>
+                                                <th colspan="2" class="text-right">Total:</th>
+                                                <th class="text-center">Rs {{max_total|intcomma}}</th>
                                             </tr>
                                             <tr>
-                                                <th colspan="2" class="text-right">Discount:</th>
-                                                <th class="text-center">Rs 0</th>
+                                                <td colspan="2" class="text-right">Discount:</td>
+                                                <td class="text-center text-success"> -Rs {{discount|intcomma}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="2" class="text-right">Sub Total:</th>
+                                                <th class="text-center">Rs {{sub_total|intcomma}}</th>
                                             </tr>
                                             
                                             <tr>
-                                                <th colspan="2" class="text-right">Grand Total:</th>
-                                                <th class="text-center">{{order.order_total}}</th>
+                                                <td colspan="2" class="text-right">Additional Discount:  ({{order.coupon_code}})</td>
+                                                <td class="text-center text-success"> - Rs {{order.additional_discount|intcomma}}</td>
+                                            </tr>
+                                            
+                                            <tr>
+                                                <th colspan="2" class="text-right">Grand Total Paid:</th>
+                                                <th class="text-center">Rs {{order.order_total|intcomma}}</th>
                                             </tr>
                                         </tfoot>
                                     </table>

@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,reverse
 from cart.models import CartItem
 from .forms import OrderForm,ChangeOrderStatusForm
 from .models import Order,Payment,OrderProduct,PaymentMethod
-from product_management.models import Product_Variant
+from product_management.models import Product_Variant,Coupon
 import datetime
 from django.http import JsonResponse
 import json
@@ -13,7 +13,7 @@ from django.conf import settings
 
 # Create your views here.
 
-def place_order(request,total=0,quantity=0,cart_items=None):
+def place_order(request,quantity=0,cart_items=None):
     current_user = request.user
     
     #if cart count <=0 
@@ -22,20 +22,41 @@ def place_order(request,total=0,quantity=0,cart_items=None):
     if cart_count <=0:
         return redirect('cart')
     
+    sale_total = 0 
+    max_total = 0
+    discount = 0
+    grand_total =0
+    additional_discount = 0
     for cart_item in cart_items:
-            total += ( cart_item.product.sale_price * cart_item.quantity)
+            sale_total += ( cart_item.product.sale_price * cart_item.quantity)
+            max_total += ( cart_item.product.max_price * cart_item.quantity)
             
-    
-    grand_total=0
-    discount=0
-    grand_total = discount+total
-    
+   
     if request.method == 'POST':
         selected_address_id = request.POST.get('address')
+        coupon_code = request.POST.get('coupon_code')
+        print(coupon_code)
         if selected_address_id is None:
             messages.error(request, "Please Choose A Address")
             return redirect('checkout')
+        
         form = OrderForm(request.POST)
+        coupon = False
+        if coupon_code:
+            try:
+                coupon = Coupon.objects.get(coupon_code__iexact=coupon_code,is_active=True)
+                if coupon.minimum_amount > sale_total:
+                    messages.error(request, "Coupon is Not Applicable For This Order")
+                    return redirect('checkout')
+                else:
+                    additional_discount =  sale_total * coupon.discount_percentage /100
+                    sale_total = sale_total - additional_discount
+            except Coupon.DoesNotExist:
+                messages.error(request, "Coupon is Unavailable")
+                return redirect('checkout')
+        
+        grand_total = sale_total
+        discount = max_total - sale_total
         if form.is_valid():
             #store in order table
             data = Order()
@@ -48,6 +69,11 @@ def place_order(request,total=0,quantity=0,cart_items=None):
                 messages.error(request, "Please Choose A Address")
                 return redirect('checkout')
             
+            if coupon:
+                data.coupon_code = coupon
+            
+            
+            data.additional_discount = additional_discount
             data.shipping_address = shipping_address
             data.order_note = form.cleaned_data['order_note']
             data.order_total = grand_total
@@ -70,7 +96,10 @@ def place_order(request,total=0,quantity=0,cart_items=None):
             
             order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-            payment = client.order.create({'amount':float(grand_total) * 100,"currency": "INR"})
+            try:
+                payment = client.order.create({'amount':float(grand_total) * 100,"currency": "INR"})
+            except Exception as e:
+                payment = False
             payment_methods = PaymentMethod.objects.filter(is_active=True)
             # window.location.href = `{{success_url}}/?order_id={{order.order_number}}&method=RAZORPAY&payment_id=${response.razorpay_payment_id}&payment_order_id=${response.razorpay_order_id}&payment_sign=${response.razorpay_signature}`
             
@@ -79,9 +108,15 @@ def place_order(request,total=0,quantity=0,cart_items=None):
             context = { 
                 'order':order,
                 'cart_items':cart_items,
-                'total':total,
+                
                 'grand_total':grand_total,
+                'sale_total':sale_total,
+                'max_total':max_total,
                 'discount':discount,
+                'additional_discount':additional_discount,
+                'coupon' : coupon,
+                
+                
                 'shipping_address':shipping_address,
                 'payment':payment,
                 'success_url':success_url,
@@ -107,7 +142,10 @@ def payment_success(request):
     payment_sign = request.GET.get('payment_sign')
 
     if method == 'COD':
-        order = Order.objects.get(user=request.user,is_ordered=False,order_number=order_id)
+        try:
+            order = Order.objects.get(user=request.user,is_ordered=False,order_number=order_id)
+        except Exception:
+            return redirect('home')
         payment_method_is_active = PaymentMethod.objects.filter(method_name=method,is_active=True).exists()
         if payment_method_is_active:
             payment = Payment(
@@ -229,24 +267,30 @@ def order_complete(request):
                 order = Order.objects.get(order_number=order_number,is_ordered=True)
                 ordered_products = OrderProduct.objects.filter(order_id=order.id)
                 sub_total = 0
+                max_total = 0
                 for i in ordered_products:
                     sub_total += i.product_price * i.quantity
+                    max_total += i.product.max_price * i.quantity
                 payment = Payment.objects.get(payment_id=payment_id)
                 context = {
                     'order':order,
                     'order_number':order_number,
                     'payment':payment,
                     'sub_total':sub_total,
+                    'max_total':max_total,
+                    'discount':(max_total-sub_total),
                     'ordered_products':ordered_products
                 }
                 del request.session['order_number']
                 del request.session['payment_id']
                 return render(request, 'store/order_complete.html',context)
-            except Exception:
+            except Exception as e:
+                print(e)
                 return redirect('home')
             
                 
-    except:
+    except Exception as e:
+        print(e)
         return redirect('home')
     
     

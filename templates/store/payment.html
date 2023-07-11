@@ -1,4 +1,5 @@
 {% extends "base/store/base.html" %}
+{% load humanize %}
 
 {% load static %}
  
@@ -91,8 +92,8 @@ Electra - Cart
                                         </td>
                                         <td> 
                                             <div class="price-wrap">  
-                                                <var class="price">Rs{{cart_item.sub_total}}</var> 
-                                                <small class="text-muted">Each Price Rs{{cart_item.product.sale_price}}</small> 
+                                                <var class="price">Rs{{cart_item.sub_total|intcomma }}</var> 
+                                                <small class="text-muted">Each Price Rs{{cart_item.product.sale_price|intcomma }}</small> 
                                             </div> <!-- price-wrap .// -->
                                         </td>
                                        
@@ -139,18 +140,33 @@ Electra - Cart
              <!-- card.// -->
             <div class="card mt-2">
             <div class="card-body">
-                
+                {% if coupon %}
+                <div class="card my-2">
+                                    <div class="card-body bg-opacity-25 bg-success ">
+                                        Coupon Applied ! <b>{{coupon.coupon_code}}</b> <br>
+                                        <hr>
+                                        <small>{{coupon.description}}</small>
+                                    </div>
+                </div>
+                {% endif %}
+
                 <dl class="dlist-align">
                   <dt>Total price:</dt>
-                  <dd class="text-right">Rs{{total}}</dd>
+                  <dd class="text-right">Rs{{max_total|intcomma }}</dd>
                 </dl>
                 <dl class="dlist-align">
                   <dt>Discount:</dt>
-                  <dd class="text-right"> Rs{{discount}}</dd>
+                  <dd class="text-right  text-success"> - Rs{{discount|intcomma }}</dd>
                 </dl>
+
+                <dl class="dlist-align">
+                  <dt>Additional Discount:</dt>
+                  <dd class="text-right text-success"> - Rs{{additional_discount|intcomma }}</dd>
+                </dl>
+
                 <dl class="dlist-align">
                   <dt>Grand Total:</dt>
-                  <dd class="text-right text-dark b"><strong>Rs{{grand_total}}</strong></dd>
+                  <dd class="text-right text-dark b"><strong>Rs{{grand_total|intcomma }}</strong></dd>
                 </dl>
                 <hr>
                 <p class="text-center mb-3">
@@ -160,7 +176,9 @@ Electra - Cart
                     {% for method in payment_methods %}
                     
                     {% if method.method_name == 'RAZORPAY' %}
-                    <button id="rzp-button1" class="btn btn-primary my-2 w-100">Pay with Razorpay</button>
+                        {% if payment %}
+                            <button id="rzp-button1" class="btn btn-primary my-2 w-100">Pay with Razorpay</button>
+                        {% endif %}
                     {% endif %}
                     
                     {% if method.method_name == 'COD' %}
@@ -223,7 +241,7 @@ Electra - Cart
         console.log(
             response.error.description
         )
-        window.location.href=`{{failed_url}}?error_code=${response.error.code}&error_description=${response.error.description}&error_reason=${response.error.reason}&error_payment_id=${response.error.metadata.payment_id}&error_order_id=${response.error.metadata.order_id}&method=COD`
+        //window.location.href=`{{failed_url}}?error_code=${response.error.code}&error_description=${response.error.description}&error_reason=${response.error.reason}&error_payment_id=${response.error.metadata.payment_id}&error_order_id=${response.error.metadata.order_id}&method=COD`
         //alert(response.error.code);
         //alert(response.error.description);
         //alert(response.error.source);

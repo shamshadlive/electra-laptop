@@ -1,5 +1,5 @@
 {% extends "base/store/base.html" %}
-
+{% load humanize %}
 {% load static %}
  
 {% block title %}
@@ -175,8 +175,8 @@ Electra - Home
                         </a>
                         
                         <div class="price-wrap mt-2">
-                            <span class="price">₹{{ variant.sale_price }}</span>
-                            <del class="price-old">₹{{ variant.max_price }}</del>
+                            <span class="price">₹{{ variant.sale_price|intcomma }}</span>
+                            <del class="price-old">₹{{ variant.max_price|intcomma }}</del>
                             <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
                             </div>
                         </div> <!-- price-wrap.// -->

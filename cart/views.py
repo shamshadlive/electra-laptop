@@ -1,11 +1,13 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from product_management.models import Product_Variant
+from product_management.models import Product_Variant,Coupon
 from .models import Cart,CartItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
+import json
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -17,7 +19,7 @@ def _cart_id(request):
     return cart
 
 def cart(request,total=0,quantity=0,cart_items=None):
-    
+    total_with_orginal_price =0
     try:
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user,is_active=True)
@@ -27,20 +29,22 @@ def cart(request,total=0,quantity=0,cart_items=None):
         
         for cart_item in cart_items:
             total += ( cart_item.product.sale_price * cart_item.quantity)
+            total_with_orginal_price +=( cart_item.product.max_price * cart_item.quantity)
             quantity += cart_item.quantity
             
     except ObjectDoesNotExist:
         pass
     
-    discount = 0
-    grand_total = total+discount
+    discount = total_with_orginal_price - total
+    grand_total = total
     
     context = {
         'total':total,
         'quantity':quantity,
         'cart_items':cart_items,
         'grand_total':grand_total,
-        'discount':discount
+        'discount':discount,
+        'total_with_orginal_price':total_with_orginal_price
     }
     return render(request, 'store/cart.html',context)
 
@@ -135,7 +139,7 @@ def remove_cart_item(request,product_id):
 
 @login_required(login_url='login-page')
 def checkout(request,total=0,quantity=0,cart_items=None):
-    
+    total_with_orginal_price=0
     try:
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user,is_active=True)
@@ -144,6 +148,7 @@ def checkout(request,total=0,quantity=0,cart_items=None):
             cart_items = CartItem.objects.filter(cart=cart,is_active=True)
         for cart_item in cart_items:
             total += ( cart_item.product.sale_price * cart_item.quantity)
+            total_with_orginal_price +=( cart_item.product.max_price * cart_item.quantity)
             quantity += cart_item.quantity
             product = Product_Variant.objects.get(id=cart_item.product.id)
             if (product.stock - cart_item.quantity) < 0:
@@ -155,16 +160,57 @@ def checkout(request,total=0,quantity=0,cart_items=None):
     except ObjectDoesNotExist:
         pass
     adress_form = AdressBookForm()
-    discount = 0
-    grand_total = total+discount
+    discount = total_with_orginal_price - total
+    grand_total = total
     addreses = AdressBook.objects.filter(user=request.user,is_active=True).order_by('-is_default')
+    coupons = Coupon.objects.filter(is_active=True)
     context = {
         'total':total,
         'quantity':quantity,
         'cart_items':cart_items,
+        'total_with_orginal_price':total_with_orginal_price,
         'grand_total':grand_total,
         'discount':discount,
         'addreses':addreses,
-        'adress_form':adress_form
+        'adress_form':adress_form,
+        'coupons':coupons
     }
     return render(request, 'store/checkout.html',context)
+
+
+def coupon_verify(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if request.method == "POST" and is_ajax:
+        data = json.load(request)
+        coupon_code = data.get('coupon_code')
+        
+        # Update the order status based on the order_number and selected_option
+        coupon = Coupon.objects.filter(coupon_code__iexact=coupon_code,is_active=True)
+        if not coupon.exists():
+            return JsonResponse({"status": "error", "message": "Invalid Coupon"})
+        grand_total=0
+        cart_items = CartItem.objects.filter(user=request.user,is_active=True)
+        for cart_item in cart_items:
+            grand_total += ( cart_item.product.sale_price * cart_item.quantity)
+        if coupon[0].minimum_amount > grand_total:
+             return JsonResponse({"status": "error", "message": "Minimum Purchase amount "+str(coupon[0].minimum_amount)})
+        
+        
+        return JsonResponse({"status": "success",
+                             "message":"Coupon Applied "+str(coupon[0].discount_percentage)+"% Offer",
+                             "coupon_code":coupon[0].coupon_code,
+                             "grand_total":grand_total,
+                             "discount_percentage":coupon[0].discount_percentage})
+        # try:
+        #     order = Order.objects.get(order_number=order_number)
+        #     order.order_status = selected_option
+        #     order.save()
+        #     return JsonResponse({"status": "success"})
+        # except Order.DoesNotExist:
+        #     return JsonResponse({"status": "error", "message": "Order Not Found"})
+        # Return a JSON response indicating success or failure
+        
+    else:
+        # Return a JSON response indicating an invalid request
+        return JsonResponse({"status": "error", "message": "Invalid request"})
+    

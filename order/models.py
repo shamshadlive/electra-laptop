@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import User,AdressBook
-from product_management.models import Product_Variant
+from product_management.models import Product_Variant,Coupon
 from django.db.models.signals import post_save 
 from django.dispatch import receiver
 # Create your models here.
@@ -46,6 +46,8 @@ class Order(models.Model):
     order_number = models.CharField(max_length=100)
     shipping_address = models.ForeignKey(AdressBook,on_delete=models.SET_NULL,null=True)
     
+    coupon_code = models.ForeignKey(Coupon,on_delete=models.SET_NULL,null=True,blank=True)
+    additional_discount = models.IntegerField(default=0,null=True)
     
     order_note = models.CharField(max_length=100,blank=True,null=True)
     order_total = models.DecimalField(max_digits=12, decimal_places=2)

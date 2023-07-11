@@ -29,6 +29,7 @@ def store (request,category_slug=None):
     else:
         product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True)
         product_variants_count = product_variants.count()
+    
     # paginator start
     paginator = Paginator(product_variants,6)
     page = request.GET.get('page')
@@ -36,6 +37,7 @@ def store (request,category_slug=None):
     
     context = {'product_variants':paged_products,
                'product_variants_count':product_variants_count}
+    
     return render(request, 'store/store.html',context)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -71,8 +73,13 @@ def user_dashboard(request):
 @login_required(login_url='login-page')
 def order_history(request):
     orders = Order.objects.filter(user=request.user,is_ordered=True).order_by('-created_at')
+    
+    paginator = Paginator(orders,6)
+    page = request.GET.get('page')
+    paged_products = paginator.get_page(page)
+    
     context = {
-        'orders':orders,
+        'orders':paged_products,
     }
     return render(request, 'store/order_history.html',context)
     
