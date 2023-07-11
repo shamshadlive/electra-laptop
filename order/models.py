@@ -1,7 +1,8 @@
 from django.db import models
 from accounts.models import User,AdressBook
 from product_management.models import Product_Variant
-
+from django.db.models.signals import post_save 
+from django.dispatch import receiver
 # Create your models here.
 class PaymentMethod(models.Model):
     method_name = models.CharField(max_length=100)
@@ -37,8 +38,8 @@ class Order(models.Model):
         ("New", "New"),
         ("Accepted", "Accepted"),
         ("Delivered", "Delivered"),
-        ("Cancelled_Admin", "Cancelled_Admin"),
-        ("Cancelled_User", "Cancelled_User"),
+        ("Cancelled_Admin", "Cancelled Admin"),
+        ("Cancelled_User", "Cancelled User"),
         )
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     payment = models.ForeignKey(Payment,on_delete=models.SET_NULL,null=True,blank=True)
@@ -71,3 +72,10 @@ class OrderProduct(models.Model):
     
     def __str__(self):
         return str(self.order)
+
+
+@receiver(post_save,sender=Payment)
+def delete_unordered_orders(sender, instance , **kwargs):
+    print("-----------")
+    order = Order.objects.filter(user=instance.user,is_ordered=False).delete()
+    pass

@@ -1,0 +1,43 @@
+{% extends "base/store/base.html" %}
+
+{% load static %}
+ 
+{% block title %}
+Electra - Order Complete
+{% endblock %}
+  
+{% block content %}
+
+
+<div class="containerjustify-content-center " style="margin-top: 50px;">
+    <center><i class="fas fa-check-circle" style="font-size: 72px;margin-bottom: 20px;color: #e32e06;"></i></center>
+    <h2 class="text-center">Sorry ! Order Not Placed ! </h2>
+    <div class="d-flex justify-content-center">
+        <div>
+            
+            <img src="{% static 'store/images/oops.png' %}" style="max-width: 400px;" alt="order Placed" >
+        </div>
+        
+    </div>
+    
+    <h6 class="text-center">Reason  </h6>
+        {% if messages %}
+        {% for message in messages %}
+        <p class="text-center">{{message}}</p>
+    
+        {% endfor %}
+        {% endif %}
+
+        <p class="text-center">
+            {{error_description}} <br>
+            <a href="{% url 'checkout' %}" >Retry Payment !</a>
+        </p>
+        
+
+</div>
+
+
+
+
+
+{% endblock %}

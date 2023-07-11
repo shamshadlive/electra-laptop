@@ -70,10 +70,12 @@ def place_order(request,total=0,quantity=0,cart_items=None):
             
             order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-            payment = client.order.create({'amount':float(grand_total) * 1,"currency": "INR"})
+            payment = client.order.create({'amount':float(grand_total) * 100,"currency": "INR"})
+            payment_methods = PaymentMethod.objects.filter(is_active=True)
             # window.location.href = `{{success_url}}/?order_id={{order.order_number}}&method=RAZORPAY&payment_id=${response.razorpay_payment_id}&payment_order_id=${response.razorpay_order_id}&payment_sign=${response.razorpay_signature}`
             
             success_url = request.build_absolute_uri(reverse('payment-success'))
+            failed_url = request.build_absolute_uri(reverse('payment-failed'))
             context = { 
                 'order':order,
                 'cart_items':cart_items,
@@ -82,7 +84,9 @@ def place_order(request,total=0,quantity=0,cart_items=None):
                 'discount':discount,
                 'shipping_address':shipping_address,
                 'payment':payment,
-                'success_url':success_url
+                'success_url':success_url,
+                'failed_url':failed_url,
+                'payment_methods':payment_methods
             }
             return render(request, 'store/payment.html',context)
         else:
@@ -146,7 +150,8 @@ def payment_success(request):
             request.session["payment_id"] = 'PID-COD'+order_id
             return redirect('order_complete')
         else:
-            print("payment faield")
+            messages.error(request, "Invalid Payment Method Found")
+            return redirect('payment-failed')
 
     elif method == 'RAZORPAY':
         order = Order.objects.get(user=request.user,is_ordered=False,order_number=order_id)
@@ -192,11 +197,21 @@ def payment_success(request):
             request.session["payment_id"] = payment_id
             return redirect('order_complete')
         else:
-            print("Failed")
+            messages.error(request, "Invalid Payment Method Found")
+            return redirect('payment-failed')
     else:
         return redirect('user-dashboard')
     
-    
+def payment_failed(request):
+    context = {
+    'method': request.GET.get('method'),
+    'error_code': request.GET.get('error_code'),
+    'error_description': request.GET.get('error_description'),
+    'error_reason': request.GET.get('error_reason'),
+    'error_payment_id': request.GET.get('error_payment_id'),
+    'error_order_id': request.GET.get('error_order_id')
+    }
+    return render(request, 'store/payment_failed.html',context)
     
     
     
