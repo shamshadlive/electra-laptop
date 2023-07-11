@@ -17,7 +17,7 @@
 {% endif %}
 
     <div class="card mb-3 " >
-      <div class="card-header bg-dark text-center "><h4 class="text-white">Ediy Category {{form.cat_name.value}}</h4> </div>
+      <div class="card-header bg-dark text-center "><h4 class="text-white">Edit Category {{form.cat_name.value}}</h4> </div>
       <div class="card-body">
        
         <form method="post">
@@ -59,7 +59,7 @@
         </div>
         </form>
         <p class="base-small-font mt-2">
-          <a  href="{% url 'admin-all-category'a %}">Go Back</a>
+          <a  href="{% url 'admin-all-category' %}">Go Back</a>
           <a class="text-danger" href="{% url 'admin-category-delete' cat_slug %}">Delete</a>
 
           </p>

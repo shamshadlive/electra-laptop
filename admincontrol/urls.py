@@ -52,6 +52,10 @@ urlpatterns = [
     path("atribute", extraView.all_atribute, name="admin-all-atribute"),
     path("atribute/create", extraView.create_atribute, name="admin-atribute-create"),
   
+    #coupon management
+    path("coupon", productView.all_coupon, name="admin-all-coupon"),
+    path("coupon/create", productView.create_coupon, name="admin-coupon-create"),
+    path("coupon/edit/<int:id>", productView.edit_coupon, name="admin-coupon-edit"),
     
     #atribute value management
     path("atribute_value", extraView.all_atribute_value, name="admin-all-atribute_value"),

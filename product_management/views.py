@@ -1,10 +1,10 @@
 from django.shortcuts import render
 
 # Create your views here.
-from .models import Product,Product_Variant,Atribute,Atribute_Value,Additional_Product_Image
+from .models import Product,Product_Variant,Atribute,Atribute_Value,Additional_Product_Image,Coupon
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib import messages
-from .forms import EditProductForm,EditProductVariantForm,CreateProductForm,CreateProductVariantForm,AddProductVariantForm
+from .forms import EditProductForm,EditProductVariantForm,CreateProductForm,CreateProductVariantForm,AddProductVariantForm,CreateCouponForm,EditCouponForm
 import os
 from urllib.parse import urljoin
 from django.conf import settings
@@ -165,12 +165,6 @@ def add_product_variant(request,product_slug):
     return render(request, 'admincontrol/product-variant-create.html',context)
 
 
-    
-
-
-
-
-
 def edit_product_variant(request,product_variant_slug):
     try:
         product_variant = Product_Variant.objects.get(product_variant_slug=product_variant_slug) 
@@ -216,7 +210,6 @@ def edit_product_variant(request,product_variant_slug):
     return render(request, 'admincontrol/product-variant-edit.html',context)
 
 
-
 def delete_product_variant(request,product_variant_slug):
     
     try:
@@ -230,3 +223,58 @@ def delete_product_variant(request,product_variant_slug):
     return redirect('admin-all-product')
    
     
+    
+
+#===========COUPON  MANAGEMENT ADMIN==================
+
+def all_coupon(request):
+    
+    coupons = Coupon.objects.all()
+    context = {
+        'coupons':coupons
+    }
+    return render(request, 'admincontrol/all_coupon.html',context)
+
+
+def create_coupon(request):
+    
+    form = CreateCouponForm()
+    if request.method == 'POST':
+        form = CreateCouponForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "coupon Created ")
+            return redirect('admin-all-coupon')
+        else:
+            context = {'form':form}
+            return render(request, 'admincontrol/coupon-create.html',context)
+        
+    context = {'form':form}
+    return render(request, 'admincontrol/coupon-create.html',context)
+
+
+def edit_coupon(request,id):
+    
+    try:
+        coupon = Coupon.objects.get(id=id)
+    except Coupon.DoesNotExist:
+        return redirect('admin-all-coupon')
+    except ValueError:
+        return redirect('admin-all-coupon')
+
+    form = EditCouponForm(instance=coupon)
+    
+    if request.method == 'POST':
+        form = EditCouponForm(request.POST,instance=coupon)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "coupon Updated")
+            return redirect('admin-coupon-edit',id)
+        else:
+            messages.error(request, form.errors)
+            return render(request, 'admincontrol/coupon-edit.html', {'form': form,'id':id})
+    context = {'form':form,'id':id}
+    return render(request, 'admincontrol/coupon-edit.html',context)
+    
+    
+ 

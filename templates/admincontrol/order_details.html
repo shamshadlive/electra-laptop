@@ -63,10 +63,10 @@
                          Method : {{payment.payment_method}}<br> 
                          Status :{{payment.payment_status}} ({{payment.created_at}})
                       </span>
-                      <p> 
-                       Shipping fee:  0 <br> 
-                       <span class="b">Total: Rs {{payment.amount_paid}} </span>
-                      </p>
+                     
+                       <div class="b">Additional Discount ({{order.coupon_code}}):- Rs {{order.additional_discount}} </div>
+                       <div class="b">Total Paid: Rs {{payment.amount_paid}} </div>
+                      
                   </div>
               </div> <!-- row.// -->
           </div> <!-- card-body .// -->
@@ -95,8 +95,11 @@
                       </var>
                   </td>
                   <td> Quantity <br> {{order_product.quantity}} </td>
-                  <td> Each Price <br> {{order_product.product_price}} </td>
-
+                  <td> Each Price <br>Rs {{order_product.product_price}}
+                    <br>
+                  <small> <del> Rs {{order_product.product.max_price}} </del></small>
+                 </td>
+                  
                   </tr>
               {% endfor %}
           </table>
