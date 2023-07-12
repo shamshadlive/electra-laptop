@@ -8,6 +8,7 @@ from order.models import Order,OrderProduct,Payment
 from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
 from django.views.decorators.cache import cache_control
+from django.db.models import Q
 
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 # Create your views here.
@@ -15,12 +16,14 @@ from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 
 
 def home (request):
+    
     return render(request, 'store/home.html')
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def store (request,category_slug=None):
     categories = None
     product_variants = None
+    search_query = request.GET.get('query')
     
     if category_slug !=None:
         category = get_object_or_404(Category,cat_slug=category_slug)
@@ -29,6 +32,16 @@ def store (request,category_slug=None):
     else:
         product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True)
         product_variants_count = product_variants.count()
+        
+    if search_query:
+        product_variants = product_variants.filter(
+            Q(product__product_name__icontains=search_query) |
+            Q(product__product_catg__cat_name__icontains=search_query) |
+            Q(product__product_brand__brand_name__icontains=search_query) |
+            Q(product__product_description__icontains=search_query)
+        )
+        product_variants_count = product_variants.count()
+
     
     # paginator start
     paginator = Paginator(product_variants,6)
@@ -36,7 +49,8 @@ def store (request,category_slug=None):
     paged_products = paginator.get_page(page)
     
     context = {'product_variants':paged_products,
-               'product_variants_count':product_variants_count}
+               'product_variants_count':product_variants_count,
+               'search_query':search_query}
     
     return render(request, 'store/store.html',context)
 

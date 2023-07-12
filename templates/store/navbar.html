@@ -1,5 +1,11 @@
 {% load static %}
 
+<style type="text/css">  
+  #nav-search-form input#nav-search-input::-webkit-input-placeholder {color:#999;}
+  #nav-search-form input#nav-search-input::-moz-placeholder          {color:#999;}
+  #nav-search-form input#nav-search-input:-moz-placeholder           {color:#999;}
+  #nav-search-form input#nav-search-input:-ms-input-placeholder      {color:#999;}
+</style> 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
     <a class="navbar-brand" href="{% url 'home' %}">
@@ -23,6 +29,20 @@
     
 </div>
 
+<div class="container-fluid col-12 d-flex d-lg-none">
+  
+    <div class="w-100 my-2">
+      <!-- <form class="w-100 nav-search-form"  id="nav-search-form" onsubmit="handleSearchForm(event)">
+        <input class=" form-control bg-black border-0 text-light" type="search" placeholder="Search Products..." id="nav-search-input">
+     </form> -->
+    </div>
+  
+  
+
+</div>
+
+
+
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
@@ -34,15 +54,12 @@
         
         </ul>
         <div class="input-group d-none d-lg-flex">
-            <span class="input-group-append bg-black">
-                <button class="form-control bg-black text-white border-0" type="button">
-                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-              </svg>
-                </button>
-            </span>
-            <input class="form-control bg-black border-0 text-light" type="search" placeholder="Search Something..." id="example-search-input">
-            <div class="col-4">
+          <form class="w-100 nav-search-form"  id="nav-search-form"  onsubmit="handleSearchForm(event)">
+              <input value="{{search_query}}" class=" form-control bg-black border-0 text-light" type="search" placeholder="Search Products..." id="nav-search-input">
+            
+            </form>
+        </div>
+        <div class="col-4">
               <select class="form-select" aria-label="Default select example" onchange="location = this.value;" >
                 <option value="{% url 'store' %}" >All Category</option>
                 {% for category in all_category_list %}
@@ -53,8 +70,11 @@
                     {% endif %}
                 {% endfor %}
               </select>
-             </div>
         </div>
+
+
+
+       
 
         <ul class="navbar-nav align-items-xl-center">
             <li class="nav-item dropdown">
