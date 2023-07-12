@@ -59,12 +59,14 @@
                       <h6 class="text-muted">Payment</h6>
                       <span class="text-success">
                           <i class="fab fa-lg fa-cc-visa"></i>
+                         
                          ID: {{payment.payment_id}} <br>
                          Method : {{payment.payment_method}}<br> 
                          Status :{{payment.payment_status}} ({{payment.created_at}})
                       </span>
                      
                        <div class="b">Additional Discount ({{order.coupon_code}}):- Rs {{order.additional_discount}} </div>
+                       <div class="b">Wallet Discount :- Rs {{order.wallet_discount}} </div>
                        <div class="b">Total Paid: Rs {{payment.amount_paid}} </div>
                       
                   </div>

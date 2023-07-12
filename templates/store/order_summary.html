@@ -32,14 +32,14 @@ Electra - Cart
                     <h5>Shipping Address</h5>
                     <div class="form-row row">
                         <div class="form-group ">
-                            {{order.shipping_address.name}}
-                            {{order.shipping_address.phone}},<br>
-                            {{order.shipping_address.address_line_1}},
-                            {{order.shipping_address.address_line_2}},<br>
-                            {{order.shipping_address.city}},
-                            {{order.shipping_address.state}},<br>
-                            {{order.shipping_address.country}},<br>
-                            {{order.shipping_address.pincode}},
+                            {{shipping_address.name}}
+                            {{shipping_address.phone}},<br>
+                            {{shipping_address.address_line_1}},
+                            {{shipping_address.address_line_2}},<br>
+                            {{shipping_address.city}},
+                            {{shipping_address.state}},<br>
+                            {{shipping_address.country}},<br>
+                            {{shipping_address.pincode}},
                         </div>
 
                     </div>
@@ -114,61 +114,95 @@ Electra - Cart
         </aside> <!-- col.// -->
         <aside class="col-lg-3">
     
-           
-        
-             <!-- card.// -->
+            
             <div class="card mt-2">
             <div class="card-body">
-                {% if order.coupon_code %}
+                {% if coupon %}
                 <div class="card my-2">
                                     <div class="card-body bg-opacity-25 bg-success ">
-                                        Coupon Applied ! <b>{{order.coupon_code}}</b> <br>
+                                        Coupon Applied ! <b>{{coupon.coupon_code}}</b> <br>
                                         <hr>
-                                        <small>{{order.coupon_code.description}}</small>
+                                        <small>{{coupon.description}}</small>
                                     </div>
                 </div>
                 {% endif %}
 
-                
+
+
+
                 <dl class="dlist-align">
                   <dt>Total price:</dt>
-                  <dd class="text-right">Rs {{max_total|intcomma }}</dd>
+                  <dd class="text-right">Rs{{max_total|intcomma }}</dd>
                 </dl>
                 <dl class="dlist-align">
                   <dt>Discount:</dt>
-                  <dd class="text-right  text-success"> - Rs {{discount|intcomma }}</dd>
+                  <dd class="text-right  text-success"> - Rs{{discount|intcomma }}</dd>
                 </dl>
 
                 <dl class="dlist-align">
                   <dt>Additional Discount:</dt>
-                  <dd class="text-right text-success"> - Rs {{order.additional_discount|intcomma }}</dd>
+                  <dd class="text-right text-success"> - Rs{{additional_discount|intcomma }}</dd>
                 </dl>
+
                 <dl class="dlist-align">
-                  <dt>Wallet Discount:</dt>
-                  <dd class="text-right text-success"> - Rs {{order.wallet_discount|intcomma }}</dd>
-                </dl>
-                
-                <dl class="dlist-align">
-                  <dt>Payable Total:</dt>
-                  <dd class="text-right text-dark b"><strong>Rs{{order.order_total|intcomma }}</strong></dd>
+                  <dt>Grand Total:</dt>
+                  <dd class="text-right text-dark b"><strong>Rs{{grand_total|intcomma }}</strong></dd>
                 </dl>
                 <hr>
+
+                
+               <form action="{% url 'place-order' %}" id="payment-form" method="post">
+                {% csrf_token %}
+                <input type="text" hidden value="{{order.order_number}}" id="order_number_order_summary" name="order_number_order_summary">
+                  <div class="text-center">
+                    <p>Choose Payment Method</p>    
+                   {% for method in payment_methods %}
+
+                    <div class="form-check border border-dark my-2" id="id_payment_div_{{method.method_name}}">
+                        <div class="p-2">
+                            
+                            <input value="{{ method.method_name}}" class="form-check-input" type="radio" name="payment_method" id="payment_method">
+                            <label class="form-check-label" for="">
+                                {{ method.method_name}}
+                            </label>
+                        </div>
+                    </div>
+
+                   {% endfor %}
+
+                   <dl class="dlist-align">
+                    <dt>Wallet : 
+                        <img src="{% static 'store/images/icons/gold-coin.svg' %}" alt="footer-payment" height="12">
+                       <span id="wallet_updated_balance">
+                        {{wallet_balance}}
+                       </span> 
+                    </dt>
+                    <dd class="text-right">
+                        <input type="checkbox" id="wallet_balance" name="wallet_balance" value="0" onclick="wallet_balance_add();"/>
+                        Use Wallet
+                    </dd>
+                  </dl>
+
+                  <p class="text-danger" id="payment-method-error"></p>
+
+                  <button class="btn btn-primary w-100" id="payment-form-btn">Pay 
+                    Rs 
+                    <span id="grand_total_update">
+                        {{grand_total|intcomma }}
+                    </span>
+                  </button>
+
+                </form>
+  
+
+                    <a href="{% url 'store' %}" class="btn btn-light w-100 mt-1">Continue Shopping</a>
+                </div> 
+
+
                 <p class="text-center mb-3">
                     <img src="{% static 'store/images/footer-payment.webp' %}" alt="footer-payment" height="26">
                 </p>
-                <div class="text-center">
-                    {% if payment %}
-                        <button id="rzp-button1" class="btn btn-primary my-2 w-100">Pay with Razorpay</button>
-                       
-                    {% else %}
-                         <button class="btn btn-primary w-100" id="cod-btn-1">Cash On Delivery</button>
-                    {% endif %}
-                    
-                 
-                   
-
-                    <a href="{% url 'store' %}" class="btn btn-light w-100 mt-1">Continue Shopping</a>
-                </div> <!-- card-body.// -->
+                <!-- card-body.// -->
                 </div>
             </div> <!-- card.// -->
     </aside> <!-- col.// -->
@@ -178,67 +212,27 @@ Electra - Cart
     <!-- ============================ COMPONENT 1 END .// ================================= -->
     </div> <!-- container .//  -->
     </section>
-
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-    var options = {
-        "key": "rzp_test_qs3VUf22rEQ5oN", // Enter the Key ID generated from the Dashboard
-        "amount": "{{payment.amount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-        "currency": "INR",
-        "name": "Electra Electronics",
-        "description": "{{order.order_number}}",
-        "image": "{% static 'store/images/logo.svg' %}",
-        "order_id": "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-       // "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
-        "prefill": {
-            "name": "{{request.user.first_name}}",
-            "email": "{{request.user.email}}",
-            "contact": "{{request.user.phone_number}}"
-        },
+    var btn = $('#payment-form-btn');
+    btn.on('click', function(e){
+        try {
+            payment_method = document.querySelector('input[name="payment_method"]:checked').value;
+          }
+          catch(err) {
+            payment_method =''
+          }
         
-        "handler": function (response){
+        if (payment_method){
             
-            console.log(response.razorpay_payment_id)
-            console.log(response.razorpay_order_id)
-            console.log(response.razorpay_signature)
-            window.location.href = `{{success_url}}?order_id={{order.order_number}}&method=RAZORPAY&payment_id=${response.razorpay_payment_id}&payment_order_id=${response.razorpay_order_id}&payment_sign=${response.razorpay_signature}`
-            
-            
-        },
-
-        "notes": {
-            "address": "ELectra Private Limited"
-        },
-        "theme": {
-            "color": "#000"
-        },
+            console.log(payment_method)
+        }
+        else
+        {
+            e.preventDefault();
+            document.getElementById('payment-method-error').innerText='Choose A Payment Method First'
+        }
         
-    };
-    var rzp1 = new Razorpay(options);
-    rzp1.on('payment.failed', function (response){
-        console.log(
-            response.error.description
-        )
-        //window.location.href=`{{failed_url}}?error_code=${response.error.code}&error_description=${response.error.description}&error_reason=${response.error.reason}&error_payment_id=${response.error.metadata.payment_id}&error_order_id=${response.error.metadata.order_id}&method=COD`
-        //alert(response.error.code);
-        //alert(response.error.description);
-        //alert(response.error.source);
-        //alert(response.error.step);
-        //alert(response.error.reason);
-        //alert(response.error.metadata.order_id);
-        //alert(response.error.metadata.payment_id);
+        
     });
-
-    document.getElementById('rzp-button1').onclick = function(e){
-        rzp1.open()
-        e.preventDefault();
-    }
-    </script>
-<script>
-    //COD PAYMENT
-    document.getElementById('cod-btn-1').onclick = function(e){
-        window.location.href=`{{success_url}}?order_id={{order.order_number}}&method=COD`
-    }
-
 </script>
 {% endblock %}

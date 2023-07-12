@@ -98,7 +98,7 @@ Electra - Cart
 
 
 
-                    <form action="{% url 'place-order' %}" method="POST">
+                    <form action="{% url 'order-summary' %}" method="POST">
                         {% csrf_token %}
                     {% for address in addreses %}
                     <div class="form-check border border-dark my-2">
@@ -262,6 +262,7 @@ Electra - Cart
 
 
 
+               
                 <dl class="dlist-align">
                   <dt>Total price:</dt>
                   <dd class="text-right">Rs {{total_with_orginal_price|intcomma }}</dd>

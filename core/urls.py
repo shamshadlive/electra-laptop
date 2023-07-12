@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include("accounts.urls")),
     path('admincontrol/', include("admincontrol.urls")),
     path('cart/', include("cart.urls")),
+    path('wallet/', include("wallet.urls")),
     
     # ORDER
     path('orders/', include("order.urls")),

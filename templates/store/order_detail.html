@@ -40,7 +40,9 @@ Electra - Order
                 <span>Order Status : 
                     {% if 'Cancelled' in order.order_status %}
                     <span class="text-danger">Cancelled</span> 
-                     {% else %}
+                    {% elif 'Returned' in order.order_status%}
+                    <span class="text-danger">Returned</span> 
+                    {% else %}
                      <span class="text-success">{{order.order_status}}
                      </span>
                      {% endif %}</span>
@@ -71,9 +73,18 @@ Electra - Order
                             <i class="fab fa-lg fa-cc-visa"></i>
                              Status :  {{payment.payment_status}} 
                         </div>
+                       
+                        <p class="m-0 p-0"> 
+                         <span >Wallet Paid: Rs {{order.wallet_discount}} </span>
+                        </p>
+                        <p class="m-0 p-0"> 
+                         <span >Coupon Used: {{order.coupon_code}} </span>
+                        </p>
+                        <p class="m-0 p-0"> 
+                         <span >Additional Discount: {{order.additional_discount}} </span>
+                        </p>
                         <p> 
-                         Shipping fee:  0 <br> 
-                         <span class="b">Total: Rs {{payment.amount_paid}} </span>
+                         <span class="b">Total Paid: Rs {{payment.amount_paid}} </span>
                         </p>
                     </div>
                 </div> <!-- row.// -->
@@ -109,11 +120,11 @@ Electra - Order
                 {% endfor %}
             </table>
             {% if order.order_status == 'New' or order.order_status == 'Accepted' %}
-            <a href="{% url 'order_cancel_user' order.order_number %}" class="btn btn-outline-danger">
+            <a href="{% url 'order_cancel_user' order.order_number %}" class="btn btn-outline-danger my-2 mx-2">
                 Cancel Order
             </a>
             {% elif  order.order_status == 'Delivered' %}
-            <a href="#" class="btn btn-outline-danger">
+            <a href="{% url 'order_return_user' order.order_number %}" class="btn btn-outline-danger my-2 mx-2">
                 Return Order
             </a>
             {% endif %}

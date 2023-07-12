@@ -387,3 +387,68 @@ function sendMobChangeOtpVerify(){
 }
 
 
+
+
+//wallet balance in checkout
+
+function wallet_balance_add()
+{
+  if (document.getElementById('wallet_balance').checked) 
+  {
+      document.getElementById('wallet_balance').value=1
+      get_wallet_grand_total(document.getElementById('order_number_order_summary').value)
+
+
+  } else {
+    document.getElementById('wallet_balance').value=0
+    get_wallet_grand_total(document.getElementById('order_number_order_summary').value,false)
+    
+  }
+}
+
+//update payble value 
+
+function get_wallet_grand_total(order_number,check=true)
+{
+  var data ={
+    'order_number':order_number,
+    'check':check
+  }
+  $.ajax({
+    type: "GET",
+    url: "/wallet/getwallet_total",
+    data: data,
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
+    success: (data) => {
+      if (data.status === "success") {
+        console.log(data);
+        document.getElementById('id_payment_div_RAZORPAY').classList.remove('d-none')
+        document.getElementById('wallet_updated_balance').innerHTML=data.wallet_balance
+        document.getElementById('grand_total_update').innerHTML=data.grand_total
+        if (data.grand_total == 0)
+        {
+          
+          document.getElementById('id_payment_div_RAZORPAY').classList.add('d-none')
+        }
+
+      } else {
+        // Password change error
+        console.log(data);
+    }
+      
+  },
+  error: (xhr, status, error) => {
+      // Display the error message on the page
+      console.log("error");
+      console.log(error);
+  }
+});
+
+
+
+
+
+
+}

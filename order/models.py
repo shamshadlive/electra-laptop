@@ -40,6 +40,7 @@ class Order(models.Model):
         ("Delivered", "Delivered"),
         ("Cancelled_Admin", "Cancelled Admin"),
         ("Cancelled_User", "Cancelled User"),
+        ("Returned_User", "Returned User"),
         )
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     payment = models.ForeignKey(Payment,on_delete=models.SET_NULL,null=True,blank=True)
@@ -48,7 +49,7 @@ class Order(models.Model):
     
     coupon_code = models.ForeignKey(Coupon,on_delete=models.SET_NULL,null=True,blank=True)
     additional_discount = models.IntegerField(default=0,null=True)
-    
+    wallet_discount = models.IntegerField(default=0,null=True)
     order_note = models.CharField(max_length=100,blank=True,null=True)
     order_total = models.DecimalField(max_digits=12, decimal_places=2)
     order_status= models.CharField(choices = ORDER_STATUS_CHOICES,max_length=20,default='New')

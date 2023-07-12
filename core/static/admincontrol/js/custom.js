@@ -25,7 +25,9 @@ function getCookie(name) {
 
 // #CHANGE ORDER STATUS
 function showSelectedOption(selectElement,order_number) {
-    var selectedOption = selectElement.options[selectElement.selectedIndex].text;
+    // var selectedOption = selectElement.options[selectElement.selectedIndex];
+    var selectedOption = selectElement.value
+    console.log(selectedOption);
     var data = {
         order_number: order_number,
         selected_option: selectedOption

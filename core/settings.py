@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'extra_management',
     'cart',
     'order',
+    'wallet',
     'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -81,6 +82,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'categoryManagement.context_processors.all_category',
                 'cart.context_processors.counter',
+                'wallet.context_processors.wallet_balance',
             ],
         },
     },

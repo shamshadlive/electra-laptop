@@ -114,6 +114,10 @@ Electra - Order Complete
                                             </tr>
                                             
                                             <tr>
+                                                <td colspan="2" class="text-right">Wallet Discount: </td>
+                                                <td class="text-center text-success"> - Rs {{order.wallet_discount|intcomma}}</td>
+                                            </tr>
+                                            <tr>
                                                 <th colspan="2" class="text-right">Grand Total Paid:</th>
                                                 <th class="text-center">Rs {{order.order_total|intcomma}}</th>
                                             </tr>
