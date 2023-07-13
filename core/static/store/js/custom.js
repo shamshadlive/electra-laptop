@@ -492,7 +492,7 @@ function updatePageNumber(pageNumber) {
         {
           var price_max = ''
         }
-          
+
     urlParams.set('price-min',  price_min.toString());
     urlParams.set('price-max', price_max.toString());
     
@@ -500,3 +500,49 @@ function updatePageNumber(pageNumber) {
     window.location.href = newUrl;
     }
 
+
+//add to wishlist
+
+function addToWhishlist(variant){
+
+
+
+
+  var url = '/cart/whishlist/add/'
+
+  var data = {
+    variant: variant,
+  };
+
+  $.ajax({
+    type: "POST",
+    url: url,  // Replace with the actual URL for your view
+    dataType: "json",
+    data: JSON.stringify(data),
+    headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"), 
+      },
+      success: (data) => {
+        if (data.status === "success") {
+          // success
+          console.log(data);
+          location.reload()
+
+      } else {
+          // Password change error
+          console.log(data);
+          window.location.href = data.login_url;
+          // Display the error message on the page
+      }
+        
+    },
+    error: (xhr, status, error) => {
+        // Display the error message on the page
+        console.log("error");
+        console.log(error);
+    }
+});
+
+
+}

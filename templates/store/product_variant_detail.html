@@ -67,6 +67,18 @@ Electra - Product Detail
                         <del class="price-old">₹{{ single_product_variant.max_price }}</del>
                         <div class="Stars" style="--rating: 3;" aria-label="Rating of this product is 2.5 out of 5.">
                         </div>
+
+                        {% if in_whislist %}
+                            <div  onclick="addToWhishlist('{{single_product_variant.id}}')">
+                                <img src="{% static 'store/images/icons/love-fill.svg' %}" />
+                            </div>
+                        {% else %}
+                        <div  onclick="addToWhishlist('{{single_product_variant.id}}')">
+                            <img src="{% static 'store/images/icons/love.svg' %}" />
+                        </div>
+                        {% endif %}
+                        
+                        
                     </div> 
     
                     <hr>

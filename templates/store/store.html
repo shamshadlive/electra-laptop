@@ -139,6 +139,7 @@ Electra - Home
     <img src="{% static 'store/images/noproductfound.jpg' %}" class="mw-100"/>
     {% endif %}
     <div class="row">
+        
         {% for variant in product_variants %}
         <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-12">
             <figure class="card card-product-grid">
@@ -171,8 +172,22 @@ Electra - Home
                             <del class="price-old">₹{{ variant.max_price|intcomma }}</del>
                             <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
                             </div>
+                            
                         </div> <!-- price-wrap.// -->
+                        
                     </div>
+                    {% if variant.id in wishlist_items %}
+
+                        <div class="d-flex justify-content-end my-1" onclick="addToWhishlist('{{variant.id}}')">
+                            <img src="{% static 'store/images/icons/love-fill.svg' %}" />
+                        </div>
+                    {% else %}
+                        <div class="d-flex justify-content-end my-1" onclick="addToWhishlist('{{variant.id}}')">
+                            <img src="{% static 'store/images/icons/love.svg' %}" />
+                        </div>
+                    
+                    {% endif %}
+
                     {% if variant.stock <= 0 %}
                         <h6 class='text-danger text-center'>Out Of Stock</h6>
                     {% else %}

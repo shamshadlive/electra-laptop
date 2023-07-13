@@ -1,6 +1,6 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render,redirect,get_object_or_404,reverse
 from product_management.models import Product_Variant,Coupon
-from .models import Cart,CartItem
+from .models import Cart,CartItem,Wishlist,WishlistItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -201,14 +201,36 @@ def coupon_verify(request):
                              "coupon_code":coupon[0].coupon_code,
                              "grand_total":grand_total,
                              "discount_percentage":coupon[0].discount_percentage})
-        # try:
-        #     order = Order.objects.get(order_number=order_number)
-        #     order.order_status = selected_option
-        #     order.save()
-        #     return JsonResponse({"status": "success"})
-        # except Order.DoesNotExist:
-        #     return JsonResponse({"status": "error", "message": "Order Not Found"})
-        # Return a JSON response indicating success or failure
+       
+        
+    else:
+        # Return a JSON response indicating an invalid request
+        return JsonResponse({"status": "error", "message": "Invalid request"})
+    
+
+def add_whishlist(request):
+    
+    if not request.user.is_authenticated:
+        login_url = reverse('login-page')
+        
+        return JsonResponse({"status": "error", "message": "user not authenticated","user":0,"login_url":login_url})
+    
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+    if request.method == "POST" and is_ajax:
+        data = json.load(request)
+        variant = data.get('variant')
+        wishlist,created = Wishlist.objects.get_or_create(user=request.user)
+        try:
+            product_variant = Product_Variant.objects.get(id=variant)
+        except :
+            return JsonResponse({"status": "error", "message": "Product Not Found"})
+        
+        wishlist_Item,created = WishlistItem.objects.get_or_create(wishlist=wishlist,product=product_variant)
+        if not created:
+            wishlist_Item.delete()
+        # Update the order status based on the order_number and selected_option
+       
+        return JsonResponse({"status": "success"})
         
     else:
         # Return a JSON response indicating an invalid request

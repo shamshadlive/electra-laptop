@@ -1,7 +1,7 @@
 from django.shortcuts import render,get_object_or_404,redirect
 from product_management.models import Product_Variant
 from categoryManagement.models import Category
-from cart.models import CartItem,Cart
+from cart.models import CartItem,Cart,Wishlist,WishlistItem
 from cart.views import _cart_id
 from django.contrib.auth.decorators import login_required
 from order.models import Order,OrderProduct,Payment
@@ -34,8 +34,18 @@ def store (request,category_slug=None):
     else:
         product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True)
         product_variants_count = product_variants.count()
-        
     
+    #wishlist
+    if request.user.is_authenticated:  
+        wishlist,created= Wishlist.objects.get_or_create(user=request.user)
+        wishlist_items = WishlistItem.objects.filter(wishlist=wishlist, is_active=True).values_list('product_id', flat=True)
+    else:
+        wishlist_items =[]
+    
+    print(wishlist_items)
+        
+        
+    #search
     if search_query:
         product_variants = product_variants.filter(
             Q(product__product_name__icontains=search_query) |
@@ -43,15 +53,18 @@ def store (request,category_slug=None):
             Q(product__product_brand__brand_name__icontains=search_query) |
             Q(product__product_description__icontains=search_query)
         )
-        
+       
+    #price filter 
     if price_min:
         product_variants = product_variants.filter(sale_price__gte=price_min)
     if price_max:
         product_variants = product_variants.filter(sale_price__lte=price_max)
         
+        
     # Get all attribute names from the request avoid certain parameters
     attribute_names = [key for key in request.GET.keys() if key not in ['query','page','price-min','price-max']]
     
+    #other filter
     for attribute_name in attribute_names:
         attribute_values = request.GET.getlist(attribute_name)
         if attribute_values:
@@ -68,9 +81,13 @@ def store (request,category_slug=None):
                'product_variants_count':product_variants_count,
                'search_query':search_query,
                'price_min':price_min,
-               'price_max':price_max}
+               'price_max':price_max,
+               'wishlist_items':wishlist_items}
     
     return render(request, 'store/store.html',context)
+
+
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def product_variant_detail(request,category_slug,product_variant_slug):
@@ -81,6 +98,11 @@ def product_variant_detail(request,category_slug,product_variant_slug):
                             product_variant_slug=product_variant_slug,
                             is_active=True)
         in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request),product=single_product_variant).exists()
+        try:
+            wishlist,created = Wishlist.objects.get_or_create(user=request.user)
+            in_whislist = WishlistItem.objects.filter(wishlist=wishlist,product=single_product_variant).exists()
+        except:
+            in_whislist = False
     except Exception as e:
         print(e)
         return redirect('store')
@@ -92,7 +114,8 @@ def product_variant_detail(request,category_slug,product_variant_slug):
     context = { 'single_product_variant' :single_product_variant,
                'product_variants':product_variants,
                'product_variants_count':product_variants_count,
-               'in_cart':in_cart}
+               'in_cart':in_cart,
+               'in_whislist':in_whislist}
     
     return render(request, 'store/product_variant_detail.html',context)
 

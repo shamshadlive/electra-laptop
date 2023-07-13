@@ -12,5 +12,6 @@ urlpatterns = [
     path("checkout/coupon/verify", views.coupon_verify, name="coupon_verify"),
     
     
+    path("whishlist/add/", views.add_whishlist, name="add_whishlist"),
     
 ]
