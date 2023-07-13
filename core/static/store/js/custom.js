@@ -458,3 +458,45 @@ function handleSearchForm(event) {
   var url = 'http://127.0.0.1:8000/store/?query=' + encodeURIComponent(searchInput);
   window.location.href = url;
 }
+
+
+//get next pages in paginator
+
+function updatePageNumber(pageNumber) {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set('page', pageNumber.toString());
+  
+  const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+  window.location.href = newUrl;
+  }
+  
+  //filter with price range
+  
+  function filterWithPriceRange(min,max) {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    try{
+        var price_min = document.getElementById(min).value
+
+      }
+    catch
+      {
+        var price_min = 0
+      }
+      
+      try{
+          var price_max = document.getElementById(max).value
+  
+        }
+      catch
+        {
+          var price_max = ''
+        }
+          
+    urlParams.set('price-min',  price_min.toString());
+    urlParams.set('price-max', price_max.toString());
+    
+    const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+    window.location.href = newUrl;
+    }
+

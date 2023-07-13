@@ -55,7 +55,7 @@
         </ul>
         <div class="input-group d-none d-lg-flex">
           <form class="w-100 nav-search-form"  id="nav-search-form"  onsubmit="handleSearchForm(event)">
-              <input value="{{search_query}}" class=" form-control bg-black border-0 text-light" type="search" placeholder="Search Products..." id="nav-search-input">
+              <input value="{% if search_query %}{{ search_query }}{% endif %}" class=" form-control bg-black border-0 text-light" type="search" placeholder="Search Products..." id="nav-search-input">
             
             </form>
         </div>

@@ -24,6 +24,8 @@ def store (request,category_slug=None):
     categories = None
     product_variants = None
     search_query = request.GET.get('query')
+    price_min = request.GET.get('price-min')
+    price_max = request.GET.get('price-max')
     
     if category_slug !=None:
         category = get_object_or_404(Category,cat_slug=category_slug)
@@ -33,6 +35,7 @@ def store (request,category_slug=None):
         product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True)
         product_variants_count = product_variants.count()
         
+    
     if search_query:
         product_variants = product_variants.filter(
             Q(product__product_name__icontains=search_query) |
@@ -40,8 +43,21 @@ def store (request,category_slug=None):
             Q(product__product_brand__brand_name__icontains=search_query) |
             Q(product__product_description__icontains=search_query)
         )
-        product_variants_count = product_variants.count()
-
+        
+    if price_min:
+        product_variants = product_variants.filter(sale_price__gte=price_min)
+    if price_max:
+        product_variants = product_variants.filter(sale_price__lte=price_max)
+        
+    # Get all attribute names from the request avoid certain parameters
+    attribute_names = [key for key in request.GET.keys() if key not in ['query','page','price-min','price-max']]
+    
+    for attribute_name in attribute_names:
+        attribute_values = request.GET.getlist(attribute_name)
+        if attribute_values:
+            product_variants=product_variants.filter(atributes__atribute_value__in=attribute_values)
+    
+    product_variants_count = product_variants.count()
     
     # paginator start
     paginator = Paginator(product_variants,6)
@@ -50,7 +66,9 @@ def store (request,category_slug=None):
     
     context = {'product_variants':paged_products,
                'product_variants_count':product_variants_count,
-               'search_query':search_query}
+               'search_query':search_query,
+               'price_min':price_min,
+               'price_max':price_max}
     
     return render(request, 'store/store.html',context)
 
@@ -88,7 +106,7 @@ def user_dashboard(request):
 def order_history(request):
     orders = Order.objects.filter(user=request.user,is_ordered=True).order_by('-created_at')
     
-    paginator = Paginator(orders,6)
+    paginator = Paginator(orders,10)
     page = request.GET.get('page')
     paged_products = paginator.get_page(page)
     
