@@ -564,7 +564,10 @@ def all_orders_admin(request):
 def admin_order_history_detail(request,order_id):
     order = Order.objects.get(order_number=order_id)
     order_products = OrderProduct.objects.filter(order=order)
-    payment = Payment.objects.filter(payment_id=order.payment)[0]
+    try:
+        payment = Payment.objects.filter(payment_id=order.payment)[0]
+    except:
+        payment = None
     form = ChangeOrderStatusForm(instance=order)
     context ={
         'order':order,

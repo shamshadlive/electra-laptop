@@ -20,20 +20,20 @@ Electra - Cart
             <!--   SIDEBAR   -->
             <ul class="list-group">
                 <a class="list-group-item " href="{% url 'user-dashboard' %}"> My Dashboard </a>
-                <a class="list-group-item bg-dark text-white" href="{% url 'order-history' %}"> My order history </a>
+                <a class="list-group-item " href="{% url 'order-history' %}"> My order history </a>
                 <a class="list-group-item " href="{% url 'user-address' %}"> My Address </a>
-                <a class="list-group-item" href="{% url 'user-wishlist' %}"> My Whishlist </a>
+                <a class="list-group-item bg-dark text-white" href="{% url 'user-wishlist' %}"> My Whishlist </a>
                 <a class="list-group-item" href="#"> Return and refunds </a>
                 
             </ul>
             <br>
-            <a class="btn btn-light btn-block" href="#"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a> 
+            <a class="btn btn-light btn-block" href="{% url 'logout-page' %}"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a> 
             <!--   SIDEBAR .//END   -->
         </aside>
         <main class="col-md-9">
             <article class="card">
             <header class="card-header">
-                <strong class="d-inline-block mr-3">All Orders ({{orders_count}})</strong>
+                <strong class="d-inline-block mr-3">All Wishlist ({{wishlistItems_count}})</strong>
             </header>
             <div class="card-body">
                 <div class="row"> 
@@ -42,30 +42,35 @@ Electra - Cart
             </div> <!-- card-body .// -->
             <div class="table-responsive">
             <table class="table table-hover">
-                {% for order in orders %}
+                {% for wishlistItem in wishlistItems %}
+                
                 <tr>
-                    
+                    <td>
+                        <figure class="itemside align-items-center">
+                            <div class="aside"><img src="{{wishlistItem.product.thumbnail_image.url}}" class="img-sm"></div>
+                            <figcaption class="info">
+                                <a href="{{wishlistItem.product.get_url}}" class="title text-dark line-clamp">
+                                    {{ wishlistItem.product.product.product_brand }}
+                                    {{ wishlistItem.product.product.product_name }}
+                                    -{{ wishlistItem.product.sku_id }}
+                                   
+                                </a>
+                                <p class="text-muted small">
+                                    Variant:{% for attribute in wishlistItem.product.atributes.all %}
+                                    {{attribute.atribute_value}},
+                                {% endfor %}
+                                    <br> Brand: {{wishlistItem.product.product.product_brand}}</p>
+                            </figcaption>
+                        </figure>
+                    </td>
+
+                
                     <td> 
-                        <var class="price text-muted">
-                            {{order.order_number}}
-                        </var>
-                        <span class="text-muted">
-                                {{order.created_at}}
-                        </span><br>
-                       
+                        <div class="d-flex justify-content-end my-1" onclick="addToWhishlist('{{wishlistItem.product.id}}')">
+                            <img src="{% static 'store/images/icons/love-fill.svg' %}" />
+                        </div>
                     </td>
-                    <td> Rs.{{order.order_total}} <br> 
-                        {% if 'Cancelled' in order.order_status %}
-                           <span class="text-danger">Cancelled</span> 
-                            {% else %}
-                            <span class="text-success">{{order.order_status}}
-                            </span>
-                            {% endif %}
-                    </td>
-                    <td width="250"> <a href="{% url 'order-history-detail' order.order_number %}" class="btn btn-outline-dark">
-                        Track order</a>
-                         <!-- <a href="#" class="btn btn-light"> Details </a>  -->
-                    </td>
+                    
                 </tr>
                 {% empty %}
                     <!-- Alternative code when the loop is empty -->
@@ -81,36 +86,29 @@ Electra - Cart
 
 
 
-            
-            
-
-
-
-
-
             </div> <!-- table-responsive .end// -->
           
             </article> <!-- order-group.// --> 
             <nav class="mt-4" aria-label="Page navigation sample">
-                {% if orders.has_other_pages  %}
+                {% if wishlistItems.has_other_pages  %}
               <ul class="pagination">
                 
-                {% if orders.has_previous %}
-                <li class="page-item "><a class="page-link" href="?page={{orders.previous_page_number}}">Previous</a></li>
+                {% if wishlistItems.has_previous %}
+                <li class="page-item "><a class="page-link" href="?page={{wishlistItems.previous_page_number}}">Previous</a></li>
                 {% else %}
                 <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
                 {% endif %}
         
-                {% for i in orders.paginator.page_range %}
-                    {% if orders.number == i %}
+                {% for i in wishlistItems.paginator.page_range %}
+                    {% if wishlistItems.number == i %}
                     <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
                     {% else %}
                     <li class="page-item "><a class="page-link" href="?page={{i}}">{{i}}</a></li>
                     {% endif %}
                 {% endfor %}
         
-                {% if orders.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{orders.next_page_number}}">Next</a></li>
+                {% if wishlistItems.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{wishlistItems.next_page_number}}">Next</a></li>
                 {% else %}
                 <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
                 {% endif %}

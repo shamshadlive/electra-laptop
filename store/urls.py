@@ -13,6 +13,7 @@ urlpatterns = [
     path("user/dashboard", views.user_dashboard, name="user-dashboard"),
     path("user/order_history", views.order_history, name="order-history"),
     path("user/order_history/<str:order_id>", views.order_history_detail, name="order-history-detail"),
+    path("user/wishlist", views.user_wishlist, name="user-wishlist"),
     
     #ADRESS USER
     path("user/address", views.user_address, name="user-address"),

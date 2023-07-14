@@ -128,29 +128,47 @@ def user_dashboard(request):
 @login_required(login_url='login-page')
 def order_history(request):
     orders = Order.objects.filter(user=request.user,is_ordered=True).order_by('-created_at')
-    
+    orders_count = orders.count()
     paginator = Paginator(orders,10)
     page = request.GET.get('page')
     paged_products = paginator.get_page(page)
     
     context = {
         'orders':paged_products,
+        'orders_count':orders_count
+        
     }
     return render(request, 'store/order_history.html',context)
     
+@login_required(login_url='login-page')
+def user_wishlist(request):
+    wishlist = Wishlist.objects.get(user=request.user)
+    wishlistItems = WishlistItem.objects.filter(wishlist=wishlist,is_active=True).order_by('-created_at')
+    wishlistItems_count = wishlistItems.count()
+    
+    paginator = Paginator(wishlistItems,10)
+    page = request.GET.get('page')
+    paged_wishlist = paginator.get_page(page)
+    
+    context = {
+        'wishlistItems':paged_wishlist,
+        'wishlistItems_count':wishlistItems_count
+    }
+    return render(request, 'store/wishlist.html',context)
     
 @login_required(login_url='login-page')
 def order_history_detail(request,order_id):
     try:
         order = Order.objects.get(user=request.user,order_number=order_id)
         order_products = OrderProduct.objects.filter(user=request.user,order=order)
+     
         payment = Payment.objects.get(user=request.user,payment_id=order.payment)
     except Order.DoesNotExist:
         return redirect('store')  
     context ={
         'order':order,
         'order_products':order_products,
-        'payment':payment
+        'payment':payment,
     }
     return render(request, 'store/order_detail.html',context)
     
