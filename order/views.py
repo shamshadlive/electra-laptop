@@ -11,6 +11,8 @@ from accounts.models import AdressBook
 import razorpay
 from django.conf import settings
 from wallet.models import Wallet,WalletTransaction
+from datetime import date
+
 # Create your views here.
 
 
@@ -45,7 +47,7 @@ def order_summary(request):
         coupon = False
         if coupon_code:
             try:
-                coupon = Coupon.objects.get(coupon_code__iexact=coupon_code,is_active=True)
+                coupon = Coupon.objects.get(coupon_code__iexact=coupon_code,is_active=True,expire_date__gt=date.today())
                 if coupon.minimum_amount > sale_total:
                     messages.error(request, "Coupon is Not Applicable For This Order")
                     return redirect('checkout')
@@ -199,127 +201,6 @@ def place_order(request):
     
 
 
-
-# def place_order(request,quantity=0,cart_items=None):
-#     current_user = request.user
-    
-#     #if cart count <=0 
-#     cart_items = CartItem.objects.filter(user=current_user)
-#     cart_count= cart_items.count()
-#     if cart_count <=0:
-#         return redirect('cart')
-    
-#     sale_total = 0 
-#     max_total = 0
-#     discount = 0
-#     grand_total =0
-#     additional_discount = 0
-#     for cart_item in cart_items:
-#             sale_total += ( cart_item.product.sale_price * cart_item.quantity)
-#             max_total += ( cart_item.product.max_price * cart_item.quantity)
-            
-   
-#     if request.method == 'POST':
-#         selected_address_id = request.POST.get('address')
-#         coupon_code = request.POST.get('coupon_code')
-        
-#         if selected_address_id is None:
-#             messages.error(request, "Please Choose A Address")
-#             return redirect('checkout')
-        
-#         form = OrderForm(request.POST)
-#         coupon = False
-#         if coupon_code:
-#             try:
-#                 coupon = Coupon.objects.get(coupon_code__iexact=coupon_code,is_active=True)
-#                 if coupon.minimum_amount > sale_total:
-#                     messages.error(request, "Coupon is Not Applicable For This Order")
-#                     return redirect('checkout')
-#                 else:
-#                     additional_discount =  sale_total * coupon.discount_percentage /100
-#                     sale_total = sale_total - additional_discount
-#             except Coupon.DoesNotExist:
-#                 messages.error(request, "Coupon is Unavailable")
-#                 return redirect('checkout')
-        
-#         grand_total = sale_total
-#         discount = max_total - sale_total
-#         if form.is_valid():
-#             #store in order table
-#             data = Order()
-#             data.user = current_user
-            
-#             #shipping address
-#             try:
-#                 shipping_address = AdressBook.objects.get(id=selected_address_id)
-#             except AdressBook.DoesNotExist:
-#                 messages.error(request, "Please Choose A Address")
-#                 return redirect('checkout')
-            
-#             if coupon:
-#                 data.coupon_code = coupon
-            
-            
-#             data.additional_discount = additional_discount
-#             data.shipping_address = shipping_address
-#             data.order_note = form.cleaned_data['order_note']
-#             data.order_total = grand_total
-#             data.ip = request.META.get('REMOTE_ADDR')
-#             data.save()
-            
-#             #generate order number
-#             current_datetime = datetime.datetime.now()
-#             current_year = current_datetime.strftime("%Y")
-#             current_month = current_datetime.strftime("%m")
-#             current_day = current_datetime.strftime("%d")
-#             current_hour = current_datetime.strftime("%H")
-#             current_minute = current_datetime.strftime("%M")
-#             concatenated_datetime = current_year + current_month + current_day + current_hour + current_minute
-            
-#             order_number = 'ORD'+concatenated_datetime+str(data.id)
-            
-#             data.order_number = order_number
-#             data.save()
-            
-#             order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
-#             client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
-#             try:
-#                 payment = client.order.create({'amount':float(grand_total) * 100,"currency": "INR"})
-#             except Exception as e:
-#                 payment = False
-#             payment_methods = PaymentMethod.objects.filter(is_active=True)
-#             # window.location.href = `{{success_url}}/?order_id={{order.order_number}}&method=RAZORPAY&payment_id=${response.razorpay_payment_id}&payment_order_id=${response.razorpay_order_id}&payment_sign=${response.razorpay_signature}`
-            
-#             success_url = request.build_absolute_uri(reverse('payment-success'))
-#             failed_url = request.build_absolute_uri(reverse('payment-failed'))
-#             context = { 
-#                 'order':order,
-#                 'cart_items':cart_items,
-                
-#                 'grand_total':grand_total,
-#                 'sale_total':sale_total,
-#                 'max_total':max_total,
-#                 'discount':discount,
-#                 'additional_discount':additional_discount,
-#                 'coupon' : coupon,
-                
-                
-#                 'shipping_address':shipping_address,
-#                 'payment':payment,
-#                 'success_url':success_url,
-#                 'failed_url':failed_url,
-#                 'payment_methods':payment_methods
-#             }
-#             return render(request, 'store/payment.html',context)
-#         else:
-#             messages.error(request, form.errors)
-#             return redirect('checkout')
-#     else:
-#         return redirect('checkout')
-
-            
-
-            
       
 def payment_success(request):
     method = request.GET.get('method')

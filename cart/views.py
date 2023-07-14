@@ -8,6 +8,7 @@ from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
 import json
 from django.http import JsonResponse
+from datetime import date
 
 # Create your views here.
 
@@ -163,7 +164,8 @@ def checkout(request,total=0,quantity=0,cart_items=None):
     discount = total_with_orginal_price - total
     grand_total = total
     addreses = AdressBook.objects.filter(user=request.user,is_active=True).order_by('-is_default')
-    coupons = Coupon.objects.filter(is_active=True)
+    
+    coupons = Coupon.objects.filter(is_active=True,expire_date__gt=date.today())
     context = {
         'total':total,
         'quantity':quantity,
@@ -185,9 +187,9 @@ def coupon_verify(request):
         coupon_code = data.get('coupon_code')
         
         # Update the order status based on the order_number and selected_option
-        coupon = Coupon.objects.filter(coupon_code__iexact=coupon_code,is_active=True)
+        coupon = Coupon.objects.filter(coupon_code__iexact=coupon_code,is_active=True,expire_date__gt=date.today())
         if not coupon.exists():
-            return JsonResponse({"status": "error", "message": "Invalid Coupon"})
+            return JsonResponse({"status": "error", "message": "Invalid Coupon Or Coupon Expired"})
         grand_total=0
         cart_items = CartItem.objects.filter(user=request.user,is_active=True)
         for cart_item in cart_items:

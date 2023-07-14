@@ -1,5 +1,6 @@
 from django.forms import ModelForm,inlineformset_factory
 from .models import Product,Product_Variant,Coupon
+from django import forms
 
 
 class CreateProductForm(ModelForm):
@@ -76,6 +77,9 @@ class AddProductVariantForm(ModelForm):
         
         
     
+    
+class DateInput(forms.DateInput):
+    input_type = 'date'
      
 class CreateCouponForm(ModelForm):
     
@@ -88,6 +92,9 @@ class CreateCouponForm(ModelForm):
     class Meta:
         model = Coupon
         fields = '__all__'
+        widgets = {
+            'expire_date': DateInput(),
+        }
  
 class EditCouponForm(ModelForm):
     

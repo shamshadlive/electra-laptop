@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from django.db.models import UniqueConstraint, Q,F
 from collections import defaultdict
 from django.urls import reverse
+
 # Create your models here.
 
 # Atribute Table - SYSTEM_MEMORY , INTERNAL_STORAGE , COLOR , INTERNAL_STORAGE_TYPE
@@ -141,12 +142,16 @@ class Additional_Product_Image(models.Model):
     
     
 #Coupons
+
 class Coupon(models.Model):
     coupon_code = models.CharField(max_length=10)
     is_active = models.BooleanField(default=False)
     discount_percentage = models.IntegerField(default=10)
     minimum_amount = models.IntegerField(default=500)
     description = models.CharField(max_length=100)
+    expire_date = models.DateField()
+    
+    
     
     def save(self, *args, **kwargs):
         if self.discount_percentage > 100:
