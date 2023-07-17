@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-
+from offer_management import views as offer_management_views
 urlpatterns = [
     path("", views.home, name="home"),
     
@@ -20,6 +20,9 @@ urlpatterns = [
     path("user/address/create/<str:checkout>", views.user_address_create, name="user-address-create"),
     path("user/address/make_default/<str:adress_id>", views.user_address_make_default, name="user-address-make-default"),
     path("user/address/delete/<str:adress_id>", views.user_address_delete, name="user-address-delete"),
+
+    #store offers
+    path("store/offers", offer_management_views.all_offers_store, name="store-all-offers"),
     
     
 ]

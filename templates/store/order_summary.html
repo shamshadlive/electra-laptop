@@ -63,6 +63,14 @@ Electra - Cart
                                 {% for cart_item in cart_items %}
                                     <tr>
                                         <td>
+                                            <!-- product_offer_percentage -->
+                                            <div class="position-absolute" style="z-index: 2;">
+                                                {% if cart_item.product.product_offer.offer_percentage != 0 %}
+
+                                            <span class="bg-danger text-white p-1 card"><small> -{{cart_item.product.product_offer.offer_percentage}}%</small></span>
+                                                                                                
+                                                {% endif %}
+                                            </div>
                                             <figure class="itemside align-items-center">
                                                 <div class="aside"><img src="{{cart_item.product.thumbnail_image.url}}" class="img-sm"></div>
                                                 <figcaption class="info">

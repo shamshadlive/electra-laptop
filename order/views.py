@@ -31,7 +31,7 @@ def order_summary(request):
     grand_total =0
     additional_discount = 0
     for cart_item in cart_items:
-            sale_total += ( cart_item.product.sale_price * cart_item.quantity)
+            sale_total += cart_item.sub_total()
             max_total += ( cart_item.product.max_price * cart_item.quantity)
             
    
@@ -132,8 +132,11 @@ def place_order(request):
     if request.method == 'POST':
         order_number = request.POST.get('order_number_order_summary')
         payment_method = request.POST.get('payment_method')
-        wallet_balance_checked = int(request.POST.get('wallet_balance'))
         
+        try:
+            wallet_balance_checked = int(request.POST.get('wallet_balance'))
+        except:
+            wallet_balance_checked = 0
         order = Order.objects.get(user=current_user,is_ordered=False,order_number=order_number)
         grand_total = order.order_total
         wallet_discount = 0
@@ -164,8 +167,7 @@ def place_order(request):
             
         
             
-        
-        
+       
         cart_items = CartItem.objects.filter(user=current_user)
         cart_count= cart_items.count()
         if cart_count <=0:
@@ -176,7 +178,7 @@ def place_order(request):
         
         
         for cart_item in cart_items:
-                sale_total += ( cart_item.product.sale_price * cart_item.quantity)
+                sale_total += cart_item.sub_total()
                 max_total += ( cart_item.product.max_price * cart_item.quantity)
         
         discount = max_total-sale_total
@@ -250,7 +252,7 @@ def payment_success(request):
                 orderproduct.user_id = request.user.id
                 orderproduct.product_id = item.product.id
                 orderproduct.quantity = item.quantity
-                orderproduct.product_price = item.product.sale_price
+                orderproduct.product_price = item.product.product_price()
                 orderproduct.ordered = True
                 orderproduct.save()
                 
@@ -309,7 +311,7 @@ def payment_success(request):
                 orderproduct.user_id = request.user.id
                 orderproduct.product_id = item.product.id
                 orderproduct.quantity = item.quantity
-                orderproduct.product_price = item.product.sale_price
+                orderproduct.product_price = item.product.product_price()
                 orderproduct.ordered = True
                 orderproduct.save()
                 

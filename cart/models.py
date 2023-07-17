@@ -1,6 +1,7 @@
 from django.db import models
 from product_management.models import Product_Variant 
 from accounts.models import User
+from datetime import datetime
 # Create your models here.
 
 class Cart(models.Model):
@@ -20,8 +21,16 @@ class CartItem(models.Model):
     is_active = models.BooleanField(default=True)
     
     
+    # def sub_total(self):
+    #     return self.product.sale_price * self.quantity
     def sub_total(self):
-        return self.product.sale_price * self.quantity
+        if self.product.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+                offer_percentage = self.product.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage', flat=True).first()
+                offer_price =  self.product.sale_price - self.product.sale_price * (offer_percentage) / (100)
+                return offer_price * self.quantity
+        else:
+                return self.product.sale_price * self.quantity
+        
     
     def __str__(self):
         return str(self.product)

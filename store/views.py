@@ -8,7 +8,9 @@ from order.models import Order,OrderProduct,Payment
 from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
 from django.views.decorators.cache import cache_control
-from django.db.models import Q
+from django.db.models import Q,Case, When, F, FloatField, Sum,ExpressionWrapper ,DecimalField
+
+from datetime import datetime
 
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 # Create your views here.
@@ -27,24 +29,24 @@ def store (request,category_slug=None):
     price_min = request.GET.get('price-min')
     price_max = request.GET.get('price-max')
     
+   
+    
     if category_slug !=None:
         category = get_object_or_404(Category,cat_slug=category_slug)
         product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(product__product_catg=category,is_active=True)
         product_variants_count = product_variants.count()
     else:
         product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True)
+
         product_variants_count = product_variants.count()
-    
+
     #wishlist
     if request.user.is_authenticated:  
         wishlist,created= Wishlist.objects.get_or_create(user=request.user)
         wishlist_items = WishlistItem.objects.filter(wishlist=wishlist, is_active=True).values_list('product_id', flat=True)
     else:
         wishlist_items =[]
-    
-    print(wishlist_items)
-        
-        
+ 
     #search
     if search_query:
         product_variants = product_variants.filter(
@@ -72,6 +74,7 @@ def store (request,category_slug=None):
     
     product_variants_count = product_variants.count()
     
+  
     # paginator start
     paginator = Paginator(product_variants,6)
     page = request.GET.get('page')

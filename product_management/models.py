@@ -4,7 +4,7 @@ from django.utils.text import slugify
 from django.db.models import UniqueConstraint, Q,F
 from collections import defaultdict
 from django.urls import reverse
-
+from datetime import datetime
 # Create your models here.
 
 # Atribute Table - SYSTEM_MEMORY , INTERNAL_STORAGE , COLOR , INTERNAL_STORAGE_TYPE
@@ -126,6 +126,26 @@ class Product_Variant(models.Model):
     
     def get_product_name(self):
         return f'{self.product.product_brand} {self.product.product_name}-{self.sku_id}'
+    
+    def product_price(self):
+        if self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+                offer_percentage = self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage', flat=True).first()
+                offer_price =  self.sale_price - self.sale_price * (offer_percentage) / (100)
+                return offer_price 
+        else:
+                return self.sale_price 
+        
+    def product_offer(self):
+        product_offer = {}
+        if self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+            category_offer = self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).first()
+            product_offer['offer_percentage'] = category_offer.discount_percentage
+            product_offer['offer_name'] = category_offer.offer_name
+        else:
+            product_offer['offer_percentage'] = 0
+            product_offer['offer_name'] = ""
+        return product_offer
+
     
     def __str__(self):
         return f'{self.sku_id} - {self.atributes.values("atribute_value")}'

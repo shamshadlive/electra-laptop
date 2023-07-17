@@ -60,9 +60,22 @@ Electra - Cart
     {% for cart_item in cart_items %}
         <tr>
             <td>
+                <!-- product_offer_percentage -->
+                <div class="position-absolute" style="z-index: 2;">
+                    {% if cart_item.product..product_offer.offer_percentage != 0 %}
+
+                   <span class="bg-danger text-white p-1 card"><small> -{{cart_item.product.product_offer.offer_percentage}}%</small></span>
+                                                                       
+                    {% endif %}
+                </div>
                 <figure class="itemside align-items-center">
+                    
+                    
+
                     <div class="aside"><img src="{{cart_item.product.thumbnail_image.url}}" class="img-sm"></div>
                     <figcaption class="info">
+                        
+
                         <a href="{{cart_item.product.get_url}}" class="title text-dark line-clamp">
                             {{ cart_item.product.product.product_brand }}
                             {{ cart_item.product.product.product_name }}
@@ -113,7 +126,7 @@ Electra - Cart
             <td> 
                 <div class="price-wrap">  
                     <var class="price">Rs{{cart_item.sub_total|intcomma }}</var> 
-                    <small class="text-muted">Each Price Rs{{cart_item.product.sale_price|intcomma }}
+                    <small class="text-muted">Each Price Rs{{cart_item.product.product_price|intcomma }}
                         <del>Rs{{cart_item.product.max_price|intcomma }}</del>
                     </small> 
                 </div> <!-- price-wrap .// -->

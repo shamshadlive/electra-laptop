@@ -9,6 +9,8 @@ from accounts.forms import AdressBookForm
 import json
 from django.http import JsonResponse
 from datetime import date
+from django.db.models import Q,Case, When, F, FloatField, Sum,ExpressionWrapper ,DecimalField
+from datetime import datetime
 
 # Create your views here.
 
@@ -28,10 +30,28 @@ def cart(request,total=0,quantity=0,cart_items=None):
             cart = Cart.objects.get(cart_id=_cart_id(request))
             cart_items = CartItem.objects.filter(cart=cart,is_active=True)
         
+        # cart_items=cart_items.annotate(
+        #                         offer_percentage=Sum(
+        #                         Case(
+        #                             When(
+        #                                 product__product__product_catg__categoryoffer__is_active=True,
+        #                                 product__product__product_catg__categoryoffer__expire_date__gte=datetime.now(),
+        #                                 then=F('product__product__product_catg__categoryoffer__discount_percentage')
+        #                             ),
+        #                             default=0,
+        #                             output_field=DecimalField()
+        #                         )
+        #                     )).annotate(
+        #                     offer_price=ExpressionWrapper(F('product__sale_price') - F('product__sale_price') * F('offer_percentage') / 100, output_field=FloatField())
+        #                     )
+                      
         for cart_item in cart_items:
-            total += ( cart_item.product.sale_price * cart_item.quantity)
+            total += cart_item.sub_total()
+            # total += ( cart_item.product.sale_price * cart_item.quantity)
             total_with_orginal_price +=( cart_item.product.max_price * cart_item.quantity)
             quantity += cart_item.quantity
+            
+        
             
     except ObjectDoesNotExist:
         pass
@@ -148,7 +168,7 @@ def checkout(request,total=0,quantity=0,cart_items=None):
             cart = Cart.objects.get(cart_id=_cart_id(request))
             cart_items = CartItem.objects.filter(cart=cart,is_active=True)
         for cart_item in cart_items:
-            total += ( cart_item.product.sale_price * cart_item.quantity)
+            total += cart_item.sub_total()
             total_with_orginal_price +=( cart_item.product.max_price * cart_item.quantity)
             quantity += cart_item.quantity
             product = Product_Variant.objects.get(id=cart_item.product.id)
@@ -193,7 +213,7 @@ def coupon_verify(request):
         grand_total=0
         cart_items = CartItem.objects.filter(user=request.user,is_active=True)
         for cart_item in cart_items:
-            grand_total += ( cart_item.product.sale_price * cart_item.quantity)
+            grand_total += cart_item.sub_total()
         if coupon[0].minimum_amount > grand_total:
              return JsonResponse({"status": "error", "message": "Minimum Purchase amount "+str(coupon[0].minimum_amount)})
         
