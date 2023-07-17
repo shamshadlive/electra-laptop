@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'cart',
     'order',
     'wallet',
+    'offer_management',
     'django_cleanup.apps.CleanupConfig',
 ]
 

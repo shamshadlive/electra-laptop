@@ -108,5 +108,8 @@ class EditCouponForm(ModelForm):
     class Meta:
         model = Coupon
         fields = '__all__'
+        widgets = {
+            'expire_date': DateInput(),
+        }
         
         
