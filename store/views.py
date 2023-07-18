@@ -11,7 +11,8 @@ from django.views.decorators.cache import cache_control
 from django.db.models import Q,Case, When, F, FloatField, Sum,ExpressionWrapper ,DecimalField
 from .models import Banner
 from datetime import datetime
-
+import json
+from django.http import JsonResponse
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 # Create your views here.
 
@@ -24,6 +25,27 @@ def home (request):
     }
     return render(request, 'store/home.html',context)
 
+
+def autocomplete(request):
+    if 'term' in request.GET:
+        search_query = request.GET.get('term').replace(" ", "")
+        product_variants = Product_Variant.objects.filter(is_active=True)
+        product_variants = [
+                            product for product in product_variants
+                            if search_query.lower() in product.get_product_name().lower()
+                        ]
+        
+        title = []
+        title += [ x.get_product_name() for x in product_variants ]
+        return JsonResponse(title,safe=False)
+    else:
+        return JsonResponse({
+            'status':400
+        })
+
+
+
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def store (request,category_slug=None):
     categories = None
@@ -32,7 +54,7 @@ def store (request,category_slug=None):
     price_min = request.GET.get('price-min')
     price_max = request.GET.get('price-max')
     
-   
+  
     
     if category_slug !=None:
         try:
@@ -56,12 +78,10 @@ def store (request,category_slug=None):
  
     #search
     if search_query:
-        product_variants = product_variants.filter(
-            Q(product__product_name__icontains=search_query) |
-            Q(product__product_catg__cat_name__icontains=search_query) |
-            Q(product__product_brand__brand_name__icontains=search_query) |
-            Q(product__product_description__icontains=search_query)
-        )
+        product_variants = [
+                            product for product in product_variants
+                            if search_query.lower() in product.get_product_name().lower()
+                        ]
        
     #price filter 
     if price_min:
@@ -79,7 +99,7 @@ def store (request,category_slug=None):
         if attribute_values:
             product_variants=product_variants.filter(atributes__atribute_value__in=attribute_values)
     
-    product_variants_count = product_variants.count()
+    product_variants_count = len(product_variants)
     
   
     # paginator start

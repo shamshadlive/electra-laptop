@@ -57,7 +57,12 @@
           <form class="w-100 nav-search-form"  id="nav-search-form"  onsubmit="handleSearchForm(event)">
               <input value="{% if search_query %}{{ search_query }}{% endif %}" class=" form-control bg-black border-0 text-light" type="search" placeholder="Search Products..." id="nav-search-input">
             
-            </form>
+          </form>
+          <!-- <div class="ui-widget">
+            <label for="tags">Tags: </label>
+            <input id="tags">
+          </div> -->
+
         </div>
         <div class="col-4">
               <select class="form-select" aria-label="Default select example" onchange="location = this.value;" >

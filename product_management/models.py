@@ -125,7 +125,7 @@ class Product_Variant(models.Model):
         return reverse('product-variant-detail',args=[self.product.product_catg.cat_slug,self.product_variant_slug])
     
     def get_product_name(self):
-        return f'{self.product.product_brand} {self.product.product_name}-{self.sku_id}'
+        return f'{self.product.product_brand} {self.product.product_name}-{self.sku_id} - {", ".join([value[0] for value in self.atributes.all().values_list("atribute_value")])}'
     
     def product_price(self):
         if self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
