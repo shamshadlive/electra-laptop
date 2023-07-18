@@ -9,7 +9,7 @@ from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
 from django.views.decorators.cache import cache_control
 from django.db.models import Q,Case, When, F, FloatField, Sum,ExpressionWrapper ,DecimalField
-
+from .models import Banner
 from datetime import datetime
 
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
@@ -18,8 +18,11 @@ from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 
 
 def home (request):
-    
-    return render(request, 'store/home.html')
+    banners = Banner.objects.filter(is_active=True)
+    context={
+        'banners':banners
+    }
+    return render(request, 'store/home.html',context)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def store (request,category_slug=None):
@@ -32,7 +35,11 @@ def store (request,category_slug=None):
    
     
     if category_slug !=None:
-        category = get_object_or_404(Category,cat_slug=category_slug)
+        try:
+            category = get_object_or_404(Category,cat_slug=category_slug)
+        except Exception as e:
+                print(e)
+                return redirect('store')
         product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(product__product_catg=category,is_active=True)
         product_variants_count = product_variants.count()
     else:
@@ -232,5 +239,10 @@ def user_address_delete(request,adress_id):
         return redirect('user-address')
     except AdressBook.DoesNotExist:
         return redirect('user-address')
+
+
+
+#=========ADMIN BANNER MANGEMENT=====
+
 
     

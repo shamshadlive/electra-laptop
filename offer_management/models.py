@@ -10,6 +10,7 @@ class CategoryOffer(models.Model):
     category = models.ManyToManyField(Category)
     discount_percentage = models.IntegerField(default=0)
     category_offer_slug = models.SlugField( blank=True,max_length=200,unique=True)
+    category_offer_image = models.ImageField(upload_to='category_offer/images/')
     is_active = models.BooleanField(default=True)
     
     
@@ -19,9 +20,9 @@ class CategoryOffer(models.Model):
             
         counter = CategoryOffer.objects.filter(category_offer_slug__startswith=self.category_offer_slug).count()
         if counter > 0:
-            self.category_offer_slug = f'{self.offer_name}-{counter}'
+            self.category_offer_slug = slugify(f'{self.offer_name}-{counter}')
         else:
-            self.category_offer_slug = self.offer_name
+            self.category_offer_slug =slugify(self.offer_name) 
         
         super(CategoryOffer, self).save(*args, **kwargs)
 

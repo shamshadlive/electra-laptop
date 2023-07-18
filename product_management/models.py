@@ -129,7 +129,7 @@ class Product_Variant(models.Model):
     
     def product_price(self):
         if self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
-                offer_percentage = self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage', flat=True).first()
+                offer_percentage = self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage', flat=True).order_by('-discount_percentage').first()
                 offer_price =  self.sale_price - self.sale_price * (offer_percentage) / (100)
                 return offer_price 
         else:
@@ -138,7 +138,7 @@ class Product_Variant(models.Model):
     def product_offer(self):
         product_offer = {}
         if self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
-            category_offer = self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).first()
+            category_offer = self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).order_by('-discount_percentage').first()
             product_offer['offer_percentage'] = category_offer.discount_percentage
             product_offer['offer_name'] = category_offer.offer_name
         else:

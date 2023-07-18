@@ -22,7 +22,9 @@ urlpatterns = [
     path("user/address/delete/<str:adress_id>", views.user_address_delete, name="user-address-delete"),
 
     #store offers
-    path("store/offers", offer_management_views.all_offers_store, name="store-all-offers"),
+    path("store/offers", offer_management_views.all_offers_store.as_view(), name="store-all-offers"),
+    path("store/offers/category/<str:offer_slug>", offer_management_views.category_offer_product.as_view(), name="store-category-offers"),
+    path("store/offers/category/<str:offer_slug>/<str:category>", offer_management_views.category_offer_product.as_view(), name="store-category-offers-each"),
     
     
 ]

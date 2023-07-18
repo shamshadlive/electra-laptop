@@ -8,9 +8,31 @@ Electra - Offers
   
 {% block content %}
 
+<div class="container">
+    <div class="row ">
+        <div class="bg-dark text-white">
+            <h5 class="p-3">Category Offers</h5>
+        </div>
+       
+        {% for categoryoffer in categoryOffers %}
+        <div class="card m-2 ms-0 p-0" style="width: 18rem;">
+          <img class="card-img-top " src="{{categoryoffer.category_offer_image.url}}" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">{{categoryoffer.offer_name}}</h5>
+             <b> Applicable Categories</b>
+             <p>
+              {% for category in categoryoffer.category.all %}
+              {{ category.cat_name }},
+              {% endfor %}
+                </p>
+              <a href="{% url 'store-category-offers' categoryoffer.category_offer_slug %}" class="btn btn-dark">View Products</a>
 
+            </div>
+          </div>
 
-oofers
+        {% endfor %}
+    </div>
+</div>
 
 
 

@@ -1,0 +1,33 @@
+{% extends "base/admincontrol/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container col-xl-4 col-10 pt-4 mb-5">
+    <div class="card mb-3 " >
+      <div class="card-header bg-dark text-center "><h4 class="text-white">Create Category Offer</h4> </div>
+      <div class="card-body">
+       
+        <form method="post" enctype="multipart/form-data" >
+          {% csrf_token %}
+          {{form}}
+        
+
+          
+          
+         
+
+         
+          <div>
+            
+            <button type="submit" class="btn btn-primary w-100">Create  Now</button>
+        </div>
+        </form>
+        <p class="base-small-font mt-2">
+          <a  href="{{request.META.HTTP_REFERER}}">Go Back</a>
+          </p>
+      </div>
+    </div>
+  </div>
+  
+
+{% endblock %}

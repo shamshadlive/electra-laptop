@@ -3,6 +3,7 @@ from categoryManagement import views as categoryView
 from product_management import views as productView
 from extra_management import views as extraView
 from order import views as orderView
+from offer_management import views as offerView
 from . import views
 urlpatterns = [
     path("", views.admin_home, name="admin-home"),
@@ -65,6 +66,21 @@ urlpatterns = [
     path("all-orders", orderView.all_orders_admin, name="admin-all-orders"),
     path("orders/detail/<str:order_id>", orderView.admin_order_history_detail, name="admin-order-history-detail"),
     path("orders/detail/change/status", orderView.change_order_status_admin, name="change_order_status_admin"),
-    
 
+
+    #offer Management 
+    path("all-category-offer", offerView.admin_all_category_offer.as_view(), name="admin-all-category-offer"),
+    path("all-category-offer/create", offerView.adminCategoryOfferCreate.as_view(), name="admin-category-offer-create"),
+    path("all-category-offer/<int:pk>/update/", offerView.adminCategoryOfferUpdate.as_view(), name="admin-category-offer-update"),
+    path("all-category-offer/<int:pk>/delete/", offerView.adminCategoryOfferDelete.as_view(), name="admin-category-offer-delete"),
+    
+    
+    #banner Management
+    # banner mangement view is under offer management due to classs view
+    path("all-banner", offerView.admin_all_banner.as_view(), name="admin-all-banner"),
+    path("all-banner/create", offerView.adminBannerCreate.as_view(), name="admin-banner-create"),
+    path("all-banner/<int:pk>/update/", offerView.adminBannerUpdate.as_view(), name="admin-banner-update"),
+    path("all-banner/<int:pk>/delete/", offerView.adminBannerDelete.as_view(), name="admin-banner-delete"),
+    
+# 
 ]

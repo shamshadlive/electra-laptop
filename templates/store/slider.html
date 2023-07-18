@@ -5,24 +5,20 @@
     <div class="container-fluid">
        
       <div class="owl-carousel owl-1">
-        
-        <div class="slider-div">
-          <img src="{% static 'store/images/hero_1.jpg' %}" alt="Snow" style="width:100%;">
-          <div class="bottom-left">
-           <button class="btn btn-dark rounded-0 d-none d-xl-block d-lg-block d-md-block">
-            Buy Now
-           </button>
-          </div>
-        </div>
 
+        {% for banner in banners%}
         <div class="slider-div">
-          <img src="{% static 'store/images/hero_3.jpg' %}" alt="Snow" style="width:100%;">
-          <div class="bottom-left">
-           <button class="btn btn-dark rounded-0 d-none d-xl-block d-lg-block d-md-block">
-            Order Now
-           </button>
+          
+            <img src="{{banner.banner_image.url}}" alt="Snow" style="width:100%;">
+            <div class="bottom-left">
+             <a class="btn btn-dark rounded-0 d-none d-xl-block d-lg-block d-md-block" href="{{banner.banner_url}}">
+              {{banner.button_text}}
+             </a>
+         
           </div>
         </div>
+        {% endfor%}
+      
 
       </div>
     </div>
