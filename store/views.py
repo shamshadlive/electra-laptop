@@ -28,12 +28,17 @@ def home (request):
 
 def autocomplete(request):
     if 'term' in request.GET:
-        search_query = request.GET.get('term').replace(" ", "")
+        search_query = request.GET.get('term')
         product_variants = Product_Variant.objects.filter(is_active=True)
-        product_variants = [
+        
+         #search
+        terms = search_query.split()  # Split the search query into individual terms
+        for term in terms:
+            product_variants = [
                             product for product in product_variants
-                            if search_query.lower() in product.get_product_name().lower()
+                            if term.lower() in product.get_product_name().lower()
                         ]
+            
         
         title = []
         title += [ x.get_product_name() for x in product_variants ]
@@ -78,9 +83,11 @@ def store (request,category_slug=None):
  
     #search
     if search_query:
-        product_variants = [
+        terms = search_query.split()  # Split the search query into individual terms
+        for term in terms:
+            product_variants = [
                             product for product in product_variants
-                            if search_query.lower() in product.get_product_name().lower()
+                            if term.lower() in product.get_product_name().lower()
                         ]
        
     #price filter 
