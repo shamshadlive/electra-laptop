@@ -1,7 +1,7 @@
 from django.db import models
 from categoryManagement.models import Category
 from django.utils.text import slugify
-from django.db.models import UniqueConstraint, Q,F
+from django.db.models import UniqueConstraint, Q,F,Avg,Count
 from collections import defaultdict
 from django.urls import reverse
 from datetime import datetime
@@ -120,6 +120,21 @@ class Product_Variant(models.Model):
             )
         ]
 
+    def avrg_review(self):
+        from store.models import ReviewRating    
+        reviews = ReviewRating.objects.filter(product=self,is_active=True).aggregate(average=Avg('rating'))
+        avg = 0
+        if reviews['average'] is not None:
+            avg = float(reviews['average'])
+        return avg
+    
+    def count_review(self):
+        from store.models import ReviewRating    
+        reviews = ReviewRating.objects.filter(product=self,is_active=True).aggregate(count=Count('id'))
+        count = 0
+        if reviews['count'] is not None:
+            count = int(reviews['count'])
+        return count
 
     def get_url(self):
         return reverse('product-variant-detail',args=[self.product.product_catg.cat_slug,self.product_variant_slug])
@@ -148,7 +163,7 @@ class Product_Variant(models.Model):
 
     
     def __str__(self):
-        return f'{self.sku_id} - {self.atributes.values("atribute_value")}'
+        return self.get_product_name()
          
 
 # FOR ADDITIONAL IMAGES

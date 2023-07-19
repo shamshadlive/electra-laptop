@@ -33,4 +33,9 @@ urlpatterns = [
     path("store/offers/category/<str:offer_slug>/<str:category>", offer_management_views.category_offer_product.as_view(), name="store-category-offers-each"),
     
     
+    #submit review
+    path("submit_review/<int:product_id>/", views.submit_review, name="submit_review"),
+    
+    
+    
 ]

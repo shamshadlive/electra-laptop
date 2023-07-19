@@ -8,12 +8,15 @@ from order.models import Order,OrderProduct,Payment
 from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
 from django.views.decorators.cache import cache_control
-from django.db.models import Q,Case, When, F, FloatField, Sum,ExpressionWrapper ,DecimalField
-from .models import Banner
+from django.db.models import Q,Case, When, F, FloatField, Sum,ExpressionWrapper ,DecimalField,Avg
+from .models import Banner,ReviewRating
+from order.models import OrderProduct
+from .forms import ReviewForm
 from datetime import datetime
 import json
 from django.http import JsonResponse
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
+from django.contrib import messages
 # Create your views here.
 
 
@@ -49,8 +52,6 @@ def autocomplete(request):
         })
 
 
-
-
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def store (request,category_slug=None):
     categories = None
@@ -58,8 +59,8 @@ def store (request,category_slug=None):
     search_query = request.GET.get('query')
     price_min = request.GET.get('price-min')
     price_max = request.GET.get('price-max')
+    ratings = request.GET.getlist('RATING')
     
-  
     
     if category_slug !=None:
         try:
@@ -70,7 +71,7 @@ def store (request,category_slug=None):
         product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(product__product_catg=category,is_active=True)
         product_variants_count = product_variants.count()
     else:
-        product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True)
+        product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True).annotate(avg_rating=Avg('product_review__rating'))
 
         product_variants_count = product_variants.count()
 
@@ -90,6 +91,16 @@ def store (request,category_slug=None):
                             if term.lower() in product.get_product_name().lower()
                         ]
        
+    #ratings filter   
+    if ratings:
+        rating_filters = Q()
+        for rating in ratings:
+            rating_filters |= Q(avg_rating__gte=rating)
+
+        product_variants = product_variants.filter(rating_filters)
+    
+    
+    
     #price filter 
     if price_min:
         product_variants = product_variants.filter(sale_price__gte=price_min)
@@ -98,13 +109,17 @@ def store (request,category_slug=None):
         
         
     # Get all attribute names from the request avoid certain parameters
-    attribute_names = [key for key in request.GET.keys() if key not in ['query','page','price-min','price-max']]
+    attribute_names = [key for key in request.GET.keys() if key not in ['query','page','price-min','price-max','RATING']]
     
     #other filter
     for attribute_name in attribute_names:
         attribute_values = request.GET.getlist(attribute_name)
         if attribute_values:
             product_variants=product_variants.filter(atributes__atribute_value__in=attribute_values)
+    
+    
+    
+    
     
     product_variants_count = len(product_variants)
     
@@ -122,8 +137,6 @@ def store (request,category_slug=None):
                'wishlist_items':wishlist_items}
     
     return render(request, 'store/store.html',context)
-
-
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -144,14 +157,26 @@ def product_variant_detail(request,category_slug,product_variant_slug):
         print(e)
         return redirect('store')
     
+    if request.user.is_authenticated:
+        try:
+            order_product = OrderProduct.objects.filter(user=request.user,product_id=single_product_variant.id).exists()
+        except OrderProduct.DoesNotExist:
+            order_product = None
+    else:
+        order_product = None
+    
+    
     product_variants = Product_Variant.objects.filter(product=single_product_variant.product,is_active=True)
     product_variants_count=product_variants.count()
    
+    reviews = ReviewRating.objects.filter(is_active=True,product_id=single_product_variant.id).order_by('-updated_at')
     
     context = { 'single_product_variant' :single_product_variant,
                'product_variants':product_variants,
                'product_variants_count':product_variants_count,
                'in_cart':in_cart,
+               'order_product':order_product,
+               'reviews':reviews,
                'in_whislist':in_whislist}
     
     return render(request, 'store/product_variant_detail.html',context)
@@ -208,9 +233,7 @@ def order_history_detail(request,order_id):
         'payment':payment,
     }
     return render(request, 'store/order_detail.html',context)
-    
-    
-    
+      
     
 @login_required(login_url='login-page')
 def user_address(request):
@@ -222,10 +245,7 @@ def user_address(request):
     }
     return render(request, 'store/address.html',context)
     
-    
-    
-    
-    
+   
 @login_required(login_url='login-page')
 def user_address_create(request,checkout):  
     if request.method == 'POST':
@@ -268,8 +288,35 @@ def user_address_delete(request,adress_id):
         return redirect('user-address')
 
 
+#=======SUBMIT REVIEW ========
+def submit_review(request,product_id):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == 'POST':
+        try:
+            reviews = ReviewRating.objects.get(user__id=request.user.id,product__id=product_id)
+            form = ReviewForm(request.POST,instance=reviews)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Thank You ! Review Updated")
+                return redirect(url)
+            else:
+                messages.error(request, form.errors)
+                return redirect(url)
 
-#=========ADMIN BANNER MANGEMENT=====
-
-
+        except ReviewRating.DoesNotExist:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                review = ReviewRating()
+                review.subject = form.cleaned_data['subject']
+                review.rating = form.cleaned_data['rating']
+                review.review = form.cleaned_data['review']
+                review.product_id = product_id
+                review.user_id = request.user.id
+                review.save()
+                messages.success(request, "Thank You ! Review Posted")
+                return redirect(url)
+            else:
+                messages.error(request, form.errors.values)
+                return redirect(url)
+        
     

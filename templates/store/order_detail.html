@@ -99,13 +99,14 @@ Electra - Order
                     </td>
 
                     <td> 
+                        <a href="{{order_product.product.get_url}}">
                         <p class="title mb-0">
                            
                             {{order_product.product.product.product_brand}}
                             {{order_product.product.product.product_name}}
                             {{order_product.product.sku_id}}
 
-                             </p>
+                             </p></a>
                         <var class=" text-muted">
                             {% for atribute_value in order_product.product.atributes.all %}
                             {{ atribute_value.atribute_value }}

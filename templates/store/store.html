@@ -94,6 +94,48 @@ Electra - Home
 
         {% endfor %}
 
+        <article class="filter-group">
+            <header class="card-header">
+                <a href="#" data-toggle="collapse" data-target="#ratings_filter" aria-expanded="true" class="">
+                    <i class="icon-control fa fa-chevron-down">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+                          </svg>
+                    </i>
+                    <h6 class="title">Customer Rating</h6>
+                </a>
+            </header>
+            <div class="filter-content collapse " id="ratings_filter" style="">
+                <div class="card-body"> 
+                    <label class="checkbox-btn my-1">
+                        <input type="checkbox" class="filter-checkbox" value="RATING=5">
+                        <span class="btn btn-light"> 5 ★★★★★</span>
+                    </label>
+                    
+                    <label class="checkbox-btn my-1">
+                        <input type="checkbox" class="filter-checkbox" value="RATING=4">
+                        <span class="btn btn-light"> 4 ★★★★</span>
+                    </label>
+                    <label class="checkbox-btn my-1">
+                        <input type="checkbox" class="filter-checkbox" value="RATING=3">
+                        <span class="btn btn-light"> 3 ★★★</span>
+                    </label>
+
+                    <label class="checkbox-btn my-1">
+                        <input type="checkbox" class="filter-checkbox" value="RATING=2">
+                        <span class="btn btn-light"> 2 ★★</span>
+                    </label>
+
+                    <label class="checkbox-btn my-1">
+                        <input type="checkbox" class="filter-checkbox" value="RATING=1">
+                        <span class="btn btn-light"> 1 ★</span>
+                    </label>
+
+
+                </div> <!-- card-body.// -->
+            </div>
+        </article> <!-- filter-group  .// -->
+
 
 
 
@@ -196,7 +238,7 @@ Electra - Home
 
                             </span>
                             <del class="price-old">₹{{ variant.max_price|intcomma }}</del>
-                            <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
+                            <div class="Stars" style="--rating: {{variant.avrg_review}};" aria-label="Rating of this product is {{variant.avrg_review}} out of 5.">
                             </div>
                             
                         </div> <!-- price-wrap.// -->
