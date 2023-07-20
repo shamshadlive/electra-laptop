@@ -5,8 +5,19 @@ from extra_management import views as extraView
 from order import views as orderView
 from offer_management import views as offerView
 from . import views
+
 urlpatterns = [
     path("", views.admin_home, name="admin-home"),
+    
+    
+    #chart data api
+    path("api/dashboard/data/sales", views.DashboardSalesData.as_view(), name="api-dashboard-sales"),
+    path("api/dashboard/data/product2sales", views.DashboardProductVsOrderData.as_view(), name="api-dashboard-productvsorder"),
+    
+    
+    
+    
+    
     path("login", views.admin_login, name="admin-login"),
     
     #admin otp 

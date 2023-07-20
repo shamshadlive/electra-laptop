@@ -1,12 +1,19 @@
 from django.shortcuts import render,redirect
 from accounts.models import User,UserOtp
-from django.db.models import Q
+from django.db.models import Q,Sum,Count
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from .forms import EditUserForm,CreateUserForm
 from django.urls import reverse
 import functools,random
 from accounts.helper.message_handler import MessageHandler
+from order.models import Order,Payment
+from product_management.models import Product_Variant,Brand,Coupon
+from categoryManagement.models import Category
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from store.models import Banner
+from offer_management.models import CategoryOffer
 # Create your views here.
 
 #decorator for checking admin or not
@@ -30,7 +37,96 @@ def check_isadmin(view_func, redirect_url="admin-login"):
 
 @check_isadmin
 def admin_home(request):
-    return render(request, 'admincontrol/index.html')
+    users_count = User.objects.filter(is_active=True).count()
+    sales = Order.objects.filter(is_ordered=True).exclude(order_status__in=["Cancelled_Admin", "Cancelled_User", "Returned_User"]).aggregate(total_sales=Sum('order_total'))
+    total_sales = 0
+    if sales['total_sales'] is not None:
+        total_sales = float(sales['total_sales'])
+
+    active_products_count = Product_Variant.objects.filter(is_active=True,product__is_active=True).count()
+    
+    new_orders_count = Order.objects.filter(is_ordered=True,order_status='New').count()
+    
+    brand_count = Brand.objects.filter(is_active=True).count()
+    coupon_count = Coupon.objects.filter(is_active=True).count()
+    categories_count = Category.objects.filter(is_active=True).count()
+    banner_count = Banner.objects.filter(is_active=True).count()
+    offer_count = CategoryOffer.objects.filter(is_active=True).count()
+    
+    
+    recent_signups = User.objects.all().order_by('-date_joined')[:10]
+    recent_payments = Payment.objects.all().order_by('-payment_order_id')[:10]
+    
+    context = {
+        'users_count':users_count,
+        'total_sales':total_sales,
+        'active_products_count':active_products_count,
+        'new_orders_count':new_orders_count,
+        'brand_count':brand_count,
+        'coupon_count':coupon_count,
+        'categories_count':categories_count,
+        'categories_count':categories_count,
+        'banner_count':banner_count,
+        'offer_count':offer_count,
+        'recent_signups':recent_signups,
+        'recent_payments':recent_payments
+    }
+    return render(request, 'admincontrol/index.html',context)
+
+
+
+#dashboard api
+
+class DashboardSalesData(APIView):
+    authentication_classes = []
+    permission_classes = []
+    
+    def get(self, request, format=None):
+        total_orders_count  = Order.objects.filter(is_ordered=True).count()
+        new_orders_count  = Order.objects.filter(is_ordered=True,order_status='New').count()
+        cancelled_orders_count  = Order.objects.filter(is_ordered=True,order_status__in=["Cancelled_Admin", "Cancelled_User"]).count()
+        returned_orders_count  = Order.objects.filter(is_ordered=True,order_status='Returned_User').count()
+        delivered_orders_count  = Order.objects.filter(is_ordered=True,order_status='Delivered').count()
+        data = {
+            'status':'success',
+            'data':{
+                'Total Orders':total_orders_count,
+                'New Orders':new_orders_count,
+                'cancelled Orders':cancelled_orders_count,
+                'Returned Orders':returned_orders_count,
+                'Delivered Orders':delivered_orders_count,
+                }    
+        }
+        return Response(data)
+
+class DashboardProductVsOrderData(APIView):
+    authentication_classes = []
+    permission_classes = []
+    
+    def get(self, request, format=None):
+        products_with_order_count = Product_Variant.objects.all().annotate(total_orders=Count('orderproduct__order', distinct=True)).order_by('-total_orders')[:10]
+        # Create a dictionary with product names and their total order counts
+        product_order_counts = {product.get_product_name()[:20]+'...': product.total_orders for product in products_with_order_count}
+        print(product_order_counts)
+        data = {
+            'status':'success',
+            'data':product_order_counts  
+        }
+        return Response(data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def admin_login(request):
     if request.method =='POST':

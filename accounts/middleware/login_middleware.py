@@ -10,12 +10,12 @@ class AdminLoginMiddleware:
         excluded_urls = [
             'admin-login',
             'admin-login-otp',
-            'admin-login-otp-verify'
+            'admin-login-otp-verify',
             # Add other excluded URL names here
         ]
         
         
-        if '/admincontrol' in request.path and request.resolver_match and request.resolver_match.url_name not in excluded_urls:
+        if '/admincontrol' in request.path and request.resolver_match and request.resolver_match.url_name not in excluded_urls and '/api' not in request.path:
             if not (request.user.is_authenticated and request.user.is_staff):
                 return redirect('admin-login')
             

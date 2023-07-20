@@ -5,12 +5,11 @@
     </div>
     <ul class="sidebar-nav" data-coreui="navigation" data-simplebar="">
       <li class="nav-item"><a class="nav-link" href="{% url 'admin-home' %}">
-       Dashboard<span class="badge badge-sm bg-info ms-auto">NEW</span></a></li>
-      <li class="nav-title">Common Control</li>
-      <li class="nav-item"><a class="nav-link" href="colors.html">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
-          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
-        </svg>DONT TOUCH</a></li>
+       Dashboard
+       <!-- <span class="badge badge-sm bg-info ms-auto">NEW</span> -->
+      </a></li>
+      
+      
         
       <li class="nav-title nav-group">
 
@@ -217,7 +216,7 @@
           <img src="{% static 'store/images/logo.svg' %}" alt="electra-header-logo" height="36">
         <ul class="header-nav d-none d-md-flex">
           <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
+          
           
           {% if request.user.is_authenticated %}
           <li class="nav-item"><a class="nav-link" href="#">{{request.user}}</a></li>
@@ -243,7 +242,18 @@
         </ul>
         <ul class="header-nav ms-3">
           <li class="nav-item dropdown"><a class="nav-link py-0" data-coreui-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-              <div class="avatar avatar-md"><img class="avatar-img" src="{% static 'admincontrol/assets/img/avatars/8.jpg' %}" alt="user@email.com"></div>
+              <div class="avatar avatar-md">
+
+                {% if request.user.profile_pic %}
+                <img class="avatar-img" src="{{request.user.profile_pic.url}}" alt="{{request.user.first_name}}">
+                {% else %}
+                <img class="avatar-img" src="{% static 'store/images/icons/userprofile.svg' %}" alt="{{request.user.first_name}}">
+                {% endif %}
+
+
+                
+              
+              </div>
             </a>
             <div class="dropdown-menu dropdown-menu-end pt-0">
               <div class="dropdown-header bg-light py-2">
@@ -290,17 +300,5 @@
           </li>
         </ul>
       </div>
-      <div class="header-divider"></div>
-
-
-      <div class="container-fluid">
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb my-0 ms-2">
-            <li class="breadcrumb-item">
-              <!-- if breadcrumb is single--><span>Home</span>
-            </li>
-            <li class="breadcrumb-item active"><span>Dashboard</span></li>
-          </ol>
-        </nav>
-      </div>
+      
     </header>

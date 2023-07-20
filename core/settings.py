@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "verify_email.apps.VerifyEmailConfig",
     'django.contrib.humanize',
+    'rest_framework',
     'store',
     'accounts',
     'admincontrol',
