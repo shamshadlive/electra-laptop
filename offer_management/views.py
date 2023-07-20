@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.views.generic.list import ListView  
-from .models import CategoryOffer
+from .models import CategoryOffer,ProductOffer
 from datetime import datetime
 from product_management.models import Product_Variant
 from django.shortcuts import get_object_or_404
@@ -9,7 +9,7 @@ from categoryManagement.models import Category
 from cart.models import Wishlist,WishlistItem
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator 
 from django.urls import path, reverse_lazy
-from .forms import CreateCategoryOfferForm,CreateBannerForm
+from .forms import CreateCategoryOfferForm,CreateBannerForm,CreateProductOfferForm
 from django.views.generic.edit import CreateView, UpdateView ,DeleteView  
  
 from store.models import Banner
@@ -135,6 +135,55 @@ class adminCategoryOfferDelete(DeleteView):
         self.object = self.get_object()
         self.object.delete() 
         return redirect ('admin-all-category-offer')
+
+
+
+
+#admin - product -offer managmenet
+
+class admin_all_product_offer(ListView):  
+    model = ProductOffer  
+    template_name = 'admincontrol/all_product_offer.html'
+    context_object_name = 'productOffers'
+  
+
+class adminProductOfferCreate(CreateView):  
+    model = ProductOffer  
+    template_name = 'admincontrol/product_offer_create.html'
+    form_class = CreateProductOfferForm
+    success_url = reverse_lazy('admin-all-product-offer')
+    
+
+
+class adminProductOfferUpdate(UpdateView):  
+    model = ProductOffer  
+    template_name = 'admincontrol/product_offer_update.html'
+    form_class = CreateProductOfferForm
+    success_url = reverse_lazy('admin-all-product-offer')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product_offer_id'] = self.kwargs['pk']
+        return context
+
+class adminProductOfferDelete(DeleteView):  
+    model = ProductOffer   
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete() 
+        return redirect ('admin-all-product-offer')
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

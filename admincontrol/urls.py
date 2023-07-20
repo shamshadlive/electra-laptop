@@ -79,11 +79,18 @@ urlpatterns = [
     path("orders/detail/change/status", orderView.change_order_status_admin, name="change_order_status_admin"),
 
 
-    #offer Management 
+    #Category offer Management 
     path("all-category-offer", offerView.admin_all_category_offer.as_view(), name="admin-all-category-offer"),
     path("all-category-offer/create", offerView.adminCategoryOfferCreate.as_view(), name="admin-category-offer-create"),
     path("all-category-offer/<int:pk>/update/", offerView.adminCategoryOfferUpdate.as_view(), name="admin-category-offer-update"),
     path("all-category-offer/<int:pk>/delete/", offerView.adminCategoryOfferDelete.as_view(), name="admin-category-offer-delete"),
+    
+
+    #Product offer Management 
+    path("all-product-offer", offerView.admin_all_product_offer.as_view(), name="admin-all-product-offer"),
+    path("all-product-offer/create", offerView.adminProductOfferCreate.as_view(), name="admin-product-offer-create"),
+    path("all-product-offer/<int:pk>/update/", offerView.adminProductOfferUpdate.as_view(), name="admin-product-offer-update"),
+    path("all-product-offer/<int:pk>/delete/", offerView.adminProductOfferDelete.as_view(), name="admin-product-offer-delete"),
     
     
     #banner Management

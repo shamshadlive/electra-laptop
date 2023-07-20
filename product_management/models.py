@@ -143,23 +143,51 @@ class Product_Variant(models.Model):
         return f'{self.product.product_brand} {self.product.product_name}-{self.sku_id} - {", ".join([value[0] for value in self.atributes.all().values_list("atribute_value")])}'
     
     def product_price(self):
+        offer_percentage=0
+       
+        #adding catggry offer
         if self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
                 offer_percentage = self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage', flat=True).order_by('-discount_percentage').first()
-                offer_price =  self.sale_price - self.sale_price * (offer_percentage) / (100)
-                return offer_price 
-        else:
-                return self.sale_price 
+        
+        #adding product offer
+        if self.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+                offer_percentage = offer_percentage+self.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage', flat=True).order_by('-discount_percentage').first()
+        
+        if offer_percentage >=100:
+            offer_percentage = 100
+         
+        offer_price =  self.sale_price - self.sale_price * (offer_percentage) / (100)
+        
+        return offer_price 
+        
         
     def product_offer(self):
-        product_offer = {}
+        offer_price = {
+            'offer_percentage': 0,
+            'offer_name': ""
+        }
+        
+        #category offer
         if self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
             category_offer = self.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).order_by('-discount_percentage').first()
-            product_offer['offer_percentage'] = category_offer.discount_percentage
-            product_offer['offer_name'] = category_offer.offer_name
-        else:
-            product_offer['offer_percentage'] = 0
-            product_offer['offer_name'] = ""
-        return product_offer
+            offer_price['offer_percentage'] = category_offer.discount_percentage
+            offer_price['offer_name'] = category_offer.offer_name
+          
+           
+        #product_offer
+        if self.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+            try:
+                product_offer = self.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).order_by('-discount_percentage').first()
+                
+                offer_price['offer_percentage'] += product_offer.discount_percentage
+                offer_price['offer_name'] += ","+product_offer.offer_name
+            except Exception as e:
+                
+                print(e)
+        if offer_price['offer_percentage'] >=100:
+            offer_price['offer_percentage'] = 100
+               
+        return offer_price
 
     
     def __str__(self):

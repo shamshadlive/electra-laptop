@@ -24,12 +24,23 @@ class CartItem(models.Model):
     # def sub_total(self):
     #     return self.product.sale_price * self.quantity
     def sub_total(self):
+       
+            
+        offer_percentage=0
+        #adding catggry offer
         if self.product.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
                 offer_percentage = self.product.product.product_catg.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage', flat=True).order_by('-discount_percentage').first()
-                offer_price =  self.product.sale_price - self.product.sale_price * (offer_percentage) / (100)
-                return offer_price * self.quantity
-        else:
-                return self.product.sale_price * self.quantity
+        
+        #adding product offer
+        if self.product.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+                offer_percentage = offer_percentage+self.product.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage', flat=True).order_by('-discount_percentage').first()
+
+        if offer_percentage >=100:
+            offer_percentage = 100
+            
+        offer_price =  self.product.sale_price - self.product.sale_price * (offer_percentage) / (100)
+        
+        return offer_price * self.quantity
         
     
     def __str__(self):
