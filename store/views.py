@@ -8,7 +8,7 @@ from order.models import Order,OrderProduct,Payment
 from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
 from django.views.decorators.cache import cache_control
-from django.db.models import Q,Case, When, F, FloatField, Sum,ExpressionWrapper ,DecimalField,Avg
+from django.db.models import Q,Case, When, F, FloatField, Sum,ExpressionWrapper ,DecimalField,Avg,Count
 from .models import Banner,ReviewRating
 from order.models import OrderProduct
 from .forms import ReviewForm
@@ -23,8 +23,16 @@ from django.contrib import messages
 
 def home (request):
     banners = Banner.objects.filter(is_active=True)
+    product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True).annotate(avg_rating=Avg('product_review__rating')).order_by('-avg_rating')[:10]
+    
+    most_moving_product_variants = Product_Variant.objects.all().annotate(total_orders=Count('orderproduct__order', distinct=True)).order_by('-total_orders')[:6]
+
+    print(most_moving_product_variants)
+   
     context={
-        'banners':banners
+        'banners':banners,
+        'product_variants':product_variants,
+        'most_moving_product_variants':most_moving_product_variants
     }
     return render(request, 'store/home.html',context)
 
@@ -75,12 +83,6 @@ def store (request,category_slug=None):
 
         product_variants_count = product_variants.count()
 
-    #wishlist
-    if request.user.is_authenticated:  
-        wishlist,created= Wishlist.objects.get_or_create(user=request.user)
-        wishlist_items = WishlistItem.objects.filter(wishlist=wishlist, is_active=True).values_list('product_id', flat=True)
-    else:
-        wishlist_items =[]
  
     #search
     if search_query:
@@ -134,7 +136,7 @@ def store (request,category_slug=None):
                'search_query':search_query,
                'price_min':price_min,
                'price_max':price_max,
-               'wishlist_items':wishlist_items}
+               }
     
     return render(request, 'store/store.html',context)
 
@@ -204,7 +206,8 @@ def order_history(request):
     
 @login_required(login_url='login-page')
 def user_wishlist(request):
-    wishlist = Wishlist.objects.get(user=request.user)
+    
+    wishlist,created = Wishlist.objects.get_or_create(user=request.user)
     wishlistItems = WishlistItem.objects.filter(wishlist=wishlist,is_active=True).order_by('-created_at')
     wishlistItems_count = wishlistItems.count()
     

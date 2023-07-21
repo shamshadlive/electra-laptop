@@ -36,9 +36,10 @@ Electra - Cart
 
 
     {% if not cart_items %}
-    <h2 class="">Your Shopping Cart Is Empty</h2>
+    
     <div class="text-center">
-
+        <img src="{% static 'store/images/yourcarteempty.png' %}" style="width: 250px;"/>
+        <h2 class="">Your Shopping Cart Is Empty</h2>
         <a href="{% url 'store' %}" class="btn btn-dark w-50"> Continue Shopping</a>
     </div>
     {% else %}
@@ -162,7 +163,7 @@ Electra - Cart
                 <p class="text-center mb-3">
                     <img src="{% static 'store/images/footer-payment.webp' %}" alt="footer-payment" height="26">
                 </p>
-                <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Checkout </a>
+                <a href="{% url 'checkout' %}" class="btn btn-dark btn-block"> Checkout </a>
                 <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
             </div> <!-- card-body.// -->
             </div> <!-- card.// -->

@@ -18,7 +18,7 @@ Electra - Home
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
     <div class="container">
-        <h2 class="title-page">Our Store</h2>
+        <h2 class="title-page">{{product_offer}}</h2>
 
         
     </div> <!-- container //  -->
@@ -33,25 +33,11 @@ Electra - Home
         <aside class="col-md-3">
     <div class="card">
         <article class="filter-group">
-            <header class="card-header">
-                <a href="#" data-toggle="collapse" data-target="#category_filter" aria-expanded="true" class="text-decoration-none text-dark">
-                    <i class="icon-control fa fa-chevron-down">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
-                          </svg>
-                    </i>
-                    <h6 class="title">Categories</h6>
-                </a>
-            </header>
+           
             <div class="filter-content collapse " id="category_filter" style="">
                 <div class="card-body"> 
                     <ul class="list-menu">
-                        <li><a href="{% url 'store' %}">All Categories </a></li>
-                        {% for category in all_category_list %}
-                            {% if    category.parent_cat %}
-                            <li><a href="{{category.get_url}}">{{category.cat_name}} </a></li>
-                            {% endif %}
-                        {% endfor %}
+                       
                     </ul>
 
                 </div> <!-- card-body.// -->
@@ -61,13 +47,13 @@ Electra - Home
         {% for atribute in all_atribute_list %}
         <article class="filter-group">
             <header class="card-header">
-                <a href="#"   data-toggle="collapse" data-target="#collapse_{{atribute.atribute_name}}" aria-expanded="true" class="text-decoration-none text-dark">
+                <a href="#" data-toggle="collapse" data-target="#collapse_{{atribute.atribute_name}}" aria-expanded="true" class="">
                     <i class="icon-control fa fa-chevron-down">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
                           </svg>
                     </i>
-                    <h6 class="title ">{{atribute.atribute_name}} </h6>
+                    <h6 class="title">{{atribute.atribute_name}} </h6>
                 </a>
             </header>
 
@@ -94,55 +80,13 @@ Electra - Home
 
         {% endfor %}
 
-        <article class="filter-group">
-            <header class="card-header">
-                <a href="#" data-toggle="collapse" data-target="#ratings_filter" aria-expanded="true" class=" text-decoration-none text-dark">
-                    <i class="icon-control fa fa-chevron-down">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
-                          </svg>
-                    </i>
-                    <h6 class="title">Customer Rating</h6>
-                </a>
-            </header>
-            <div class="filter-content collapse " id="ratings_filter" style="">
-                <div class="card-body"> 
-                    <label class="checkbox-btn my-1">
-                        <input type="checkbox" class="filter-checkbox" value="RATING=5">
-                        <span class="btn btn-light"> 5 ★★★★★</span>
-                    </label>
-                    
-                    <label class="checkbox-btn my-1">
-                        <input type="checkbox" class="filter-checkbox" value="RATING=4">
-                        <span class="btn btn-light"> 4 ★★★★</span>
-                    </label>
-                    <label class="checkbox-btn my-1">
-                        <input type="checkbox" class="filter-checkbox" value="RATING=3">
-                        <span class="btn btn-light"> 3 ★★★</span>
-                    </label>
-
-                    <label class="checkbox-btn my-1">
-                        <input type="checkbox" class="filter-checkbox" value="RATING=2">
-                        <span class="btn btn-light"> 2 ★★</span>
-                    </label>
-
-                    <label class="checkbox-btn my-1">
-                        <input type="checkbox" class="filter-checkbox" value="RATING=1">
-                        <span class="btn btn-light"> 1 ★</span>
-                    </label>
-
-
-                </div> <!-- card-body.// -->
-            </div>
-        </article> <!-- filter-group  .// -->
-
 
 
 
         
         <article class="filter-group">
             <header class="card-header">
-                <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="text-decoration-none text-dark">
+                <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
                     <i class="icon-control fa fa-chevron-down"></i>
                     <h6 class="title">Price range </h6>
                 </a>
@@ -161,7 +105,7 @@ Electra - Home
                       <input class="form-control" placeholder="Rs 5,000,00" type="number" id="filter-price-range-max" value="{% if price_max %}{{ price_max }}{% endif %}">
                     </div>
                     </div> <!-- form-row.// -->
-                    <button class="btn btn-block btn-dark my-2" onclick="filterWithPriceRange('filter-price-range-min','filter-price-range-max')">Apply</button>
+                    <button class="btn btn-block btn-primary my-2" onclick="filterWithPriceRange('filter-price-range-min','filter-price-range-max')">Apply</button>
                 </div><!-- card-body.// -->
             </div>
         </article> <!-- filter-group .// -->
@@ -220,7 +164,12 @@ Electra - Home
                         <a href="{{variant.get_url}}" class="title  ">
                             <p class="line-clamp m-0 p-0">
 
-                                {{variant.get_product_name|slice:60}}...
+                            {{ variant.product.product_brand }}
+                            {{ variant.product.product_name }}
+                            -{{ variant.sku_id }}
+                            ({% for attribute in variant.atributes.all %}
+                                {{attribute.atribute_value}}/
+                            {% endfor %})
 
                             
                             
@@ -229,17 +178,12 @@ Electra - Home
                         
                         <div class="price-wrap mt-2">
                             <span class="price">
-                                ₹{{variant.product_price|intcomma}}
+                                ₹{{variant.product_price}}
 
                             </span>
                             <del class="price-old">₹{{ variant.max_price|intcomma }}</del>
-                            {% if variant.avrg_review != 0 %}
-                            <div class="Stars" style="--rating: {{variant.avrg_review}};" aria-label="Rating of this product is {{variant.avrg_review}} out of 5.">
+                            <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
                             </div>
-                            {% else %}
-                            <div> <small class="text-muted"> No Reviews</small></div>
-                            {% endif %}
-
                             
                         </div> <!-- price-wrap.// -->
                         
@@ -292,7 +236,7 @@ Electra - Home
 
         {% for i in product_variants.paginator.page_range %}
             {% if product_variants.number == i %}
-            <li class="page-item active "><a class="page-link" href="#">{{i}}</a></li>
+            <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
             {% else %}
             <li class="page-item "><a class="page-link" href="#" onclick="updatePageNumber('{{i}}')">{{i}}</a></li>
             {% endif %}
@@ -301,7 +245,7 @@ Electra - Home
         {% if product_variants.has_next %}
         <li class="page-item"><a class="page-link" href="#" onclick="updatePageNumber('{{product_variants.next_page_number}}')" >Next</a></li>
         {% else %}
-        <li class="page-item disabled"><a class="page-link " href="#">Next</a></li>
+        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
         {% endif %}
       </ul>
       {% endif %}

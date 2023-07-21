@@ -104,13 +104,26 @@ class DashboardProductVsOrderData(APIView):
     permission_classes = []
     
     def get(self, request, format=None):
-        products_with_order_count = Product_Variant.objects.all().annotate(total_orders=Count('orderproduct__order', distinct=True)).order_by('-total_orders')[:10]
+        products_with_order_count = Product_Variant.objects.all().annotate(total_orders=Count('orderproduct__order', distinct=True)).order_by('-total_orders')[:6]
+        
+        product_values = {}
+        for product in products_with_order_count:
+            # print(str(product)+"----->"+str(product.total_orders))
+            product_name = product.sku_id[:10]
+            product_values[product_name] = product.total_orders
+
+        print(product_values)
+            
+        # for product in products_with_order_count:
+        #     print("=========")
+        #     print(request)
+        #     print(product.total_orders)
         # Create a dictionary with product names and their total order counts
-        product_order_counts = {product.get_product_name()[:20]+'...': product.total_orders for product in products_with_order_count}
-        print(product_order_counts)
+        # product_order_counts = {product.get_product_name()[:20]+'...': product.total_orders for product in products_with_order_count}
+        # print(product_order_counts)
         data = {
             'status':'success',
-            'data':product_order_counts  
+            'data':product_values  
         }
         return Response(data)
 

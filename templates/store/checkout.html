@@ -345,7 +345,7 @@ Electra - Cart
           document.getElementById('additional_discount_checkout').innerText = '- Rs'+( data.grand_total * data.discount_percentage )/100
 
           var new_grand_total =     data.grand_total - ( data.grand_total * data.discount_percentage )/100
-          document.getElementById('grand_total_checkout').innerText = 'Rs'+ new_grand_total
+          document.getElementById('grand_total_checkout').innerText = 'Rs'+ new_grand_total.toFixed(2)
         
 
       } else {

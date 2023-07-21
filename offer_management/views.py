@@ -18,15 +18,18 @@ from store.models import Banner
 
 
 class all_offers_store(ListView):  
-    model = CategoryOffer  
+    # model = CategoryOffer  
     template_name = 'store/all_offers.html'
-    context_object_name = 'categoryOffers'
-  
+    # context_object_name = 'categoryOffers'
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset=CategoryOffer.objects.filter(is_active=True, expire_date__gte=datetime.now()) 
+        pass
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categoryOffers']=CategoryOffer.objects.filter(is_active=True, expire_date__gte=datetime.now()) 
+        context['productOffers']=ProductOffer.objects.filter(is_active=True, expire_date__gte=datetime.now()) 
        
-        return queryset
+        return context
 
 
 class category_offer_product(View):
@@ -94,6 +97,79 @@ class category_offer_product(View):
                 
             }
         return render(request,'store/offer_items.html',context)
+    
+    
+
+class product_offer_product(View):
+    def get(self, request, offer_slug):
+
+        price_min = request.GET.get('price-min')
+        price_max = request.GET.get('price-max')
+        
+        #wishlist
+        if request.user.is_authenticated:  
+            wishlist,created= Wishlist.objects.get_or_create(user=request.user)
+            wishlist_items = WishlistItem.objects.filter(wishlist=wishlist, is_active=True).values_list('product_id', flat=True)
+        else:
+            wishlist_items =[]
+            
+    
+        try:
+            product_offer = get_object_or_404(ProductOffer, product_offer_slug=offer_slug)
+        except:
+            return redirect('store')
+    
+        products = product_offer.product.filter(is_active=True).values_list('sku_id')
+       
+       
+        product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(sku_id__in=products,is_active=True)
+        product_variants_count = product_variants.count()
+        
+        #price filter 
+        if price_min:
+            product_variants = product_variants.filter(sale_price__gte=price_min)
+        if price_max:
+            product_variants = product_variants.filter(sale_price__lte=price_max)
+            
+            
+        # Get all attribute names from the request avoid certain parameters
+        attribute_names = [key for key in request.GET.keys() if key not in ['query','page','price-min','price-max']]
+        
+            #other filter
+        for attribute_name in attribute_names:
+            attribute_values = request.GET.getlist(attribute_name)
+            if attribute_values:
+                product_variants=product_variants.filter(atributes__atribute_value__in=attribute_values)
+        
+        product_variants_count = product_variants.count()
+        
+    
+        # paginator start
+        paginator = Paginator(product_variants,6)
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)
+        
+            
+        context = {
+            'product_offer':product_offer,
+                'product_variants':paged_products,
+                'product_variants_count':product_variants_count,
+                # 'all_category_list':categories,
+                'price_min':price_min,
+               'price_max':price_max,
+               'wishlist_items':wishlist_items
+                
+            }
+        return render(request,'store/offer_items_product.html',context)
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

@@ -1,5 +1,6 @@
 <!-- shop by category section -->
 {% load static %}
+{% load humanize %}
 
 <style>
 
@@ -24,14 +25,15 @@
 
             {% for category in all_category_list|slice:":4" %}
                 {% if category.parent_cat %}
-                  <div class="p-3 ">{{category.cat_name}}</div>
+                  <div class="p-3 "><a href="{% url 'product-by-category' category.cat_slug %}" class="text-decoration-none text-white">
+                    {{category.cat_name}}
+                  </a></div>  
                 {% endif %}
             {% endfor %}
             <div class="p-3 "><a href="{% url 'store' %}" class="text-decoration-none text-white"> All Categories</a>
              
             </div>
-           <!--  <div class="p-3 ">Office Laptop</div>
-            <div class="p-3 ">MacBook Pro</div> -->
+          
 
           </div> 
 
@@ -43,421 +45,96 @@
 
     <div class="owl-carousel owl-carousel-category">
         <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product1.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Lenovo IdeaPad Ryze 
-                        (8 GB/512 GB SSD)...</h6>
-                    </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
-                        </div>
+        {% for variant in product_variants %}
+        <div class="item">
 
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
-                        </div>
+            
+            <figure class="card card-product-grid" >
 
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
+                <!-- offer -->
+                <div class="m-2 position-absolute" style="z-index: 2;">
+                  
+                 {% if variant.product_offer.offer_percentage != 0 %}
+
+                    
+                        <button type="button" class="btn btn-danger m-0 ">
+                            -{{ variant.product_offer.offer_percentage }}%
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star" viewBox="0 0 16 16">
+                                <path d="M7.84 4.1a.178.178 0 0 1 .32 0l.634 1.285a.178.178 0 0 0 .134.098l1.42.206c.145.021.204.2.098.303L9.42 6.993a.178.178 0 0 0-.051.158l.242 1.414a.178.178 0 0 1-.258.187l-1.27-.668a.178.178 0 0 0-.165 0l-1.27.668a.178.178 0 0 1-.257-.187l.242-1.414a.178.178 0 0 0-.05-.158l-1.03-1.001a.178.178 0 0 1 .098-.303l1.42-.206a.178.178 0 0 0 .134-.098L7.84 4.1z"></path>
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"></path>
+                            </svg>
+                        </button>
+                   
+
+                    
+                        
+
+                    {% endif %} 
                 </div>
-              </div>
-            </div>
-          </div>
-      </div>
 
 
-      <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product2.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Asus Tuff Element 
-                        (8 GB/512 GB SSD)...</h6>
+                <a href="{{variant.get_url}}">
+                <div class="img-wrap"> 
+                    
+                    <img src="{{variant.thumbnail_image.url}}">
+                    
+                </div> 
+            </a><!-- img-wrap.// -->
+                <figcaption class="info-wrap">
+                    <div class=" ">
+                        <a href="{{variant.get_url}}" class="title  ">
+                            <p class="line-clamp m-0 p-0">
+
+                              {{variant.get_product_name|slice:50}}...
+                            
+
+                            
+                            
+                        </p>
+                        </a>
+                        
+                        <div class="price-wrap mt-2">
+                            <span class="price">
+                                ₹{{variant.product_price|intcomma}}
+
+                            </span>
+                            <del class="price-old">₹{{ variant.max_price|intcomma }}</del>
+                            {% if variant.avrg_review != 0 %}
+                            <div class="Stars" style="--rating: {{variant.avrg_review}};" aria-label="Rating of this product is {{variant.avrg_review}} out of 5."></div>
+                              {% else %}
+                              <div> <small class="text-muted"> No Reviews</small></div>
+                            {% endif %}
+                        </div> <!-- price-wrap.// -->
+                        
                     </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
+                    {% if variant.id in wishlist_items %}
+                        <div class="d-flex justify-content-end mb-1" onclick="addToWhishlist('{{variant.id}}')">
+                            <img src="{% static 'store/images/icons/love-fill.svg' %}" style="width: 20px;" />
                         </div>
-
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
+                    {% else %}
+                        <div class="d-flex justify-content-end mb-1" onclick="addToWhishlist('{{variant.id}}')">
+                            <img src="{% static 'store/images/icons/love.svg' %}" style="width: 20px;"/>
                         </div>
+                    
+                    {% endif %}
 
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-
-
-      <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product3.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Asus Tuff Element 
-                        (8 GB/512 GB SSD)...</h6>
-                    </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
-                        </div>
-
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
-                        </div>
-
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
+                    {% if variant.stock <= 0 %}
+                        <h6 class='text-danger text-center mt-3'>Out Of Stock</h6>
+                    {% else %}
+                    <a href="{% url 'add-cart' variant.id %}" class="btn w-100 btn-dark">
+                        <svg width="20"  viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>   
+                            Add to cart </a>
+                    {% endif %}
+                </figcaption>
+            </figure>
+        </div> <!-- col.// -->
+    
+        {% endfor %}
 
 
       
-      <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product4.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Asus Tuff Element 
-                        (8 GB/512 GB SSD)...</h6>
-                    </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
-                        </div>
-
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
-                        </div>
-
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-
-
-      
-      <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product5.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Asus Tuff Element 
-                        (8 GB/512 GB SSD)...</h6>
-                    </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
-                        </div>
-
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
-                        </div>
-
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-
-
-      
-      <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product2.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Asus Tuff Element 
-                        (8 GB/512 GB SSD)...</h6>
-                    </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
-                        </div>
-
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
-                        </div>
-
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-
-
-      
-      <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product1.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Asus Tuff Element 
-                        (8 GB/512 GB SSD)...</h6>
-                    </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
-                        </div>
-
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
-                        </div>
-
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-
-
-      
-      <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product4.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Asus Tuff Element 
-                        (8 GB/512 GB SSD)...</h6>
-                    </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
-                        </div>
-
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
-                        </div>
-
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-
-
-      
-      <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product5.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Asus Tuff Element 
-                        (8 GB/512 GB SSD)...</h6>
-                    </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
-                        </div>
-
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
-                        </div>
-
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-
-
-      
-      <!-- item -->
-      <div class="item">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-              <div class="">
-                <div class="card text-black  rounded-0">
-                                   
-                  <img src="  {% static 'store/images/products/product3.jpg' %}"
-                    class="card-img-top" alt="Apple Computer" />
-                  <div class="card-body">
-                    <div class="text-center">
-                      <h6 class="text-black mb-2">Asus Tuff Element 
-                        (8 GB/512 GB SSD)...</h6>
-                    </div>
-                    <div>
-                      <div class="d-flex flex-wrap align-items-center">
-                        <div><small><s style="font-size: 0.8rem;">₹ 1,79,400</s></small></div>
-                        <div><b class="mx-1">₹ 1,19,400</b></div>
-                        </div>
-
-                      <div class="Stars" style="--rating: 5;" aria-label="Rating of this product is 2.5 out of 5.">
-                        </div>
-
-                      
-                    </div>
-                    <div class="d-flex justify-content-between total font-weight-bold mt-1">
-                        <button type="button" class="btn btn-dark w-100">
-                            <svg width="29" height="31" viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#200E32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>      
-                            Add To Cart
-                          </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-
 
       
 

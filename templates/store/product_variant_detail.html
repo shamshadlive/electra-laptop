@@ -127,14 +127,16 @@ Electra - Product Detail
                                 {% for product_variant in product_variants %}
                                 
                                     {% if product_variants_count > 1 %}
-                                    <span class="mx-1 ">
+                                    <div class="mx-1 ">
+                                        <img src="{{product_variant.thumbnail_image.url}}" style="width: 50px;" alt="">
                                         <a type="button"  href="{{ product_variant.get_url }}" class="btn btn-outline-dark mt-2">
+                                            
                                             {% for attribute in product_variant.atributes.all %}
                                                 {{ attribute.atribute_value }}
                                             {% endfor %}
                                     
                                             </a>                  
-                                    </span>
+                                    </div>
                                     {% endif %} 
                                 
                                 {% endfor %}
