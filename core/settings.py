@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from .secure_variables import EMAIL_PASSWORD,EMAIL_USER,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_VERIFIED_NUMBER,_RAZOR_PAY_KEY_ID,_RAZOR_PAY_KEY_SECRET
+from decouple import config
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5#7-5(6om3vv*1r+x-_cjovk(y$*ey#&85zd&%dv&7!(x=5rk#'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -68,8 +68,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
-# Templates Directory
-# TEMPLATE_DIR = os.path.join(BASE_DIR,"templates")
+
 
 TEMPLATES = [
     {
@@ -98,14 +97,15 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {  
     'default': {  
-        'ENGINE': 'django.db.backends.mysql',  
-        'NAME': 'electralaptop',  
-        'USER': 'root',  
-        'PASSWORD': '',  
-        'HOST': 'localhost',  
-        'PORT': '3306',  
+        'ENGINE': config('DBENGINE'),  
+        'NAME': config('DBNAME'),  
+        'USER': config('DBUSER'),  
+        'PASSWORD':config('DBPASSWORD'),  
+        'HOST': config('DBHOST'),  
+        'PORT': config('DBPORT'),  
         'OPTIONS': {  
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"  
         }  
@@ -169,11 +169,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = EMAIL_USER
-EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
-EMAIL_PORT = 587
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
@@ -185,12 +185,12 @@ VERIFICATION_SUCCESS_TEMPLATE ='accounts/email_verification_success.html'
 
 # Settings for otp verification
 
-ACCOUNT_SID= TWILIO_ACCOUNT_SID
-AUTH_TOKEN=TWILIO_AUTH_TOKEN
+ACCOUNT_SID=config('ACCOUNT_SID')
+AUTH_TOKEN=config('AUTH_TOKEN')
 COUNTRY_CODE='+91'
-TWILIO_PHONE_NUMBER=TWILIO_VERIFIED_NUMBER
+TWILIO_PHONE_NUMBER=config('TWILIO_PHONE_NUMBER')
 
 
 #settings for RazorPay
-RAZORPAY_KEY_ID = _RAZOR_PAY_KEY_ID
-RAZORPAY_KEY_SECRET = _RAZOR_PAY_KEY_SECRET
+RAZORPAY_KEY_ID =config('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET =config('RAZORPAY_KEY_SECRET')
