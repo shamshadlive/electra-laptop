@@ -1,0 +1,16 @@
+<aside class="col-md-3">
+    <!--   SIDEBAR   -->
+    <ul class="list-group">
+        <a class="list-group-item {% if '/dashboard' in request.path %}  bg-dark text-white {% endif %}" href="{% url 'user-dashboard' %}"> My Dashboard </a>
+        <a class="list-group-item {% if '/order_history' in request.path %}  bg-dark text-white {% endif %}" href="{% url 'order-history' %}"> My order history </a>
+        <a class="list-group-item {% if '/address' in request.path %}  bg-dark text-white {% endif %}" href="{% url 'user-address' %}"> My Address </a>
+        <a class="list-group-item {% if '/wishlist' in request.path %}  bg-dark text-white {% endif %}" href="{% url 'user-wishlist' %}"> My Whishlist </a>
+
+    
+
+        
+    </ul>
+    <br>
+    <a class="btn btn-light btn-block" href="{% url 'logout-page'  %}"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a> 
+    <!--   SIDEBAR .//END   -->
+</aside>
