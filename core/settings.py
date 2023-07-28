@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'order',
     'wallet',
     'offer_management',
+    'storages',
     'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -146,22 +147,36 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_URL = 'static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+#S3 CONFIG
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_S3_REGION_NAME = 'eu-north-1'
+
+AWS_LOCATION = 'static'
+
 STATICFILES_DIRS = [
     'core/static',
 ]
 
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com'% (AWS_STORAGE_BUCKET_NAME,AWS_S3_REGION_NAME)
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+STATIC_URL='https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN,AWS_LOCATION)
+
+
 #media file directory
+DEFAULT_FILE_STORAGE = 'core.media_storage.MediaStorage'
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
 #For To Enable Popus in Django or else it will block the payment popup
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
