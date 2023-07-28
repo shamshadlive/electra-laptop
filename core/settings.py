@@ -170,7 +170,9 @@ STATIC_URL='https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN,AWS_LOCATION)
 
 
 #media file directory
-DEFAULT_FILE_STORAGE = 'core.media_storage.MediaStorage'
+if not DEBUG:
+    DEFAULT_FILE_STORAGE = 'core.media_storage.MediaStorage'
+    
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
