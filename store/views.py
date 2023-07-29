@@ -28,6 +28,7 @@ def home (request):
         recent_viewed_products = RecentViewedProduct.objects.select_related('product').prefetch_related('product__atributes').filter(user=request.user).order_by('-updated_at')[:6]
     else:
         recent_viewed_products=None
+    print(recent_viewed_products)
     most_moving_product_variants = Product_Variant.objects.all().annotate(total_orders=Count('orderproduct__order', distinct=True)).order_by('-total_orders')[:6]
 
    
@@ -164,14 +165,14 @@ def product_variant_detail(request,category_slug,product_variant_slug):
     
     if request.user.is_authenticated:
         try:
-            order_product = OrderProduct.objects.filter(user=request.user,product_id=single_product_variant.id).exists()
-            
             #recent viewed product add
             recent_viewed,created = RecentViewedProduct.objects.get_or_create(user=request.user,product=single_product_variant)
             if not created:
                 recent_viewed.updated_at = datetime.now()
                 recent_viewed.save()
-                
+            print(recent_viewed)  
+            order_product = OrderProduct.objects.filter(user=request.user,product_id=single_product_variant.id).exists()
+              
         except OrderProduct.DoesNotExist:
             order_product = None
     else:
