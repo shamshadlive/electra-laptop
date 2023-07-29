@@ -455,7 +455,9 @@ function get_wallet_grand_total(order_number,check=true)
 function handleSearchForm(event) {
   event.preventDefault(); // Prevents the default form submission behavior
   var searchInput = document.getElementById('nav-search-input').value;
-  var url = 'http://127.0.0.1:8000/store/?query=' + encodeURIComponent(searchInput);
+  var currentLocation = window.location;
+  // console.log(currentLocation);
+  var url = currentLocation.protocol+'//'+currentLocation.host+'/store/?query=' + encodeURIComponent(searchInput);
   window.location.href = url;
 }
 
