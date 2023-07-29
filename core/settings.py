@@ -174,7 +174,7 @@ STATICFILES_DIRS = [
 #     DEFAULT_FILE_STORAGE = 'core.media_storage.MediaStorage'
     
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 
 
 #For To Enable Popus in Django or else it will block the payment popup
