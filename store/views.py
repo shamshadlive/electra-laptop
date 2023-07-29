@@ -9,7 +9,7 @@ from accounts.models import AdressBook
 from accounts.forms import AdressBookForm
 from django.views.decorators.cache import cache_control
 from django.db.models import Q,Case, When, F, FloatField, Sum,ExpressionWrapper ,DecimalField,Avg,Count
-from .models import Banner,ReviewRating
+from .models import Banner,ReviewRating,RecentViewedProduct
 from order.models import OrderProduct
 from .forms import ReviewForm
 from datetime import datetime
@@ -24,14 +24,16 @@ from django.contrib import messages
 def home (request):
     banners = Banner.objects.filter(is_active=True)
     product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True).annotate(avg_rating=Avg('product_review__rating')).order_by('-avg_rating')[:10]
+    recent_viewed_products = RecentViewedProduct.objects.select_related('product').prefetch_related('product__atributes').filter(user=request.user).order_by('-updated_at')[:6]
     
     most_moving_product_variants = Product_Variant.objects.all().annotate(total_orders=Count('orderproduct__order', distinct=True)).order_by('-total_orders')[:6]
 
-    print(most_moving_product_variants)
+    print(recent_viewed_products)
    
     context={
         'banners':banners,
         'product_variants':product_variants,
+        'recent_viewed_products':recent_viewed_products,
         'most_moving_product_variants':most_moving_product_variants
     }
     return render(request, 'store/home.html',context)
@@ -162,6 +164,13 @@ def product_variant_detail(request,category_slug,product_variant_slug):
     if request.user.is_authenticated:
         try:
             order_product = OrderProduct.objects.filter(user=request.user,product_id=single_product_variant.id).exists()
+            
+            #recent viewed product add
+            recent_viewed,created = RecentViewedProduct.objects.get_or_create(user=request.user,product=single_product_variant)
+            if not created:
+                recent_viewed.updated_at = datetime.now()
+                recent_viewed.save()
+                
         except OrderProduct.DoesNotExist:
             order_product = None
     else:

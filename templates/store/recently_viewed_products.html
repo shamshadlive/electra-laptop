@@ -1,0 +1,123 @@
+<!-- shop by category section -->
+{% load static %}
+{% load humanize %}
+
+{% if recent_viewed_products %}
+<div class="contianer bg-black">
+    <div class="row p-0 m-0">
+        <div class="d-flex justify-content-center  text-white">
+            <div>
+               <h2 class="catg-heading-text py-4">
+               Recently Viewed Products
+               </h2> 
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+
+<div class="container">
+  
+
+    <div class="owl-carousel owl-carousel-category">
+        <!-- item -->
+        {% for variant in recent_viewed_products %}
+    
+        <div class="item">
+
+            
+            <figure class="card card-product-grid" >
+
+                <!-- offer -->
+                <div class="m-2 position-absolute" style="z-index: 2;">
+                  
+                 {% if variant.product.product_offer.offer_percentage != 0 %}
+
+                    
+                        <button type="button" class="btn btn-danger m-0 ">
+                            -{{ variant.product.product_offer.offer_percentage }}%
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-star" viewBox="0 0 16 16">
+                                <path d="M7.84 4.1a.178.178 0 0 1 .32 0l.634 1.285a.178.178 0 0 0 .134.098l1.42.206c.145.021.204.2.098.303L9.42 6.993a.178.178 0 0 0-.051.158l.242 1.414a.178.178 0 0 1-.258.187l-1.27-.668a.178.178 0 0 0-.165 0l-1.27.668a.178.178 0 0 1-.257-.187l.242-1.414a.178.178 0 0 0-.05-.158l-1.03-1.001a.178.178 0 0 1 .098-.303l1.42-.206a.178.178 0 0 0 .134-.098L7.84 4.1z"></path>
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"></path>
+                            </svg>
+                        </button>
+                   
+
+                    
+                        
+
+                    {% endif %} 
+                </div>
+
+
+                <a href="{{variant.product.get_url}}">
+                <div class="img-wrap"> 
+                    
+                    <img src="{{variant.product.thumbnail_image.url}}">
+                    
+                </div> 
+            </a><!-- img-wrap.// -->
+                <figcaption class="info-wrap">
+                    <div class=" ">
+                        <a href="{{variant.product.get_url}}" class="title  ">
+                            <p class="line-clamp m-0 p-0">
+
+                              {{variant.product.get_product_name|slice:50}}...
+                            
+
+                            
+                            
+                        </p>
+                        </a>
+                        
+                        <div class="price-wrap mt-2">
+                            <span class="price">
+                                ₹{{variant.product.product_price|intcomma}}
+
+                            </span>
+                            <del class="price-old">₹{{ variant.product.max_price|intcomma }}</del>
+                            {% if variant.product.avrg_review != 0 %}
+                            <div class="Stars" style="--rating: {{variant.product.avrg_review}};" aria-label="Rating of this product is {{variant.product.avrg_review}} out of 5."></div>
+                              {% else %}
+                              <div> <small class="text-muted"> No Reviews</small></div>
+                            {% endif %}
+                        </div> <!-- price-wrap.// -->
+                        
+                    </div>
+                    {% if variant.product.id in wishlist_items %}
+                        <div class="d-flex justify-content-end mb-1" onclick="addToWhishlist('{{variant.product.id}}')">
+                            <img src="{% static 'store/images/icons/love-fill.svg' %}" style="width: 20px;" />
+                        </div>
+                    {% else %}
+                        <div class="d-flex justify-content-end mb-1" onclick="addToWhishlist('{{variant.product.id}}')">
+                            <img src="{% static 'store/images/icons/love.svg' %}" style="width: 20px;"/>
+                        </div>
+                    
+                    {% endif %}
+
+                    {% if variant.product.stock <= 0 %}
+                        <h6 class='text-danger text-center mt-3'>Out Of Stock</h6>
+                    {% else %}
+                    <a href="{% url 'add-cart' variant.product.id %}" class="btn w-100 btn-dark">
+                        <svg width="20"  viewBox="0 0 29 31"  xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#fff" d="M20.589 8.34774C20.589 4.96747 17.8487 2.22717 14.4685 2.22717C12.8407 2.22032 11.2773 2.86212 10.1238 4.01068C8.9704 5.15925 8.32201 6.71997 8.32201 8.34774M20.3945 29.4583H8.56839C4.22438 29.4583 0.891809 27.8893 1.83841 21.5743L2.94063 13.0159C3.52415 9.8649 5.53407 8.65895 7.29761 8.65895H21.7171C23.5066 8.65895 25.3998 9.95567 26.0741 13.0159L27.1763 21.5743C27.9803 27.1761 24.7385 29.4583 20.3945 29.4583Z" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>   
+                            Add to cart </a>
+                    {% endif %}
+                </figcaption>
+            </figure>
+        </div> <!-- col.// -->
+    
+        {% endfor %}
+
+
+      
+
+      
+
+    </div>
+</div>
+
+
+{% endif %}
