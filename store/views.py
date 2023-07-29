@@ -24,11 +24,12 @@ from django.contrib import messages
 def home (request):
     banners = Banner.objects.filter(is_active=True)
     product_variants = Product_Variant.objects.select_related('product').prefetch_related('atributes').filter(is_active=True).annotate(avg_rating=Avg('product_review__rating')).order_by('-avg_rating')[:10]
-    recent_viewed_products = RecentViewedProduct.objects.select_related('product').prefetch_related('product__atributes').filter(user=request.user).order_by('-updated_at')[:6]
-    
+    if request.user.is_authenticated:
+        recent_viewed_products = RecentViewedProduct.objects.select_related('product').prefetch_related('product__atributes').filter(user=request.user).order_by('-updated_at')[:6]
+    else:
+        recent_viewed_products=None
     most_moving_product_variants = Product_Variant.objects.all().annotate(total_orders=Count('orderproduct__order', distinct=True)).order_by('-total_orders')[:6]
 
-    print(recent_viewed_products)
    
     context={
         'banners':banners,
