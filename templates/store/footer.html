@@ -23,10 +23,13 @@
                 <div class="col-lg-2 col-md-6">
                     <p class="text-white mb-2">Category</p>
                     <ul class="list-unstyled text-muted ">
-                        <li ><a  class="text-decoration-none  text-light small" href="#">All Laptop</a></li>
-                        <li ><a  class="text-decoration-none text-light small"href="#">Gaming Laptop</a></li>
-                        <li ><a  class="text-decoration-none text-light small"href="#">Get started</a></li>
-                        <li ><a  class="text-decoration-none text-light small"href="#">FAQ</a></li>
+                        {% for category in all_category_list|slice:":5" %}
+                            {% if category.parent_cat %}
+                            <li ><a  class="text-decoration-none  text-light small" href="{% url 'product-by-category' category.cat_slug %}" >  {{category.cat_name}}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                       
                     </ul>
                 </div>
                 <div class="col-lg-2 col-md-6">
@@ -43,8 +46,8 @@
 
                     <p class=" text-white m-0">
                     <img src="{% static 'store/images/icons/call.svg' %}" alt="call" >
-
-                        +91 833 00 99 043
+                    <a href="tel:+918330099043" class="text-decoration-none text-white">+91 833 00 99 043</a>
+                        
                     </p>
                     <p class=" text-white">
                         support@electra.com

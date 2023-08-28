@@ -80,7 +80,7 @@ class Product_VariantManager(models.Manager):
 
 
 
-# Product - MACBOOK PRO LIMITED EDITION
+# Product - MACBOOK PRO 4GB,8GB
 class Product_Variant(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     sku_id = models.CharField(max_length=30)
@@ -203,7 +203,7 @@ class Additional_Product_Image(models.Model):
     def __str__(self):
         return self.image.url
     
-    
+   
 #Coupons
 
 class Coupon(models.Model):
